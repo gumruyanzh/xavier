@@ -1105,30 +1105,120 @@ This project follows Xavier Framework standards:
 
         return self.scrum.get_sprint_report(sprint_id)
 
-    def show_help(self, args: Dict[str, Any]) -> Dict[str, str]:
+    def show_help(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Show Xavier help and commands"""
+        help_text = """# Xavier Framework Commands
+
+## Project Management
+
+### /create-project - Intelligently initialize a new Xavier project
+Creates a new project with AI-powered analysis of requirements and automatic tech stack selection.
+
+**Example:**
+```json
+{
+  "name": "TodoApp",
+  "description": "A task management app with user auth, real-time updates, and team collaboration"
+}
+```
+
+**With tech stack:**
+```json
+{
+  "name": "TodoApp",
+  "description": "Task management application",
+  "tech_stack": {
+    "backend": "python/fastapi",
+    "frontend": "react",
+    "database": "postgresql"
+  }
+}
+```
+
+## Story Management
+
+### /create-story - Create a user story with acceptance criteria
+**Example:**
+```json
+{
+  "title": "User Authentication",
+  "as_a": "user",
+  "i_want": "to log in securely",
+  "so_that": "I can access my account",
+  "acceptance_criteria": ["Email validation", "Password check"],
+  "priority": "High"
+}
+```
+
+### /create-task - Create a task under a story
+**Example:**
+```json
+{
+  "story_id": "STORY-001",
+  "title": "Implement login endpoint",
+  "description": "Create POST /api/login endpoint",
+  "estimated_hours": 4
+}
+```
+
+### /create-bug - Report a bug with reproduction steps
+**Example:**
+```json
+{
+  "title": "Login fails with special characters",
+  "description": "Users cannot log in if password contains @",
+  "steps_to_reproduce": ["Go to login", "Enter password with @", "Click login"],
+  "severity": "High"
+}
+```
+
+## Sprint Management
+
+### /create-sprint - Create a new sprint with auto-planning
+**Example:**
+```json
+{
+  "name": "Sprint 1",
+  "goal": "Complete user authentication",
+  "duration_days": 14
+}
+```
+
+### /start-sprint - Start sprint execution with agents
+### /end-sprint - Complete sprint with retrospective
+
+## Reporting & Analysis
+
+### /show-backlog - Show backlog overview
+### /show-sprint - Show sprint details
+### /tech-stack-analyze - Analyze project tech stack
+### /learn-project - Learn existing project structure
+### /generate-report - Generate various reports
+
+## Other Commands
+
+### /create-roadmap - Create product roadmap
+### /estimate-story - Estimate story points
+### /assign-task - Assign task to agent
+### /review-code - Trigger code review
+### /create-agent - Create custom agent
+### /list-stories - List all user stories
+### /list-tasks - List all tasks
+### /list-bugs - List all bugs
+### /xavier-help - Show this help message
+
+## Quick Tips
+
+1. Use `/create-project` first to initialize your project with intelligent analysis
+2. Xavier will suggest the best tech stack based on your requirements
+3. All commands accept JSON arguments
+4. Stories are automatically estimated and prioritized
+5. Agents work sequentially following TDD and Clean Code principles
+"""
         return {
-            "/create-story": "Create a user story with acceptance criteria",
-            "/create-task": "Create a task under a story",
-            "/create-bug": "Report a bug with reproduction steps",
-            "/create-roadmap": "Create product roadmap with milestones",
-            "/create-project": "Initialize new Xavier project",
-            "/learn-project": "Learn existing project structure",
-            "/create-sprint": "Create a new sprint with auto-planning",
-            "/start-sprint": "Start sprint execution with agents",
-            "/end-sprint": "Complete sprint with retrospective",
-            "/estimate-story": "Estimate story points",
-            "/assign-task": "Assign task to agent",
-            "/review-code": "Trigger code review",
-            "/generate-report": "Generate various reports",
-            "/tech-stack-analyze": "Analyze project tech stack",
-            "/create-agent": "Create custom agent for tech stack",
-            "/list-stories": "List all user stories",
-            "/list-tasks": "List all tasks",
-            "/list-bugs": "List all bugs",
-            "/show-backlog": "Show backlog overview",
-            "/show-sprint": "Show sprint details",
-            "/xavier-help": "Show this help message"
+            "help": help_text,
+            "commands_count": 21,
+            "framework_version": "1.0.1"
         }
 
     def _detect_task_tech_constraints(self, task) -> List[str]:
@@ -1201,6 +1291,11 @@ Xavier enforces the following strict rules:
 
 ## Available Commands
 
+### Project Management
+- `/create-project` - Intelligently initialize new project with AI analysis
+- `/learn-project` - Analyze existing codebase
+- `/tech-stack-analyze` - Detect technologies
+
 ### Story Management
 - `/create-story` - Create user story with acceptance criteria
 - `/create-task` - Create task under a story
@@ -1215,10 +1310,6 @@ Xavier enforces the following strict rules:
 - `/show-backlog` - View prioritized backlog
 - `/show-sprint` - Current sprint status
 - `/generate-report` - Generate various reports
-
-### Project
-- `/learn-project` - Analyze existing codebase
-- `/tech-stack-analyze` - Detect technologies
 - `/xavier-help` - Show all commands
 
 ## Workflow
@@ -1242,6 +1333,29 @@ Xavier enforces the following strict rules:
         return """# Xavier Commands Reference
 
 All commands use JSON arguments. Examples provided for each command.
+
+## /create-project
+Intelligently initialize a new Xavier project with automatic tech stack analysis.
+
+```json
+{
+  "name": "TodoApp",
+  "description": "A task management application with user authentication, real-time updates, and team collaboration features. Should support mobile devices and have offline capabilities."
+}
+```
+
+With custom tech stack:
+```json
+{
+  "name": "TodoApp",
+  "description": "Task management app",
+  "tech_stack": {
+    "backend": "python/fastapi",
+    "frontend": "react",
+    "database": "postgresql"
+  }
+}
+```
 
 ## /create-story
 Create a user story following SCRUM methodology.
