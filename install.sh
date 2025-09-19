@@ -2,6 +2,7 @@
 
 # Xavier Framework Installation Script
 # Enterprise-Grade SCRUM Development for Claude Code
+# Version 1.0.1 - macOS compatible
 
 set -e
 
