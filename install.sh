@@ -24,7 +24,9 @@ echo -e "${NC}"
 PYTHON_VERSION=$(python3 --version 2>&1 | grep -Po '(?<=Python )\d+\.\d+')
 REQUIRED_VERSION="3.8"
 
-if (( $(echo "$PYTHON_VERSION < $REQUIRED_VERSION" | bc -l) )); then
+if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" = "$REQUIRED_VERSION" ]; then
+    echo -e "${GREEN}Python $PYTHON_VERSION detected${NC}"
+else
     echo -e "${RED}Error: Python $REQUIRED_VERSION or higher is required${NC}"
     echo "Current version: $PYTHON_VERSION"
     exit 1
@@ -65,23 +67,24 @@ echo -e "${BLUE}Downloading Xavier Framework...${NC}"
 TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
 
-# Clone or download Xavier (replace with actual repository URL when published)
+# Clone or download Xavier
 if command -v git &> /dev/null; then
-    git clone https://github.com/xavier-framework/xavier.git 2>/dev/null || {
-        echo -e "${YELLOW}Using local Xavier installation${NC}"
-        cp -r /Users/Toto/Projects/xavier/xavier/* .
+    git clone https://github.com/gumruyanzh/xavier.git 2>/dev/null || {
+        echo -e "${YELLOW}Failed to clone. Downloading as archive...${NC}"
+        curl -L https://github.com/gumruyanzh/xavier/archive/main.tar.gz | tar xz
+        mv xavier-main/xavier/* .
     }
 else
     echo -e "${YELLOW}Git not found. Downloading as archive...${NC}"
-    curl -L https://github.com/xavier-framework/xavier/archive/main.tar.gz | tar xz
-    mv xavier-main/* .
+    curl -L https://github.com/gumruyanzh/xavier/archive/main.tar.gz | tar xz
+    mv xavier-main/xavier/* .
 fi
 
 # Copy Xavier files to project
 cd - > /dev/null
-cp -r "$TEMP_DIR/src" .xavier/
-cp -r "$TEMP_DIR/templates" .xavier/ 2>/dev/null || true
-cp "$TEMP_DIR/xavier.config.json" .xavier/config.json
+cp -r "$TEMP_DIR/xavier/src" .xavier/ 2>/dev/null || cp -r "$TEMP_DIR/src" .xavier/
+cp -r "$TEMP_DIR/xavier/templates" .xavier/ 2>/dev/null || true
+cp "$TEMP_DIR/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || cp "$TEMP_DIR/xavier.config.json" .xavier/config.json 2>/dev/null || true
 
 # Clean up
 rm -rf "$TEMP_DIR"
