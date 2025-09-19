@@ -2,8 +2,8 @@
 theme: null
 title: Xavier Framework
 description: Enterprise-grade SCRUM development framework for Claude Code with strict TDD and Clean Code enforcement
-baseurl: ""
-url: "https://gumruyanzh.github.io/xavier"
+baseurl: "/xavier"
+url: "https://gumruyan.com"
 
 # Plugins
 plugins:

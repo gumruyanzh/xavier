@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             font-size: 24px;
             cursor: pointer;
             padding: 5px;
-            color: var(--text-dark);
+            color: #000;
         }
         .nav-links.mobile-active {
             display: flex !important;
@@ -190,10 +190,10 @@ document.addEventListener('DOMContentLoaded', function() {
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (currentPath.includes(href) && href !== 'index.html') {
-                item.style.color = 'var(--primary-color)';
+                item.style.color = '#000';
                 item.style.fontWeight = '600';
             } else if (currentPath.endsWith('/') && href === 'index.html') {
-                item.style.color = 'var(--primary-color)';
+                item.style.color = '#000';
                 item.style.fontWeight = '600';
             }
         });
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const progressBar = document.createElement('div');
                     progressBar.style.cssText = `
                         height: 3px;
-                        background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%);
+                        background: #000;
                         position: absolute;
                         bottom: 0;
                         left: 0;
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 max-width: 800px;
                 margin: 60px auto;
                 padding: 40px;
-                background: var(--gradient);
+                background: linear-gradient(135deg, #000 0%, #333 100%);
                 border-radius: 16px;
                 color: white;
             `;
