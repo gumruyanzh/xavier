@@ -73,19 +73,32 @@ if command -v git &> /dev/null; then
     git clone https://github.com/gumruyanzh/xavier.git 2>/dev/null || {
         echo -e "${YELLOW}Failed to clone. Downloading as archive...${NC}"
         curl -L https://github.com/gumruyanzh/xavier/archive/main.tar.gz | tar xz
-        mv xavier-main/xavier/* .
+        mv xavier-main/* .
     }
 else
     echo -e "${YELLOW}Git not found. Downloading as archive...${NC}"
     curl -L https://github.com/gumruyanzh/xavier/archive/main.tar.gz | tar xz
-    mv xavier-main/xavier/* .
+    mv xavier-main/* .
 fi
 
 # Copy Xavier files to project
 cd - > /dev/null
-cp -r "$TEMP_DIR/xavier/src" .xavier/ 2>/dev/null || cp -r "$TEMP_DIR/src" .xavier/
-cp -r "$TEMP_DIR/xavier/templates" .xavier/ 2>/dev/null || true
-cp "$TEMP_DIR/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || cp "$TEMP_DIR/xavier.config.json" .xavier/config.json 2>/dev/null || true
+
+# Handle both cloned and extracted archive structures
+if [ -d "$TEMP_DIR/xavier/xavier/src" ]; then
+    # Cloned structure: xavier/xavier/src
+    cp -r "$TEMP_DIR/xavier/xavier/src" .xavier/
+    cp "$TEMP_DIR/xavier/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || true
+elif [ -d "$TEMP_DIR/xavier/src" ]; then
+    # Archive structure: xavier/src
+    cp -r "$TEMP_DIR/xavier/src" .xavier/
+    cp "$TEMP_DIR/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || true
+else
+    echo -e "${YELLOW}Warning: Xavier source files not found in expected location${NC}"
+    # Try to find src directory
+    find "$TEMP_DIR" -name "src" -type d | head -1 | xargs -I {} cp -r {} .xavier/
+    find "$TEMP_DIR" -name "xavier.config.json" -type f | head -1 | xargs -I {} cp {} .xavier/config.json
+fi
 
 # Clean up
 rm -rf "$TEMP_DIR"
