@@ -4,8 +4,6 @@
     --gray: #86868b;
     --light-gray: #f5f5f7;
     --white: #ffffff;
-    --blue: #0071e3;
-    --blue-hover: #0077ed;
 }
 
 * {
@@ -20,7 +18,7 @@ body {
     line-height: 1.47059;
     font-weight: 400;
     letter-spacing: -0.022em;
-    color: var(--dark-gray);
+    color: var(--black);
     background: var(--white);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -80,7 +78,7 @@ nav {
 }
 
 .nav-links a {
-    color: var(--dark-gray);
+    color: var(--black);
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
@@ -102,17 +100,17 @@ nav {
     border-radius: 18px;
     font-size: 12px !important;
     opacity: 1 !important;
-    transition: background 0.3s;
+    transition: opacity 0.3s;
 }
 
 .github-link:hover {
-    background: var(--dark-gray);
+    opacity: 0.8;
 }
 
 /* Hero Section */
 .hero {
     padding-top: 48px;
-    background: var(--light-gray);
+    background: var(--white);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -130,7 +128,7 @@ nav {
     line-height: 1.07143;
     font-weight: 600;
     letter-spacing: -0.005em;
-    color: var(--dark-gray);
+    color: var(--black);
     margin-bottom: 24px;
 }
 
@@ -139,7 +137,7 @@ nav {
     line-height: 1.10722;
     font-weight: 400;
     letter-spacing: .004em;
-    color: var(--dark-gray);
+    color: var(--black);
     margin-bottom: 16px;
 }
 
@@ -172,22 +170,22 @@ nav {
 }
 
 .btn-primary {
-    background: var(--blue);
+    background: var(--black);
     color: var(--white);
 }
 
 .btn-primary:hover {
-    background: var(--blue-hover);
+    opacity: 0.8;
 }
 
 .btn-secondary {
     background: transparent;
-    color: var(--blue);
-    border: 1px solid var(--blue);
+    color: var(--black);
+    border: 1px solid var(--black);
 }
 
 .btn-secondary:hover {
-    background: var(--blue);
+    background: var(--black);
     color: var(--white);
 }
 
@@ -195,7 +193,7 @@ nav {
 .install-box {
     max-width: 680px;
     margin: 44px auto;
-    background: var(--dark-gray);
+    background: var(--light-gray);
     border-radius: 18px;
     padding: 32px;
 }
@@ -208,7 +206,7 @@ nav {
 }
 
 .code-block code {
-    color: #30d158;
+    color: var(--white);
     font-family: 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 14px;
     line-height: 1.42859;
@@ -235,7 +233,7 @@ nav {
 /* Features Section */
 .features {
     padding: 100px 22px;
-    background: var(--white);
+    background: var(--light-gray);
 }
 
 .container {
@@ -253,7 +251,7 @@ nav {
     line-height: 1.08349;
     font-weight: 600;
     letter-spacing: -0.003em;
-    color: var(--dark-gray);
+    color: var(--black);
     margin-bottom: 19px;
 }
 
@@ -290,7 +288,7 @@ nav {
     line-height: 1.19048;
     font-weight: 600;
     letter-spacing: .011em;
-    color: var(--dark-gray);
+    color: var(--black);
     margin-bottom: 12px;
 }
 
@@ -305,7 +303,7 @@ nav {
 /* Commands Section */
 .commands {
     padding: 100px 22px;
-    background: var(--light-gray);
+    background: var(--white);
 }
 
 .command-grid {
@@ -315,7 +313,7 @@ nav {
 }
 
 .command-card {
-    background: var(--white);
+    background: var(--light-gray);
     padding: 24px;
     border-radius: 18px;
     transition: transform 0.3s;
@@ -329,7 +327,7 @@ nav {
     font-family: 'SF Mono', Monaco, 'Courier New', monospace;
     font-size: 17px;
     font-weight: 500;
-    color: var(--dark-gray);
+    color: var(--black);
     margin-bottom: 8px;
 }
 
@@ -341,8 +339,7 @@ nav {
 
 /* Footer */
 footer {
-    background: var(--white);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: var(--black);
     padding: 40px 22px;
 }
 
@@ -356,7 +353,7 @@ footer {
 
 .footer-content p {
     font-size: 12px;
-    color: var(--gray);
+    color: var(--white);
 }
 
 .footer-links {
@@ -366,13 +363,13 @@ footer {
 
 .footer-links a {
     font-size: 12px;
-    color: var(--gray);
+    color: var(--white);
     text-decoration: none;
-    transition: color 0.3s;
+    transition: opacity 0.3s;
 }
 
 .footer-links a:hover {
-    color: var(--dark-gray);
+    opacity: 0.7;
 }
 
 /* Responsive Design */
@@ -418,16 +415,16 @@ footer {
 /* Clean Typography */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    color: var(--dark-gray);
+    color: var(--black);
 }
 
 a {
-    color: var(--blue);
+    color: var(--black);
     text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+    opacity: 0.7;
 }
 
 /* Utility Classes */
@@ -442,5 +439,5 @@ a:hover {
 /* Remove all animations for cleaner feel */
 * {
     animation: none !important;
-    transition: opacity 0.3s, transform 0.3s, background 0.3s, color 0.3s !important;
+    transition: opacity 0.3s, transform 0.3s !important;
 }
