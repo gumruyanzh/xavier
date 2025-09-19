@@ -22,10 +22,15 @@ class XavierCommands:
         self.project_path = project_path
         self.config_path = os.path.join(project_path, ".xavier", "config.json")
         self.data_path = os.path.join(project_path, ".xavier", "data")
+        self.claude_path = os.path.join(project_path, ".claude")
 
         # Create Xavier directories
         os.makedirs(os.path.join(project_path, ".xavier"), exist_ok=True)
         os.makedirs(self.data_path, exist_ok=True)
+
+        # Create Claude directories
+        os.makedirs(self.claude_path, exist_ok=True)
+        os.makedirs(os.path.join(self.claude_path, "agents"), exist_ok=True)
 
         # Initialize components
         self.engine = XavierEngine(self.config_path)
@@ -773,3 +778,290 @@ class XavierCommands:
             constraints.append("vue")
 
         return constraints
+
+    def setup_claude_integration(self):
+        """Setup Claude Code integration files"""
+        # Create instructions
+        instructions = self._generate_claude_instructions()
+        with open(os.path.join(self.claude_path, "instructions.md"), 'w') as f:
+            f.write(instructions)
+
+        # Create command reference
+        commands = self._generate_command_reference()
+        with open(os.path.join(self.claude_path, "xavier_commands.md"), 'w') as f:
+            f.write(commands)
+
+        # Create agent definitions based on config
+        self._create_claude_agents()
+
+        return {
+            "success": True,
+            "message": "Claude integration created in .claude/",
+            "files_created": [
+                ".claude/instructions.md",
+                ".claude/xavier_commands.md",
+                ".claude/agents/*.md"
+            ]
+        }
+
+    def _generate_claude_instructions(self) -> str:
+        """Generate Claude instructions based on current configuration"""
+        return """# Xavier Framework Integration
+
+This project uses Xavier Framework for enterprise-grade SCRUM development with Claude Code.
+
+## Framework Rules
+
+Xavier enforces the following strict rules:
+1. **Test-First Development (TDD)**: Tests must be written before implementation
+2. **100% Test Coverage Required**: No task is complete without full coverage
+3. **Sequential Task Execution**: One task at a time, no parallel work
+4. **Clean Code Standards**: Functions ≤20 lines, classes ≤200 lines
+5. **SOLID Principles**: All code must follow SOLID design patterns
+6. **Agent Language Boundaries**: Each agent works only in their assigned language
+
+## Available Commands
+
+### Story Management
+- `/create-story` - Create user story with acceptance criteria
+- `/create-task` - Create task under a story
+- `/create-bug` - Report a bug
+
+### Sprint Management
+- `/create-sprint` - Plan a new sprint
+- `/start-sprint` - Begin sprint execution
+- `/end-sprint` - Complete current sprint
+
+### Reporting
+- `/show-backlog` - View prioritized backlog
+- `/show-sprint` - Current sprint status
+- `/generate-report` - Generate various reports
+
+### Project
+- `/learn-project` - Analyze existing codebase
+- `/tech-stack-analyze` - Detect technologies
+- `/xavier-help` - Show all commands
+
+## Workflow
+
+1. Create stories with `/create-story`
+2. Break into tasks with `/create-task`
+3. Plan sprint with `/create-sprint`
+4. Execute with `/start-sprint` (agents work sequentially)
+5. Complete with `/end-sprint`
+
+## Important Notes
+
+- Xavier commands are executed through the framework in `.xavier/`
+- All data is stored in `.xavier/data/`
+- Sprint information in `.xavier/sprints/`
+- Reports generated in `.xavier/reports/`
+"""
+
+    def _generate_command_reference(self) -> str:
+        """Generate command reference documentation"""
+        return """# Xavier Commands Reference
+
+All commands use JSON arguments. Examples provided for each command.
+
+## /create-story
+Create a user story following SCRUM methodology.
+
+```json
+{
+  "title": "User Authentication",
+  "as_a": "user",
+  "i_want": "to log in securely",
+  "so_that": "I can access my account",
+  "acceptance_criteria": [
+    "Email validation",
+    "Password strength check",
+    "Remember me option"
+  ],
+  "priority": "High"
+}
+```
+
+## /create-task
+Create a task under an existing story.
+
+```json
+{
+  "story_id": "US-ABC123",
+  "title": "Implement email validation",
+  "description": "Add email format validation",
+  "technical_details": "Use regex pattern matching",
+  "estimated_hours": 4,
+  "test_criteria": [
+    "Valid emails pass",
+    "Invalid emails rejected"
+  ],
+  "dependencies": []
+}
+```
+
+## /create-bug
+Report a bug with reproduction steps.
+
+```json
+{
+  "title": "Login fails with special characters",
+  "description": "Users cannot log in if password contains @",
+  "steps_to_reproduce": [
+    "Go to login page",
+    "Enter email",
+    "Enter password with @",
+    "Click login"
+  ],
+  "expected_behavior": "User logs in successfully",
+  "actual_behavior": "Error: Invalid credentials",
+  "severity": "High",
+  "priority": "High"
+}
+```
+
+## /create-sprint
+Create and plan a sprint.
+
+```json
+{
+  "name": "Sprint 1",
+  "goal": "Complete user authentication",
+  "duration_days": 14,
+  "auto_plan": true
+}
+```
+
+## /start-sprint
+Begin sprint execution with agents.
+
+```json
+{
+  "sprint_id": "SP-123",
+  "strict_mode": true
+}
+```
+"""
+
+    def _create_claude_agents(self):
+        """Create agent definition files for Claude based on enabled agents"""
+        agents_path = os.path.join(self.claude_path, "agents")
+
+        # Define agent templates
+        agent_templates = {
+            "project_manager": {
+                "filename": "project_manager.md",
+                "content": """# Project Manager Agent
+
+## Role
+Responsible for sprint planning, story point estimation, and task assignment.
+
+## Capabilities
+- Estimate story points using Fibonacci scale (1,2,3,5,8,13,21)
+- Plan sprints based on velocity and priority
+- Assign tasks to appropriate agents
+- Track sprint progress
+
+## Restrictions
+- Cannot write code
+- Cannot modify implementations
+- Cannot deploy
+"""
+            },
+            "python_engineer": {
+                "filename": "python_engineer.md",
+                "content": """# Python Engineer Agent
+
+## Role
+Python backend development with strict language boundaries.
+
+## Capabilities
+- Python development ONLY
+- Frameworks: Django, FastAPI, Flask
+- Testing: pytest with 100% coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write JavaScript, TypeScript, Go, or any other language
+- CANNOT modify frontend code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+"""
+            },
+            "golang_engineer": {
+                "filename": "golang_engineer.md",
+                "content": """# Golang Engineer Agent
+
+## Role
+Go backend development with strict language boundaries.
+
+## Capabilities
+- Go development ONLY
+- Frameworks: Gin, Fiber, Echo
+- Testing: go test with full coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write Python, JavaScript, TypeScript, or any other language
+- CANNOT modify non-Go code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+"""
+            },
+            "frontend_engineer": {
+                "filename": "frontend_engineer.md",
+                "content": """# Frontend Engineer Agent
+
+## Role
+Frontend development with TypeScript and modern frameworks.
+
+## Capabilities
+- TypeScript/JavaScript ONLY
+- Frameworks: React, Vue, Angular
+- Testing: Jest, Cypress with full coverage
+- Component-based architecture
+
+## Restrictions
+- CANNOT write backend code (Python, Go, etc.)
+- CANNOT modify API implementations
+- Must use TypeScript for type safety
+- Must write tests before implementation
+- Must achieve 100% test coverage
+"""
+            },
+            "context_manager": {
+                "filename": "context_manager.md",
+                "content": """# Context Manager Agent
+
+## Role
+Maintains codebase understanding and finds existing implementations.
+
+## Capabilities
+- Analyze any language/framework
+- Find similar implementations
+- Detect patterns and conventions
+- Check for code duplication
+
+## Restrictions
+- Cannot write new code
+- Cannot modify existing code
+- Read-only operations only
+"""
+            }
+        }
+
+        # Load config to check enabled agents
+        config = {}
+        if os.path.exists(self.config_path):
+            with open(self.config_path, 'r') as f:
+                config = json.load(f)
+
+        # Create agent files for enabled agents
+        for agent_name, agent_config in config.get("agents", {}).items():
+            if agent_config.get("enabled", False):
+                agent_key = agent_name.lower().replace(" ", "_")
+                if agent_key in agent_templates:
+                    template = agent_templates[agent_key]
+                    file_path = os.path.join(agents_path, template["filename"])
+                    with open(file_path, 'w') as f:
+                        f.write(template["content"])

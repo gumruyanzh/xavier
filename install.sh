@@ -52,7 +52,11 @@ fi
 
 # Create Xavier directory
 echo -e "${BLUE}Setting up Xavier directories...${NC}"
-mkdir -p .xavier/{data,agents,sprints,reports}
+mkdir -p .xavier/{data,sprints,reports}
+
+# Create Claude Code integration directory
+echo -e "${BLUE}Setting up Claude Code integration...${NC}"
+mkdir -p .claude/agents
 
 # Download Xavier core files
 echo -e "${BLUE}Downloading Xavier Framework...${NC}"
@@ -135,8 +139,295 @@ EOF
 python3 .xavier/setup_temp.py
 rm .xavier/setup_temp.py
 
-# Create Xavier command wrapper for Claude Code
+# Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"
+
+# Create main Claude instructions
+cat > .claude/instructions.md << 'EOF'
+# Xavier Framework Integration
+
+This project uses Xavier Framework for enterprise-grade SCRUM development with Claude Code.
+
+## Framework Rules
+
+Xavier enforces the following strict rules:
+1. **Test-First Development (TDD)**: Tests must be written before implementation
+2. **100% Test Coverage Required**: No task is complete without full coverage
+3. **Sequential Task Execution**: One task at a time, no parallel work
+4. **Clean Code Standards**: Functions ≤20 lines, classes ≤200 lines
+5. **SOLID Principles**: All code must follow SOLID design patterns
+6. **Agent Language Boundaries**: Each agent works only in their assigned language
+
+## Available Commands
+
+### Story Management
+- `/create-story` - Create user story with acceptance criteria
+- `/create-task` - Create task under a story
+- `/create-bug` - Report a bug
+
+### Sprint Management
+- `/create-sprint` - Plan a new sprint
+- `/start-sprint` - Begin sprint execution
+- `/end-sprint` - Complete current sprint
+
+### Reporting
+- `/show-backlog` - View prioritized backlog
+- `/show-sprint` - Current sprint status
+- `/generate-report` - Generate various reports
+
+### Project
+- `/learn-project` - Analyze existing codebase
+- `/tech-stack-analyze` - Detect technologies
+- `/xavier-help` - Show all commands
+
+## Workflow
+
+1. Create stories with `/create-story`
+2. Break into tasks with `/create-task`
+3. Plan sprint with `/create-sprint`
+4. Execute with `/start-sprint` (agents work sequentially)
+5. Complete with `/end-sprint`
+
+## Active Agents
+
+Check `.xavier/config.json` for enabled agents. Each agent has strict boundaries:
+- Python Engineer: Python only
+- Golang Engineer: Go only
+- Frontend Engineer: TypeScript/JavaScript only
+
+## Important Notes
+
+- Xavier commands are executed through the framework in `.xavier/`
+- All data is stored in `.xavier/data/`
+- Sprint information in `.xavier/sprints/`
+- Reports generated in `.xavier/reports/`
+EOF
+
+# Create Xavier command documentation
+cat > .claude/xavier_commands.md << 'EOF'
+# Xavier Commands Reference
+
+All commands use JSON arguments. Examples provided for each command.
+
+## /create-story
+Create a user story following SCRUM methodology.
+
+```json
+{
+  "title": "User Authentication",
+  "as_a": "user",
+  "i_want": "to log in securely",
+  "so_that": "I can access my account",
+  "acceptance_criteria": [
+    "Email validation",
+    "Password strength check",
+    "Remember me option"
+  ],
+  "priority": "High"
+}
+```
+
+## /create-task
+Create a task under an existing story.
+
+```json
+{
+  "story_id": "US-ABC123",
+  "title": "Implement email validation",
+  "description": "Add email format validation",
+  "technical_details": "Use regex pattern matching",
+  "estimated_hours": 4,
+  "test_criteria": [
+    "Valid emails pass",
+    "Invalid emails rejected"
+  ],
+  "dependencies": []
+}
+```
+
+## /create-bug
+Report a bug with reproduction steps.
+
+```json
+{
+  "title": "Login fails with special characters",
+  "description": "Users cannot log in if password contains @",
+  "steps_to_reproduce": [
+    "Go to login page",
+    "Enter email",
+    "Enter password with @",
+    "Click login"
+  ],
+  "expected_behavior": "User logs in successfully",
+  "actual_behavior": "Error: Invalid credentials",
+  "severity": "High",
+  "priority": "High"
+}
+```
+
+## /create-sprint
+Create and plan a sprint.
+
+```json
+{
+  "name": "Sprint 1",
+  "goal": "Complete user authentication",
+  "duration_days": 14,
+  "auto_plan": true
+}
+```
+
+## /start-sprint
+Begin sprint execution with agents.
+
+```json
+{
+  "sprint_id": "SP-123",
+  "strict_mode": true
+}
+```
+
+## Test-First Enforcement
+
+Xavier enforces that tests are written BEFORE implementation. The workflow is:
+1. Agent writes comprehensive tests
+2. Tests must fail initially (Red)
+3. Agent implements minimal code to pass (Green)
+4. Agent refactors while keeping tests passing
+5. 100% coverage verified before task completion
+EOF
+
+# Create agent definitions based on detected tech stack
+echo -e "${BLUE}Creating agent definitions...${NC}"
+
+# Project Manager Agent
+cat > .claude/agents/project_manager.md << 'EOF'
+# Project Manager Agent
+
+## Role
+Responsible for sprint planning, story point estimation, and task assignment.
+
+## Capabilities
+- Estimate story points using Fibonacci scale (1,2,3,5,8,13,21)
+- Plan sprints based on velocity and priority
+- Assign tasks to appropriate agents
+- Track sprint progress
+
+## Restrictions
+- Cannot write code
+- Cannot modify implementations
+- Cannot deploy
+
+## Commands
+- Handles `/create-sprint`, `/estimate-story`, `/assign-task`
+EOF
+
+# Python Engineer Agent
+cat > .claude/agents/python_engineer.md << 'EOF'
+# Python Engineer Agent
+
+## Role
+Python backend development with strict language boundaries.
+
+## Capabilities
+- Python development ONLY
+- Frameworks: Django, FastAPI, Flask
+- Testing: pytest with 100% coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write JavaScript, TypeScript, Go, or any other language
+- CANNOT modify frontend code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write comprehensive tests first
+2. Run tests (must fail)
+3. Write minimal code to pass
+4. Refactor with tests passing
+5. Verify 100% coverage
+EOF
+
+# Golang Engineer Agent
+cat > .claude/agents/golang_engineer.md << 'EOF'
+# Golang Engineer Agent
+
+## Role
+Go backend development with strict language boundaries.
+
+## Capabilities
+- Go development ONLY
+- Frameworks: Gin, Fiber, Echo
+- Testing: go test with full coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write Python, JavaScript, TypeScript, or any other language
+- CANNOT modify non-Go code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write comprehensive tests first
+2. Run tests (must fail)
+3. Write minimal code to pass
+4. Refactor with tests passing
+5. Verify 100% coverage
+EOF
+
+# Frontend Engineer Agent
+cat > .claude/agents/frontend_engineer.md << 'EOF'
+# Frontend Engineer Agent
+
+## Role
+Frontend development with TypeScript and modern frameworks.
+
+## Capabilities
+- TypeScript/JavaScript ONLY
+- Frameworks: React, Vue, Angular
+- Testing: Jest, Cypress with full coverage
+- Component-based architecture
+
+## Restrictions
+- CANNOT write backend code (Python, Go, etc.)
+- CANNOT modify API implementations
+- Must use TypeScript for type safety
+- Must write tests before implementation
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write component tests first
+2. Run tests (must fail)
+3. Implement component
+4. Refactor with tests passing
+5. Verify 100% coverage
+EOF
+
+# Context Manager Agent
+cat > .claude/agents/context_manager.md << 'EOF'
+# Context Manager Agent
+
+## Role
+Maintains codebase understanding and finds existing implementations.
+
+## Capabilities
+- Analyze any language/framework
+- Find similar implementations
+- Detect patterns and conventions
+- Check for code duplication
+
+## Restrictions
+- Cannot write new code
+- Cannot modify existing code
+- Read-only operations only
+
+## Purpose
+Ensures no duplicate code is created and existing patterns are followed.
+EOF
+
+# Create Xavier command wrapper
+echo -e "${BLUE}Creating Xavier CLI wrapper...${NC}"
 cat > xavier << 'EOF'
 #!/usr/bin/env python3
 """Xavier Framework CLI for Claude Code"""

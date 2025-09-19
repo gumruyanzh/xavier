@@ -450,50 +450,325 @@ coverage/
         print("  ✓ Created initial project files")
 
     def _create_claude_integration(self):
-        """Create Claude Code integration file"""
-        integration_content = """# Xavier Framework - Claude Code Integration
+        """Create Claude Code integration files in .claude directory"""
+        claude_path = self.project_path / ".claude"
+        claude_path.mkdir(exist_ok=True)
+        (claude_path / "agents").mkdir(exist_ok=True)
 
-This project is configured with Xavier Framework for enterprise SCRUM development.
+        # Create main Claude instructions
+        instructions_content = """# Xavier Framework Integration
+
+This project uses Xavier Framework for enterprise-grade SCRUM development with Claude Code.
+
+## Framework Rules
+
+Xavier enforces the following strict rules:
+1. **Test-First Development (TDD)**: Tests must be written before implementation
+2. **100% Test Coverage Required**: No task is complete without full coverage
+3. **Sequential Task Execution**: One task at a time, no parallel work
+4. **Clean Code Standards**: Functions ≤20 lines, classes ≤200 lines
+5. **SOLID Principles**: All code must follow SOLID design patterns
+6. **Agent Language Boundaries**: Each agent works only in their assigned language
 
 ## Available Commands
 
-All Xavier commands are available in Claude Code:
-
 ### Story Management
-- `/create-story` - Create user story
-- `/create-task` - Create task under story
-- `/create-bug` - Report bug
+- `/create-story` - Create user story with acceptance criteria
+- `/create-task` - Create task under a story
+- `/create-bug` - Report a bug
 
 ### Sprint Management
-- `/create-sprint` - Create new sprint
-- `/start-sprint` - Start sprint execution
-- `/end-sprint` - Complete sprint
+- `/create-sprint` - Plan a new sprint
+- `/start-sprint` - Begin sprint execution
+- `/end-sprint` - Complete current sprint
 
 ### Reporting
-- `/show-backlog` - View backlog
-- `/show-sprint` - View sprint progress
-- `/generate-report` - Generate reports
+- `/show-backlog` - View prioritized backlog
+- `/show-sprint` - Current sprint status
+- `/generate-report` - Generate various reports
 
-### Help
+### Project
+- `/learn-project` - Analyze existing codebase
+- `/tech-stack-analyze` - Detect technologies
 - `/xavier-help` - Show all commands
-
-## Active Agents
-
-Check `.xavier/config.json` for enabled agents.
 
 ## Workflow
 
-1. Create stories with acceptance criteria
-2. Break down into tasks
-3. Create and plan sprint
-4. Start sprint (agents execute tasks)
-5. Review and complete sprint
+1. Create stories with `/create-story`
+2. Break into tasks with `/create-task`
+3. Plan sprint with `/create-sprint`
+4. Execute with `/start-sprint` (agents work sequentially)
+5. Complete with `/end-sprint`
+
+## Active Agents
+
+Check `.xavier/config.json` for enabled agents. Each agent has strict boundaries:
+- Python Engineer: Python only
+- Golang Engineer: Go only
+- Frontend Engineer: TypeScript/JavaScript only
+
+## Important Notes
+
+- Xavier commands are executed through the framework in `.xavier/`
+- All data is stored in `.xavier/data/`
+- Sprint information in `.xavier/sprints/`
+- Reports generated in `.xavier/reports/`
 """
 
-        with open(self.xavier_path / "CLAUDE_INTEGRATION.md", 'w') as f:
-            f.write(integration_content)
+        with open(claude_path / "instructions.md", 'w') as f:
+            f.write(instructions_content)
 
-        print("  ✓ Created Claude Code integration")
+        # Create command documentation
+        commands_content = """# Xavier Commands Reference
+
+All commands use JSON arguments. Examples provided for each command.
+
+## /create-story
+Create a user story following SCRUM methodology.
+
+```json
+{
+  "title": "User Authentication",
+  "as_a": "user",
+  "i_want": "to log in securely",
+  "so_that": "I can access my account",
+  "acceptance_criteria": [
+    "Email validation",
+    "Password strength check",
+    "Remember me option"
+  ],
+  "priority": "High"
+}
+```
+
+## /create-task
+Create a task under an existing story.
+
+```json
+{
+  "story_id": "US-ABC123",
+  "title": "Implement email validation",
+  "description": "Add email format validation",
+  "technical_details": "Use regex pattern matching",
+  "estimated_hours": 4,
+  "test_criteria": [
+    "Valid emails pass",
+    "Invalid emails rejected"
+  ],
+  "dependencies": []
+}
+```
+
+## /create-bug
+Report a bug with reproduction steps.
+
+```json
+{
+  "title": "Login fails with special characters",
+  "description": "Users cannot log in if password contains @",
+  "steps_to_reproduce": [
+    "Go to login page",
+    "Enter email",
+    "Enter password with @",
+    "Click login"
+  ],
+  "expected_behavior": "User logs in successfully",
+  "actual_behavior": "Error: Invalid credentials",
+  "severity": "High",
+  "priority": "High"
+}
+```
+
+## /create-sprint
+Create and plan a sprint.
+
+```json
+{
+  "name": "Sprint 1",
+  "goal": "Complete user authentication",
+  "duration_days": 14,
+  "auto_plan": true
+}
+```
+
+## /start-sprint
+Begin sprint execution with agents.
+
+```json
+{
+  "sprint_id": "SP-123",
+  "strict_mode": true
+}
+```
+"""
+
+        with open(claude_path / "xavier_commands.md", 'w') as f:
+            f.write(commands_content)
+
+        # Create agent definitions
+        self._create_agent_definitions(claude_path / "agents")
+
+        print("  ✓ Created Claude Code integration in .claude/")
+
+    def _create_agent_definitions(self, agents_path):
+        """Create agent definition files for Claude Code"""
+        agents = {
+            "project_manager.md": """# Project Manager Agent
+
+## Role
+Responsible for sprint planning, story point estimation, and task assignment.
+
+## Capabilities
+- Estimate story points using Fibonacci scale (1,2,3,5,8,13,21)
+- Plan sprints based on velocity and priority
+- Assign tasks to appropriate agents
+- Track sprint progress
+
+## Restrictions
+- Cannot write code
+- Cannot modify implementations
+- Cannot deploy
+
+## Commands
+- Handles `/create-sprint`, `/estimate-story`, `/assign-task`
+""",
+            "python_engineer.md": """# Python Engineer Agent
+
+## Role
+Python backend development with strict language boundaries.
+
+## Capabilities
+- Python development ONLY
+- Frameworks: Django, FastAPI, Flask
+- Testing: pytest with 100% coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write JavaScript, TypeScript, Go, or any other language
+- CANNOT modify frontend code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write comprehensive tests first
+2. Run tests (must fail)
+3. Write minimal code to pass
+4. Refactor with tests passing
+5. Verify 100% coverage
+""",
+            "golang_engineer.md": """# Golang Engineer Agent
+
+## Role
+Go backend development with strict language boundaries.
+
+## Capabilities
+- Go development ONLY
+- Frameworks: Gin, Fiber, Echo
+- Testing: go test with full coverage
+- Clean Code enforcement
+
+## Restrictions
+- CANNOT write Python, JavaScript, TypeScript, or any other language
+- CANNOT modify non-Go code
+- Must write tests before implementation (TDD)
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write comprehensive tests first
+2. Run tests (must fail)
+3. Write minimal code to pass
+4. Refactor with tests passing
+5. Verify 100% coverage
+""",
+            "frontend_engineer.md": """# Frontend Engineer Agent
+
+## Role
+Frontend development with TypeScript and modern frameworks.
+
+## Capabilities
+- TypeScript/JavaScript ONLY
+- Frameworks: React, Vue, Angular
+- Testing: Jest, Cypress with full coverage
+- Component-based architecture
+
+## Restrictions
+- CANNOT write backend code (Python, Go, etc.)
+- CANNOT modify API implementations
+- Must use TypeScript for type safety
+- Must write tests before implementation
+- Must achieve 100% test coverage
+
+## Workflow
+1. Write component tests first
+2. Run tests (must fail)
+3. Implement component
+4. Refactor with tests passing
+5. Verify 100% coverage
+""",
+            "context_manager.md": """# Context Manager Agent
+
+## Role
+Maintains codebase understanding and finds existing implementations.
+
+## Capabilities
+- Analyze any language/framework
+- Find similar implementations
+- Detect patterns and conventions
+- Check for code duplication
+
+## Restrictions
+- Cannot write new code
+- Cannot modify existing code
+- Read-only operations only
+
+## Purpose
+Ensures no duplicate code is created and existing patterns are followed.
+""",
+            "devops_engineer.md": """# DevOps Engineer Agent
+
+## Role
+CI/CD, deployment, and infrastructure management.
+
+## Capabilities
+- Docker and containerization
+- CI/CD pipeline configuration
+- Infrastructure as Code
+- Monitoring and logging setup
+
+## Restrictions
+- Cannot modify application logic
+- Cannot change business requirements
+- Must maintain security best practices
+
+## Workflow
+1. Ensure tests pass before deployment
+2. Validate 100% coverage
+3. Deploy only tested code
+""",
+            "ui_ux_designer.md": """# UI/UX Designer Agent
+
+## Role
+Design systems, user experience, and interface design.
+
+## Capabilities
+- Component design specifications
+- Accessibility requirements
+- User flow documentation
+- Design system maintenance
+
+## Restrictions
+- Cannot write implementation code
+- Provides specifications only
+- Must follow accessibility standards
+
+## Output
+Design specifications for engineers to implement with TDD.
+"""
+        }
+
+        for filename, content in agents.items():
+            with open(agents_path / filename, 'w') as f:
+                f.write(content)
 
     def _init_git(self):
         """Initialize git repository"""
