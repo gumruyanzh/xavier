@@ -172,6 +172,7 @@ This project uses Xavier Framework for enterprise-grade SCRUM development with C
 
 Xavier provides the following commands:
 
+- `/create-project` - Intelligently initialize a new project
 - `/create-story` - Create a user story with acceptance criteria
 - `/create-task` - Create a task under a story
 - `/create-bug` - Report a bug with reproduction steps
@@ -606,6 +607,69 @@ Type `/xavier-help` to see all commands.
 Displays all available Xavier commands with descriptions and examples.
 EOF
 
+# create-project command
+cat > .claude/commands/create-project.md << 'EOF'
+# create-project
+
+Intelligently initialize a new Xavier project with automatic analysis and setup.
+
+## Usage
+
+Type `/create-project` to create a new project with intelligent tech stack analysis.
+
+## Parameters
+
+- **name**: Project name (required)
+- **description**: Detailed project description for analysis (optional)
+- **tech_stack**: Technology preferences as JSON (optional)
+- **project_type**: Type of project (web, api, mobile, ecommerce, blog) (optional)
+- **auto_generate_stories**: Generate initial stories from description (default: true)
+- **auto_setup_agents**: Configure agents based on tech stack (default: true)
+
+## Examples
+
+### Basic
+```json
+{
+  "name": "TodoApp"
+}
+```
+
+### With Description
+```json
+{
+  "name": "TodoApp",
+  "description": "A task management application with user authentication, real-time updates, and team collaboration features."
+}
+```
+
+### With Tech Stack
+```json
+{
+  "name": "TodoApp",
+  "description": "Task management app",
+  "tech_stack": {
+    "backend": "python/fastapi",
+    "frontend": "react",
+    "database": "postgresql"
+  }
+}
+```
+
+## Features
+
+- Analyzes project description to detect features and requirements
+- Suggests optimal tech stack based on project needs
+- Generates initial epics and user stories automatically
+- Configures specialized agents for the tech stack
+- Creates appropriate directory structure
+- Sets up comprehensive README with project details
+
+## Implementation
+
+Xavier uses AI-powered analysis to understand your project requirements and automatically sets up everything you need to get started.
+EOF
+
 # Context Manager Agent
 cat > .claude/agents/context_manager.md << 'EOF'
 # Context Manager Agent
@@ -662,6 +726,7 @@ def main():
 
     # Map commands
     command_map = {
+        'create-project': '/create-project',
         'create-story': '/create-story',
         'create-task': '/create-task',
         'create-bug': '/create-bug',
@@ -730,6 +795,7 @@ if __name__ == "__main__":
     # Map command shortcuts
     command_map = {
         "help": "/xavier-help",
+        "project": "/create-project",
         "story": "/create-story",
         "task": "/create-task",
         "bug": "/create-bug",
@@ -822,6 +888,7 @@ echo ""
 echo "Next steps:"
 echo "1. Open this project in Claude Code"
 echo "2. Use Xavier commands:"
+echo "   - /create-project  (Initialize new project)"
 echo "   - /create-story    (Create user story)"
 echo "   - /create-sprint   (Create sprint)"
 echo "   - /start-sprint    (Begin development)"
