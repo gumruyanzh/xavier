@@ -159,11 +159,28 @@ rm .xavier/setup_temp.py
 # Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"
 
+# Create commands directory
+mkdir -p .claude/commands
+
 # Create main Claude instructions
 cat > .claude/instructions.md << 'EOF'
 # Xavier Framework Integration
 
 This project uses Xavier Framework for enterprise-grade SCRUM development with Claude Code.
+
+## Custom Commands
+
+Xavier provides the following commands:
+
+- `/create-story` - Create a user story with acceptance criteria
+- `/create-task` - Create a task under a story
+- `/create-bug` - Report a bug with reproduction steps
+- `/create-sprint` - Plan a new sprint
+- `/start-sprint` - Begin sprint execution
+- `/show-backlog` - View prioritized backlog
+- `/xavier-help` - Show all available commands
+
+Type any command to get started. Commands are implemented through the Xavier Framework in `.xavier/`.
 
 ## Framework Rules
 
@@ -421,6 +438,174 @@ Frontend development with TypeScript and modern frameworks.
 5. Verify 100% coverage
 EOF
 
+# Create individual command definition files
+echo -e "${BLUE}Creating command definitions...${NC}"
+
+# create-story command
+cat > .claude/commands/create-story.md << 'EOF'
+# create-story
+
+Create a user story following SCRUM methodology with acceptance criteria.
+
+## Usage
+
+Type `/create-story` to create a new user story.
+
+## Parameters
+
+- **title**: Story title (required)
+- **as_a**: User role (required)
+- **i_want**: Feature description (required)
+- **so_that**: Business value (required)
+- **acceptance_criteria**: List of acceptance criteria (required)
+- **priority**: Priority level - Critical/High/Medium/Low (optional, default: Medium)
+- **epic_id**: Parent epic ID (optional)
+
+## Example
+
+```json
+{
+  "title": "User Authentication",
+  "as_a": "user",
+  "i_want": "to log in securely",
+  "so_that": "I can access my account",
+  "acceptance_criteria": [
+    "Email validation",
+    "Password strength check",
+    "Remember me option"
+  ],
+  "priority": "High"
+}
+```
+
+## Implementation
+
+This command uses the Xavier Framework to create a user story with automatic story point estimation by the Project Manager agent.
+EOF
+
+# create-task command
+cat > .claude/commands/create-task.md << 'EOF'
+# create-task
+
+Create a task under an existing user story.
+
+## Usage
+
+Type `/create-task` to create a new task.
+
+## Parameters
+
+- **story_id**: Parent story ID (required)
+- **title**: Task title (required)
+- **description**: Task description (required)
+- **technical_details**: Implementation details (required)
+- **estimated_hours**: Hour estimate (optional, default: 4)
+- **test_criteria**: List of test requirements (required)
+- **priority**: Priority level - Critical/High/Medium/Low (optional, default: Medium)
+- **dependencies**: List of dependency task IDs (optional)
+
+## Implementation
+
+Tasks are automatically assigned to the appropriate agent based on tech stack. Test-first development is enforced.
+EOF
+
+# create-bug command
+cat > .claude/commands/create-bug.md << 'EOF'
+# create-bug
+
+Report a bug with detailed reproduction steps.
+
+## Usage
+
+Type `/create-bug` to report a bug.
+
+## Parameters
+
+- **title**: Bug title (required)
+- **description**: Bug description (required)
+- **steps_to_reproduce**: List of reproduction steps (required)
+- **expected_behavior**: What should happen (required)
+- **actual_behavior**: What actually happens (required)
+- **severity**: Severity level - Critical/High/Medium/Low (required)
+- **priority**: Priority level - Critical/High/Medium/Low (optional, default: High)
+
+## Implementation
+
+Bugs are automatically prioritized and assigned story points based on severity.
+EOF
+
+# create-sprint command
+cat > .claude/commands/create-sprint.md << 'EOF'
+# create-sprint
+
+Plan a new sprint with automatic work item selection.
+
+## Usage
+
+Type `/create-sprint` to create a new sprint.
+
+## Parameters
+
+- **name**: Sprint name (required)
+- **goal**: Sprint goal (required)
+- **duration_days**: Sprint length in days (optional, default: 14)
+- **auto_plan**: Automatically select items by priority (optional, default: true)
+
+## Implementation
+
+Xavier automatically calculates velocity, selects items, and prepares the sprint.
+EOF
+
+# start-sprint command
+cat > .claude/commands/start-sprint.md << 'EOF'
+# start-sprint
+
+Begin sprint execution with strict sequential task processing.
+
+## Usage
+
+Type `/start-sprint` to begin sprint execution.
+
+## Parameters
+
+- **sprint_id**: Sprint ID to start (optional, uses latest planned sprint if not provided)
+- **strict_mode**: Enable strict sequential execution (optional, default: true)
+
+## Implementation
+
+Xavier enforces sequential execution, test-first development, and 100% coverage.
+EOF
+
+# show-backlog command
+cat > .claude/commands/show-backlog.md << 'EOF'
+# show-backlog
+
+Display prioritized product backlog.
+
+## Usage
+
+Type `/show-backlog` to view the backlog.
+
+## Output
+
+Shows total stories, tasks, bugs, story points, and top priority items.
+EOF
+
+# xavier-help command
+cat > .claude/commands/xavier-help.md << 'EOF'
+# xavier-help
+
+Show all available Xavier commands and their usage.
+
+## Usage
+
+Type `/xavier-help` to see all commands.
+
+## Output
+
+Displays all available Xavier commands with descriptions and examples.
+EOF
+
 # Context Manager Agent
 cat > .claude/agents/context_manager.md << 'EOF'
 # Context Manager Agent
@@ -442,6 +627,71 @@ Maintains codebase understanding and finds existing implementations.
 ## Purpose
 Ensures no duplicate code is created and existing patterns are followed.
 EOF
+
+# Create Xavier bridge for Claude commands
+cat > .xavier/xavier_bridge.py << 'EOF'
+#!/usr/bin/env python3
+"""Xavier Bridge - Command handler for Claude Code integration"""
+
+import sys
+import json
+import os
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+try:
+    from src.commands.xavier_commands import XavierCommands
+except ImportError:
+    print("Error: Xavier Framework not properly installed")
+    sys.exit(1)
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: xavier_bridge.py <command> [arguments]")
+        sys.exit(1)
+
+    command = sys.argv[1]
+    args = {}
+
+    if len(sys.argv) > 2:
+        try:
+            args = json.loads(' '.join(sys.argv[2:]))
+        except:
+            pass
+
+    # Map commands
+    command_map = {
+        'create-story': '/create-story',
+        'create-task': '/create-task',
+        'create-bug': '/create-bug',
+        'create-sprint': '/create-sprint',
+        'start-sprint': '/start-sprint',
+        'show-backlog': '/show-backlog',
+        'xavier-help': '/xavier-help'
+    }
+
+    xavier_command = command_map.get(command.replace('/', ''), f"/{command}")
+
+    try:
+        xavier = XavierCommands(os.getcwd())
+        result = xavier.execute(xavier_command, args)
+
+        if result.get('success'):
+            if 'result' in result:
+                print(json.dumps(result['result'], indent=2))
+            else:
+                print("✅ Command executed successfully")
+        else:
+            print(f"❌ Error: {result.get('error', 'Unknown error')}")
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x .xavier/xavier_bridge.py
 
 # Create Xavier command wrapper
 echo -e "${BLUE}Creating Xavier CLI wrapper...${NC}"
