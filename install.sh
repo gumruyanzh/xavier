@@ -21,7 +21,7 @@ echo "╔═══════════════════════�
 echo -e "${NC}"
 
 # Check Python version
-PYTHON_VERSION=$(python3 --version 2>&1 | grep -Po '(?<=Python )\d+\.\d+')
+PYTHON_VERSION=$(python3 --version 2>&1 | sed 's/Python //' | cut -d. -f1,2)
 REQUIRED_VERSION="3.8"
 
 if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" = "$REQUIRED_VERSION" ]; then
