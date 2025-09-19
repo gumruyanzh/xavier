@@ -272,46 +272,425 @@ class XavierCommands:
 
     def create_project(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Initialize a new Xavier project
+        Initialize a new Xavier project with intelligent analysis
         Args:
-            name: Project name
-            description: Project description
-            tech_stack: Technology stack definition
+            name: Project name (required)
+            description: Detailed project description (can be multi-line)
+            tech_stack: Technology stack definition (optional - will be suggested if not provided)
+            project_type: Type of project (web, api, mobile, ecommerce, blog, etc.)
+            auto_generate_stories: Generate initial stories from description (default: True)
+            auto_setup_agents: Configure agents based on tech stack (default: True)
+            template: Use a pre-defined template (optional)
             team_size: Team size
             methodology: Development methodology (Scrum/Kanban)
         """
-        # Create project configuration
+        from ..analyzers.project_analyzer import ProjectAnalyzer
+        from ..analyzers.project_templates import ProjectTemplates
+
+        # Validate required fields
+        if "name" not in args:
+            raise ValueError("Project name is required")
+
+        project_name = args["name"]
+        description = args.get("description", f"Project {project_name}")
+        tech_stack = args.get("tech_stack", None)
+        project_type = args.get("project_type", None)
+        auto_generate_stories = args.get("auto_generate_stories", True)
+        auto_setup_agents = args.get("auto_setup_agents", True)
+        template_name = args.get("template", None)
+
+        # If template is specified, use it as base
+        if template_name:
+            template = ProjectTemplates.get_template(template_name)
+            if not tech_stack:
+                tech_stack = template.tech_stack
+            initial_structure = template.initial_structure
+            initial_files = template.initial_files
+            template_stories = template.default_stories
+        else:
+            initial_structure = []
+            initial_files = {}
+            template_stories = []
+
+        # Analyze project if description is provided
+        analyzer = ProjectAnalyzer()
+        analysis = analyzer.analyze(project_name, description, tech_stack)
+
+        # Use analysis results
+        if not tech_stack:
+            tech_stack = analysis.suggested_tech_stack
+
+        if not project_type:
+            project_type = analysis.project_type
+
+        # Create enhanced project configuration
         project_config = {
-            "name": args["name"],
-            "description": args["description"],
-            "tech_stack": args.get("tech_stack", {}),
+            "name": project_name,
+            "description": description,
+            "project_type": project_type,
+            "tech_stack": tech_stack,
+            "detected_features": analysis.detected_features,
+            "performance_requirements": analysis.performance_requirements,
+            "estimated_complexity": analysis.estimated_complexity,
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.0.0"
+            "xavier_version": "1.0.1"
         }
 
         # Save project configuration
         with open(self.config_path, 'w') as f:
             json.dump(project_config, f, indent=2)
 
-        # Initialize project structure
-        directories = [
-            "src", "tests", "docs", "scripts",
-            ".xavier/agents", ".xavier/sprints", ".xavier/reports"
-        ]
-        for directory in directories:
+        # Initialize project structure based on tech stack
+        directories = self._generate_project_structure(tech_stack, project_type)
+
+        # Add template directories if using template
+        if initial_structure:
+            directories.extend(initial_structure)
+
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_directories = []
+        for d in directories:
+            if d not in seen:
+                seen.add(d)
+                unique_directories.append(d)
+
+        # Create all directories
+        for directory in unique_directories:
             os.makedirs(os.path.join(self.project_path, directory), exist_ok=True)
 
-        # Generate agents for tech stack
-        if "tech_stack" in args:
+        # Create initial files from template
+        files_created = []
+        for file_path, content in initial_files.items():
+            full_path = os.path.join(self.project_path, file_path)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            with open(full_path, 'w') as f:
+                f.write(content)
+            files_created.append(file_path)
+
+        # Setup agents based on tech stack
+        agents_created = []
+        if auto_setup_agents:
+            agents_created = self._setup_project_agents(tech_stack)
+            # Generate agents for tech stack
             self.orchestrator._generate_tech_stack_agents()
+
+        # Generate initial stories and epics
+        stories_created = []
+        epics_created = []
+
+        if auto_generate_stories:
+            # Create epics
+            for epic_data in analysis.suggested_epics:
+                epic = self.scrum.create_epic(
+                    title=epic_data["title"],
+                    description=epic_data["description"],
+                    business_value=100  # High value for auto-generated epics
+                )
+                epics_created.append({
+                    "id": epic.id,
+                    "title": epic.title
+                })
+
+            # Create stories from analysis
+            for story_data in analysis.suggested_stories:
+                story = self.scrum.create_story(
+                    title=story_data["title"],
+                    as_a=story_data.get("as_a", "user"),
+                    i_want=story_data.get("i_want", story_data["title"]),
+                    so_that=story_data.get("so_that", "I can use the system"),
+                    acceptance_criteria=story_data.get("acceptance_criteria", []),
+                    priority=story_data.get("priority", "Medium")
+                )
+
+                # Auto-estimate story points
+                if "story_points" in story_data:
+                    self.scrum.estimate_story(story.id, story_data["story_points"])
+
+                stories_created.append({
+                    "id": story.id,
+                    "title": story.title,
+                    "points": story_data.get("story_points", 0)
+                })
+
+            # Add template stories if any
+            for story_data in template_stories:
+                story = self.scrum.create_story(
+                    title=story_data["title"],
+                    as_a="developer",
+                    i_want=f"to {story_data['title'].lower()}",
+                    so_that="the project has proper foundation",
+                    acceptance_criteria=[],
+                    priority=story_data.get("priority", "Medium")
+                )
+
+                if "story_points" in story_data:
+                    self.scrum.estimate_story(story.id, story_data["story_points"])
+
+                stories_created.append({
+                    "id": story.id,
+                    "title": story.title,
+                    "points": story_data.get("story_points", 0)
+                })
+
+        # Create README.md with project information
+        readme_content = self._generate_readme(project_config, analysis)
+        with open(os.path.join(self.project_path, "README.md"), 'w') as f:
+            f.write(readme_content)
+
+        # Generate project summary
+        summary = analyzer.generate_project_summary(analysis)
 
         return {
             "project": project_config,
-            "directories_created": directories,
-            "agents_available": list(self.orchestrator.agents.keys())
+            "analysis_summary": summary,
+            "directories_created": len(unique_directories),
+            "files_created": files_created,
+            "agents_configured": agents_created,
+            "epics_created": len(epics_created),
+            "stories_created": len(stories_created),
+            "total_story_points": sum(s["points"] for s in stories_created),
+            "next_steps": [
+                f"Review generated stories with /show-backlog",
+                f"Create first sprint with /create-sprint",
+                f"Start development with /start-sprint",
+                f"View project details in README.md"
+            ]
         }
+
+    def _generate_project_structure(self, tech_stack: Dict[str, Any],
+                                   project_type: str) -> List[str]:
+        """Generate project directory structure based on tech stack"""
+        directories = [
+            ".xavier",
+            ".xavier/data",
+            ".xavier/agents",
+            ".xavier/sprints",
+            ".xavier/reports",
+            ".claude",
+            ".claude/commands",
+            "docs",
+            "scripts",
+            "tests"
+        ]
+
+        # Add frontend directories if needed
+        if "frontend" in tech_stack:
+            frontend_framework = tech_stack["frontend"].get("framework", "").lower()
+            if "react" in frontend_framework or "next" in frontend_framework:
+                directories.extend([
+                    "frontend",
+                    "frontend/src",
+                    "frontend/src/components",
+                    "frontend/src/pages",
+                    "frontend/src/services",
+                    "frontend/src/utils",
+                    "frontend/public"
+                ])
+            elif "vue" in frontend_framework:
+                directories.extend([
+                    "frontend",
+                    "frontend/src",
+                    "frontend/src/components",
+                    "frontend/src/views",
+                    "frontend/src/services",
+                    "frontend/public"
+                ])
+
+        # Add backend directories
+        if "backend" in tech_stack:
+            backend_lang = tech_stack["backend"].get("language", "").lower()
+            if "python" in backend_lang:
+                directories.extend([
+                    "backend",
+                    "backend/app",
+                    "backend/app/api",
+                    "backend/app/core",
+                    "backend/app/models",
+                    "backend/app/services",
+                    "backend/tests"
+                ])
+            elif "go" in backend_lang:
+                directories.extend([
+                    "backend",
+                    "backend/cmd",
+                    "backend/internal",
+                    "backend/pkg",
+                    "backend/api"
+                ])
+            elif "node" in backend_lang or "javascript" in backend_lang:
+                directories.extend([
+                    "backend",
+                    "backend/src",
+                    "backend/src/routes",
+                    "backend/src/models",
+                    "backend/src/services",
+                    "backend/src/middleware"
+                ])
+
+        # Add Docker support
+        if "devops" in tech_stack:
+            if "docker" in str(tech_stack["devops"]).lower():
+                directories.append("docker")
+            if "kubernetes" in str(tech_stack["devops"]).lower():
+                directories.append("k8s")
+
+        # Add CI/CD
+        directories.append(".github/workflows")
+
+        return directories
+
+    def _setup_project_agents(self, tech_stack: Dict[str, Any]) -> List[str]:
+        """Setup agents based on project tech stack"""
+        agents = ["project_manager", "context_manager"]  # Always include these
+
+        # Add language-specific agents
+        if "backend" in tech_stack:
+            backend_lang = tech_stack["backend"].get("language", "").lower()
+            if "python" in backend_lang:
+                agents.append("python_engineer")
+            if "go" in backend_lang:
+                agents.append("golang_engineer")
+            if "node" in backend_lang or "javascript" in backend_lang:
+                agents.append("nodejs_engineer")
+
+        if "frontend" in tech_stack:
+            agents.append("frontend_engineer")
+
+        if "database" in tech_stack:
+            agents.append("database_engineer")
+
+        if "devops" in tech_stack:
+            agents.append("devops_engineer")
+
+        # Configure agents in Xavier config
+        agent_config = {}
+        for agent in agents:
+            agent_config[agent] = {"enabled": True}
+
+        # Update configuration
+        config = {}
+        if os.path.exists(self.config_path):
+            with open(self.config_path, 'r') as f:
+                config = json.load(f)
+
+        config["agents"] = agent_config
+
+        with open(self.config_path, 'w') as f:
+            json.dump(config, f, indent=2)
+
+        return agents
+
+    def _generate_readme(self, project_config: Dict[str, Any],
+                        analysis: Any) -> str:
+        """Generate README.md content for the project"""
+        readme = f"""# {project_config['name']}
+
+{project_config['description']}
+
+## Project Overview
+
+- **Type**: {project_config['project_type'].replace('_', ' ').title()}
+- **Complexity**: {project_config['estimated_complexity']}
+- **Methodology**: {project_config['methodology']}
+- **Created**: {project_config['created_at']}
+
+## Tech Stack
+
+"""
+
+        for component, details in project_config['tech_stack'].items():
+            readme += f"### {component.title()}\n"
+            if isinstance(details, dict):
+                for key, value in details.items():
+                    if value and key != "alternatives":
+                        readme += f"- **{key.title()}**: {value}\n"
+            else:
+                readme += f"- {details}\n"
+            readme += "\n"
+
+        if project_config['detected_features']:
+            readme += "## Features\n\n"
+            for feature in project_config['detected_features']:
+                readme += f"- {feature.replace('_', ' ').title()}\n"
+            readme += "\n"
+
+        if project_config['performance_requirements']:
+            readme += "## Performance Requirements\n\n"
+            for req in project_config['performance_requirements']:
+                readme += f"- {req.replace('_', ' ').title()}\n"
+            readme += "\n"
+
+        readme += """## Getting Started
+
+### Prerequisites
+
+- Python 3.8+
+- Xavier Framework installed
+- Claude Code
+
+### Installation
+
+```bash
+# Install dependencies
+./scripts/setup.sh
+
+# Initialize Xavier
+/xavier-help
+```
+
+### Development
+
+```bash
+# View backlog
+/show-backlog
+
+# Create sprint
+/create-sprint "Sprint 1" "Initial development" 14
+
+# Start sprint
+/start-sprint
+```
+
+## Xavier Commands
+
+- `/create-story` - Create user stories
+- `/create-task` - Create tasks
+- `/create-bug` - Report bugs
+- `/create-sprint` - Plan sprints
+- `/start-sprint` - Begin development
+- `/show-backlog` - View backlog
+- `/xavier-help` - Get help
+
+## Project Structure
+
+```
+.
+├── .xavier/          # Xavier framework data
+├── .claude/          # Claude Code integration
+├── backend/          # Backend application
+├── frontend/         # Frontend application (if applicable)
+├── tests/            # Test suites
+├── docs/             # Documentation
+└── scripts/          # Utility scripts
+```
+
+## Contributing
+
+This project follows Xavier Framework standards:
+- 100% test coverage required
+- Test-first development (TDD)
+- Clean Code principles
+- Sequential task execution
+- SOLID design patterns
+
+## License
+
+[Add your license here]
+"""
+        return readme
 
     def learn_project(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
