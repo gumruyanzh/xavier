@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - Xavier Framework</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+    <script src="assets/js/main.js" defer></script>
+    <style>
+        .quickstart-hero {
+            background: var(--gradient);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .quickstart-hero h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .time-estimate {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .step-content {
+            margin-left: 60px;
+            margin-bottom: 40px;
+        }
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .check-icon {
+            color: var(--secondary-color);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .example-project {
+            background: var(--light-bg);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">X</div>
+                <span class="logo-text">Xavier Framework</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="commands.html">Commands</a></li>
+                <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">
+                    ⭐ GitHub
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="quickstart-hero">
+        <h1>Quick Start Guide</h1>
+        <p>Get Xavier up and running in your project in under 5 minutes</p>
+        <div class="time-estimate">
+            ⏱️ Estimated time: 5 minutes
+        </div>
+    </div>
+
+    <div class="docs-container">
+        <main class="docs-content" style="max-width: 800px; margin: 0 auto;">
+
+            <section>
+                <h2>Prerequisites</h2>
+                <div class="info-box">
+                    Before you begin, ensure you have:
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✅</span>
+                    <div>
+                        <strong>Python 3.8 or higher</strong> - Check with <code>python --version</code>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✅</span>
+                    <div>
+                        <strong>Claude Code installed</strong> - Available from Anthropic
+                    </div>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✅</span>
+                    <div>
+                        <strong>Git installed</strong> - Check with <code>git --version</code>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✅</span>
+                    <div>
+                        <strong>Active project directory</strong> - Where you want to use Xavier
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Installation Steps</h2>
+
+                <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 30px;">
+                    <div class="step-number">1</div>
+                    <div style="flex: 1;">
+                        <h3>Navigate to Your Project</h3>
+                        <p>Open your terminal and navigate to your project directory:</p>
+                        <div class="code-example">
+                            <pre><code>cd /path/to/your/project</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 30px;">
+                    <div class="step-number">2</div>
+                    <div style="flex: 1;">
+                        <h3>Run the Installation Command</h3>
+                        <p>Execute the one-line installation script:</p>
+                        <div class="code-example">
+                            <pre><code>curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/install.sh | bash</code></pre>
+                        </div>
+                        <p style="margin-top: 15px;">This will:</p>
+                        <ul>
+                            <li>Download Xavier Framework</li>
+                            <li>Set up the .xavier directory structure</li>
+                            <li>Configure Claude Code commands</li>
+                            <li>Initialize configuration files</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 30px;">
+                    <div class="step-number">3</div>
+                    <div style="flex: 1;">
+                        <h3>Verify Installation</h3>
+                        <p>Open Claude Code in your project and type:</p>
+                        <div class="code-example">
+                            <pre><code>/xavier-help</code></pre>
+                        </div>
+                        <p style="margin-top: 15px;">You should see a list of available Xavier commands.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Your First Sprint</h2>
+                <p>Let's create a simple TODO application using Xavier's workflow:</p>
+
+                <div class="example-project">
+                    <h3>📝 Example: TODO App with Authentication</h3>
+
+                    <h4>Step 1: Create User Stories</h4>
+                    <div class="code-example">
+                        <pre><code># Story for authentication
+/create-story "As a user, I want to register and login" 8
+
+# Story for TODO management
+/create-story "As a user, I want to manage my todos" 13</code></pre>
+                    </div>
+
+                    <h4>Step 2: Break Down into Tasks</h4>
+                    <div class="code-example">
+                        <pre><code># Authentication tasks
+/create-task "Create user model with validation" STORY-001 3
+/create-task "Implement registration endpoint" STORY-001 5
+/create-task "Implement login with JWT" STORY-001 5
+
+# TODO tasks
+/create-task "Create TODO model" STORY-002 2
+/create-task "Implement CRUD endpoints" STORY-002 8
+/create-task "Add user authorization" STORY-002 3</code></pre>
+                    </div>
+
+                    <h4>Step 3: Plan Your Sprint</h4>
+                    <div class="code-example">
+                        <pre><code># Create a 2-week sprint
+/create-sprint "Sprint 1: Core Features" 14
+
+# View your backlog
+/show-backlog</code></pre>
+                    </div>
+
+                    <h4>Step 4: Start Development</h4>
+                    <div class="code-example">
+                        <pre><code># Start the sprint - Xavier will guide you through TDD
+/start-sprint SPRINT-001</code></pre>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>🎯 What Happens Next?</strong><br><br>
+                    Xavier will:<br>
+                    1. Start with the highest priority task<br>
+                    2. Require you to write tests first (TDD)<br>
+                    3. Validate 100% test coverage<br>
+                    4. Enforce Clean Code standards<br>
+                    5. Process tasks sequentially<br>
+                    6. Track your velocity and progress
+                </div>
+            </section>
+
+            <section>
+                <h2>Configuration Options</h2>
+                <p>Xavier creates a configuration file at <code>.xavier/config.json</code>. Here are key settings you might want to adjust:</p>
+
+                <div class="code-example">
+                    <pre><code>{
+  "test_coverage_threshold": 100,      // Minimum coverage required
+  "max_function_lines": 20,            // Clean Code function limit
+  "max_class_lines": 200,              // Clean Code class limit
+  "sprint_duration_days": 14,          // Default sprint length
+  "enforce_sequential": true,          // No parallel tasks
+  "test_first": true                   // TDD enforcement
+}</code></pre>
+                </div>
+            </section>
+
+            <section>
+                <h2>Common Workflows</h2>
+
+                <h3>🐛 Handling Bugs</h3>
+                <div class="code-example">
+                    <pre><code># Report a bug
+/create-bug "Login fails with special characters" HIGH "STORY-001"
+
+# Bugs are automatically prioritized in the backlog</code></pre>
+                </div>
+
+                <h3>📊 Sprint Progress</h3>
+                <div class="code-example">
+                    <pre><code># Check current sprint status
+/show-backlog
+
+# Xavier shows:
+# - Completed story points
+# - Remaining tasks
+# - Current velocity
+# - Burn-down progress</code></pre>
+                </div>
+
+                <h3>🔄 Mid-Sprint Changes</h3>
+                <div class="code-example">
+                    <pre><code># Add urgent task to current sprint
+/create-task "Fix critical security issue" STORY-001 5 CRITICAL
+
+# Xavier will re-prioritize automatically</code></pre>
+                </div>
+            </section>
+
+            <section>
+                <h2>Best Practices</h2>
+
+                <div class="check-item">
+                    <span class="check-icon">💡</span>
+                    <div>
+                        <strong>Start Small:</strong> Begin with 3-5 story points for your first sprint to understand Xavier's workflow
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <span class="check-icon">💡</span>
+                    <div>
+                        <strong>Write Clear Stories:</strong> Use the standard format: "As a [user], I want to [action] so that [benefit]"
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <span class="check-icon">💡</span>
+                    <div>
+                        <strong>Estimate Conservatively:</strong> It's better to under-promise and over-deliver
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <span class="check-icon">💡</span>
+                    <div>
+                        <strong>Trust the Process:</strong> Let Xavier enforce TDD and Clean Code - it leads to better quality
+                    </div>
+                </div>
+
+                <div class="check-item">
+                    <span class="check-icon">💡</span>
+                    <div>
+                        <strong>Review Regularly:</strong> Check velocity after each sprint to improve estimates
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Troubleshooting</h2>
+
+                <h3>❌ Commands Not Showing in Claude Code</h3>
+                <p>Ensure the <code>.claude/commands/</code> directory exists and contains the command files. Re-run the installation script if needed.</p>
+
+                <h3>❌ Python Version Error</h3>
+                <p>Xavier requires Python 3.8+. Update your Python installation or use pyenv to manage versions.</p>
+
+                <h3>❌ Installation Failed</h3>
+                <p>Check that you have internet connectivity and can access GitHub. Try manual installation:</p>
+                <div class="code-example">
+                    <pre><code>git clone https://github.com/gumruyanzh/xavier.git
+cd xavier
+./install.sh /path/to/your/project</code></pre>
+                </div>
+
+                <h3>❌ Tests Failing</h3>
+                <p>Xavier enforces 100% coverage. Ensure all code paths are tested, including error cases and edge conditions.</p>
+            </section>
+
+            <div class="next-steps">
+                <h2>What's Next?</h2>
+                <div class="steps-grid">
+                    <a href="documentation.html" class="step-card">
+                        <h3>📖 Deep Dive</h3>
+                        <p>Explore the complete documentation</p>
+                    </a>
+                    <a href="commands.html" class="step-card">
+                        <h3>🛠️ All Commands</h3>
+                        <p>Master every Xavier command</p>
+                    </a>
+                    <a href="https://github.com/gumruyanzh/xavier/tree/main/examples" class="step-card">
+                        <h3>💻 Examples</h3>
+                        <p>See Xavier in action</p>
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2024 Xavier Framework. Built with enterprise-grade standards.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/gumruyanzh/xavier">GitHub</a>
+                <a href="https://github.com/gumruyanzh/xavier/issues">Issues</a>
+                <a href="https://github.com/gumruyanzh/xavier/blob/main/LICENSE">License</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

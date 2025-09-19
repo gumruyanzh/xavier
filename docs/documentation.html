@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Xavier Framework</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+    <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">X</div>
+                <span class="logo-text">Xavier Framework</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="commands.html">Commands</a></li>
+                <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">
+                    ⭐ GitHub
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                    <li><a href="#first-project">Your First Project</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Core Concepts</h3>
+                <ul>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#agents">Specialized Agents</a></li>
+                    <li><a href="#scrum">SCRUM Workflow</a></li>
+                    <li><a href="#testing">Test-First Development</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Advanced</h3>
+                <ul>
+                    <li><a href="#clean-code">Clean Code Standards</a></li>
+                    <li><a href="#ioc">Inversion of Control</a></li>
+                    <li><a href="#solid">SOLID Principles</a></li>
+                    <li><a href="#extending">Extending Xavier</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="docs-content">
+            <section id="introduction">
+                <h1>Xavier Framework Documentation</h1>
+                <p class="lead">Welcome to Xavier, the enterprise-grade SCRUM development framework designed for Claude Code integration.</p>
+
+                <div class="info-box">
+                    <strong>📚 Version:</strong> 1.0.0<br>
+                    <strong>🔧 Requirements:</strong> Python 3.8+, Claude Code<br>
+                    <strong>📝 License:</strong> MIT
+                </div>
+
+                <h2>What is Xavier?</h2>
+                <p>Xavier is a revolutionary development framework that brings enterprise-grade software engineering practices to AI-assisted development. It enforces strict standards including:</p>
+
+                <ul>
+                    <li>100% test coverage requirement</li>
+                    <li>Test-first development (TDD)</li>
+                    <li>Clean Code principles</li>
+                    <li>SOLID design patterns</li>
+                    <li>Sequential task execution</li>
+                    <li>Full SCRUM methodology</li>
+                </ul>
+            </section>
+
+            <section id="installation">
+                <h2>Installation</h2>
+                <p>Xavier can be installed with a single command in your project directory:</p>
+
+                <div class="code-example">
+                    <pre><code>curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/install.sh | bash</code></pre>
+                </div>
+
+                <h3>Manual Installation</h3>
+                <p>For manual installation or customization:</p>
+
+                <ol>
+                    <li>Clone the repository:
+                        <div class="code-example">
+                            <pre><code>git clone https://github.com/gumruyanzh/xavier.git</code></pre>
+                        </div>
+                    </li>
+                    <li>Navigate to your project directory</li>
+                    <li>Run the installation script:
+                        <div class="code-example">
+                            <pre><code>./xavier/install.sh</code></pre>
+                        </div>
+                    </li>
+                </ol>
+
+                <h3>Verification</h3>
+                <p>After installation, verify Xavier is working by opening Claude Code and typing:</p>
+                <div class="code-example">
+                    <pre><code>/xavier-help</code></pre>
+                </div>
+            </section>
+
+            <section id="configuration">
+                <h2>Configuration</h2>
+                <p>Xavier uses a configuration file at <code>.xavier/config.json</code> to manage settings:</p>
+
+                <div class="code-example">
+                    <pre><code>{
+  "test_coverage_threshold": 100,
+  "max_function_lines": 20,
+  "max_class_lines": 200,
+  "enforce_sequential": true,
+  "test_first": true,
+  "clean_code_validation": true,
+  "velocity_tracking": true,
+  "sprint_duration_days": 14
+}</code></pre>
+                </div>
+
+                <h3>Configuration Options</h3>
+                <table class="docs-table">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>test_coverage_threshold</code></td>
+                            <td>number</td>
+                            <td>100</td>
+                            <td>Minimum test coverage percentage required</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_function_lines</code></td>
+                            <td>number</td>
+                            <td>20</td>
+                            <td>Maximum lines allowed per function</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_class_lines</code></td>
+                            <td>number</td>
+                            <td>200</td>
+                            <td>Maximum lines allowed per class</td>
+                        </tr>
+                        <tr>
+                            <td><code>enforce_sequential</code></td>
+                            <td>boolean</td>
+                            <td>true</td>
+                            <td>Enforce sequential task execution</td>
+                        </tr>
+                        <tr>
+                            <td><code>test_first</code></td>
+                            <td>boolean</td>
+                            <td>true</td>
+                            <td>Require tests before implementation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="first-project">
+                <h2>Your First Project</h2>
+                <p>Let's walk through creating your first project with Xavier:</p>
+
+                <h3>1. Create a User Story</h3>
+                <div class="code-example">
+                    <pre><code>/create-story "As a user, I want to login to the system" 8</code></pre>
+                </div>
+
+                <h3>2. Add Tasks</h3>
+                <div class="code-example">
+                    <pre><code>/create-task "Implement user authentication model" STORY-001 5
+/create-task "Create login API endpoint" STORY-001 3
+/create-task "Build login UI component" STORY-001 5</code></pre>
+                </div>
+
+                <h3>3. Create a Sprint</h3>
+                <div class="code-example">
+                    <pre><code>/create-sprint "Sprint 1: Authentication" 14</code></pre>
+                </div>
+
+                <h3>4. Start Development</h3>
+                <div class="code-example">
+                    <pre><code>/start-sprint SPRINT-001</code></pre>
+                </div>
+
+                <p>Xavier will now guide you through test-first development, ensuring 100% coverage and Clean Code standards.</p>
+            </section>
+
+            <section id="architecture">
+                <h2>Architecture</h2>
+                <p>Xavier follows a modular, agent-based architecture:</p>
+
+                <div class="architecture-diagram">
+                    <pre>
+┌─────────────────────────────────────┐
+│         Xavier Engine               │
+│  (Core Orchestration & Control)     │
+└─────────────┬───────────────────────┘
+              │
+    ┌─────────┴─────────┬─────────────┬──────────────┐
+    │                   │             │              │
+┌───▼────┐      ┌──────▼──────┐ ┌────▼────┐  ┌─────▼─────┐
+│Project │      │   Python    │ │  Golang │  │ Frontend  │
+│Manager │      │  Engineer   │ │Engineer │  │ Engineer  │
+│ Agent  │      │   Agent     │ │  Agent  │  │   Agent   │
+└────────┘      └─────────────┘ └─────────┘  └───────────┘
+                    </pre>
+                </div>
+
+                <h3>Core Components</h3>
+                <ul>
+                    <li><strong>Xavier Engine:</strong> Central orchestrator managing task execution and validation</li>
+                    <li><strong>Agent System:</strong> Specialized agents with strict language boundaries</li>
+                    <li><strong>SCRUM Manager:</strong> Complete SCRUM workflow implementation</li>
+                    <li><strong>Validation Pipeline:</strong> Enforces test coverage and Clean Code</li>
+                </ul>
+            </section>
+
+            <section id="agents">
+                <h2>Specialized Agents</h2>
+                <p>Xavier employs specialized agents with strict responsibilities:</p>
+
+                <div class="agent-grid">
+                    <div class="agent-card">
+                        <h3>🎯 Project Manager</h3>
+                        <p>Manages SCRUM ceremonies, sprint planning, and task prioritization.</p>
+                    </div>
+                    <div class="agent-card">
+                        <h3>🐍 Python Engineer</h3>
+                        <p>Writes Python code exclusively, following PEP 8 and best practices.</p>
+                    </div>
+                    <div class="agent-card">
+                        <h3>🔷 Golang Engineer</h3>
+                        <p>Develops Go code with proper error handling and concurrency.</p>
+                    </div>
+                    <div class="agent-card">
+                        <h3>🎨 Frontend Engineer</h3>
+                        <p>Creates React/TypeScript components with modern patterns.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="scrum">
+                <h2>SCRUM Workflow</h2>
+                <p>Xavier implements the complete SCRUM methodology:</p>
+
+                <h3>Story Points</h3>
+                <p>Using Fibonacci scale: 1, 2, 3, 5, 8, 13, 21</p>
+
+                <h3>Sprint Process</h3>
+                <ol>
+                    <li><strong>Sprint Planning:</strong> Select stories based on velocity</li>
+                    <li><strong>Daily Execution:</strong> Sequential task processing</li>
+                    <li><strong>Sprint Review:</strong> Validate completed work</li>
+                    <li><strong>Retrospective:</strong> Continuous improvement</li>
+                </ol>
+            </section>
+
+            <section id="testing">
+                <h2>Test-First Development</h2>
+                <p>Xavier enforces strict TDD practices:</p>
+
+                <div class="tdd-flow">
+                    <div class="flow-step red">
+                        <h4>1. Red Phase</h4>
+                        <p>Write failing test first</p>
+                    </div>
+                    <div class="flow-step green">
+                        <h4>2. Green Phase</h4>
+                        <p>Write minimal code to pass</p>
+                    </div>
+                    <div class="flow-step blue">
+                        <h4>3. Refactor Phase</h4>
+                        <p>Improve code quality</p>
+                    </div>
+                </div>
+
+                <h3>Coverage Requirements</h3>
+                <ul>
+                    <li>100% line coverage mandatory</li>
+                    <li>All edge cases tested</li>
+                    <li>Integration tests for APIs</li>
+                    <li>E2E tests for UI components</li>
+                </ul>
+            </section>
+
+            <section id="clean-code">
+                <h2>Clean Code Standards</h2>
+                <p>Xavier enforces Robert C. Martin's Clean Code principles:</p>
+
+                <h3>Function Standards</h3>
+                <ul>
+                    <li>Maximum 20 lines per function</li>
+                    <li>Single responsibility principle</li>
+                    <li>Descriptive naming</li>
+                    <li>No side effects</li>
+                </ul>
+
+                <h3>Class Standards</h3>
+                <ul>
+                    <li>Maximum 200 lines per class</li>
+                    <li>High cohesion</li>
+                    <li>Low coupling</li>
+                    <li>Interface segregation</li>
+                </ul>
+
+                <div class="code-example">
+                    <h4>✅ Good Example</h4>
+                    <pre><code>def calculate_total_price(items: List[Item]) -> Decimal:
+    """Calculate total price including tax."""
+    subtotal = sum(item.price * item.quantity for item in items)
+    tax = calculate_tax(subtotal)
+    return subtotal + tax</code></pre>
+                </div>
+
+                <div class="code-example bad">
+                    <h4>❌ Bad Example</h4>
+                    <pre><code>def process(data):
+    # 50+ lines of mixed responsibilities
+    # Database operations
+    # Business logic
+    # API calls
+    # File I/O
+    # etc...</code></pre>
+                </div>
+            </section>
+
+            <section id="ioc">
+                <h2>Inversion of Control</h2>
+                <p>Xavier implements IoC for better testability and flexibility:</p>
+
+                <div class="code-example">
+                    <pre><code>from xavier.core import InjectionContainer
+
+container = InjectionContainer()
+container.register(DatabaseService, PostgresService)
+container.register(EmailService, SendGridService)
+container.register(CacheService, RedisService)
+
+# Dependencies are injected automatically
+@container.inject
+class UserService:
+    def __init__(self, db: DatabaseService, email: EmailService):
+        self.db = db
+        self.email = email</code></pre>
+                </div>
+            </section>
+
+            <section id="solid">
+                <h2>SOLID Principles</h2>
+                <p>Xavier enforces all five SOLID principles:</p>
+
+                <div class="solid-principles">
+                    <div class="principle">
+                        <h3>S - Single Responsibility</h3>
+                        <p>Each class has one reason to change</p>
+                    </div>
+                    <div class="principle">
+                        <h3>O - Open/Closed</h3>
+                        <p>Open for extension, closed for modification</p>
+                    </div>
+                    <div class="principle">
+                        <h3>L - Liskov Substitution</h3>
+                        <p>Subtypes must be substitutable for base types</p>
+                    </div>
+                    <div class="principle">
+                        <h3>I - Interface Segregation</h3>
+                        <p>Many specific interfaces over general ones</p>
+                    </div>
+                    <div class="principle">
+                        <h3>D - Dependency Inversion</h3>
+                        <p>Depend on abstractions, not concretions</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="extending">
+                <h2>Extending Xavier</h2>
+                <p>Create custom agents and validators:</p>
+
+                <h3>Custom Agent Example</h3>
+                <div class="code-example">
+                    <pre><code>from xavier.agents import BaseAgent
+
+class DataScienceAgent(BaseAgent):
+    """Specialized agent for data science tasks."""
+
+    language = "python"
+    specialization = "data_science"
+
+    def validate_code(self, code: str) -> bool:
+        # Custom validation for data science code
+        return self.check_imports(code, ["pandas", "numpy", "sklearn"])
+
+    def generate_tests(self, code: str) -> str:
+        # Generate data science specific tests
+        return self.create_statistical_tests(code)</code></pre>
+                </div>
+
+                <h3>Custom Validator Example</h3>
+                <div class="code-example">
+                    <pre><code>from xavier.validators import BaseValidator
+
+class SecurityValidator(BaseValidator):
+    """Validate code for security best practices."""
+
+    def validate(self, code: str) -> ValidationResult:
+        issues = []
+
+        if "eval(" in code:
+            issues.append("Unsafe use of eval()")
+
+        if "pickle.loads" in code:
+            issues.append("Potential pickle vulnerability")
+
+        return ValidationResult(
+            passed=len(issues) == 0,
+            issues=issues
+        )</code></pre>
+                </div>
+            </section>
+
+            <div class="next-steps">
+                <h2>Next Steps</h2>
+                <div class="steps-grid">
+                    <a href="quick-start.html" class="step-card">
+                        <h3>🚀 Quick Start Guide</h3>
+                        <p>Get up and running in 5 minutes</p>
+                    </a>
+                    <a href="commands.html" class="step-card">
+                        <h3>📚 Commands Reference</h3>
+                        <p>Complete list of Xavier commands</p>
+                    </a>
+                    <a href="https://github.com/gumruyanzh/xavier/issues" class="step-card">
+                        <h3>💬 Get Support</h3>
+                        <p>Ask questions and report issues</p>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2024 Xavier Framework. Built with enterprise-grade standards.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/gumruyanzh/xavier">GitHub</a>
+                <a href="https://github.com/gumruyanzh/xavier/issues">Issues</a>
+                <a href="https://github.com/gumruyanzh/xavier/blob/main/LICENSE">License</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

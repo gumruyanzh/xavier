@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commands Reference - Xavier Framework</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+    <script src="assets/js/main.js" defer></script>
+    <style>
+        .commands-header {
+            background: var(--gradient);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .commands-header h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .command-category {
+            margin-bottom: 60px;
+        }
+        .command-category h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            color: var(--primary-dark);
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 12px;
+            margin-bottom: 30px;
+        }
+        .command-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .command-item:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .command-title {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .command-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .command-description {
+            color: #64748B;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .command-syntax {
+            background: #1E293B;
+            color: #10B981;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .command-params {
+            margin-bottom: 20px;
+        }
+        .command-params h4 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .param-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: var(--light-bg);
+            border-radius: 6px;
+        }
+        .param-name {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary-dark);
+            min-width: 120px;
+        }
+        .param-required {
+            color: #EF4444;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .param-optional {
+            color: #64748B;
+            font-size: 12px;
+        }
+        .command-examples {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .command-examples h4 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        .example-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--secondary-color);
+        }
+        .example-code {
+            font-family: monospace;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        .example-description {
+            color: #64748B;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .search-box {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            box-shadow: var(--shadow-md);
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .search-button {
+            padding: 10px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .search-button:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">X</div>
+                <span class="logo-text">Xavier Framework</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="commands.html">Commands</a></li>
+                <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">
+                    ⭐ GitHub
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="commands-header">
+        <h1>Commands Reference</h1>
+        <p>Complete guide to all Xavier Framework commands</p>
+    </div>
+
+    <div class="docs-container">
+        <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search commands..." id="commandSearch">
+                <button class="search-button">Search</button>
+            </div>
+
+            <section class="command-category">
+                <h2>📋 Story Management</h2>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/create-story</h3>
+                        <span class="command-badge">SCRUM</span>
+                    </div>
+                    <p class="command-description">
+                        Create a new user story in the product backlog using standard Agile format.
+                    </p>
+                    <div class="command-syntax">
+                        /create-story "description" story_points [epic_id]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">description</span>
+                            <span class="param-required">required</span>
+                            <span>User story in "As a... I want... so that..." format</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">story_points</span>
+                            <span class="param-required">required</span>
+                            <span>Fibonacci scale: 1, 2, 3, 5, 8, 13, 21</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">epic_id</span>
+                            <span class="param-optional">optional</span>
+                            <span>Link to an existing epic</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-story "As a user, I want to reset my password so that I can regain access" 5
+                            </div>
+                            <div class="example-description">
+                                Creates a 5-point story for password reset functionality
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-story "As an admin, I want to view analytics" 8 EPIC-001
+                            </div>
+                            <div class="example-description">
+                                Creates an 8-point story linked to EPIC-001
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/create-task</h3>
+                        <span class="command-badge">SCRUM</span>
+                    </div>
+                    <p class="command-description">
+                        Break down stories into executable technical tasks with time estimates.
+                    </p>
+                    <div class="command-syntax">
+                        /create-task "description" story_id estimated_hours [priority]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">description</span>
+                            <span class="param-required">required</span>
+                            <span>Technical task description</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">story_id</span>
+                            <span class="param-required">required</span>
+                            <span>Parent story ID (e.g., STORY-001)</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">estimated_hours</span>
+                            <span class="param-required">required</span>
+                            <span>Time estimate in hours</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">priority</span>
+                            <span class="param-optional">optional</span>
+                            <span>LOW, MEDIUM, HIGH, or CRITICAL</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-task "Implement JWT token generation" STORY-001 3
+                            </div>
+                            <div class="example-description">
+                                Creates a 3-hour task for JWT implementation
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-task "Add rate limiting to API" STORY-002 5 HIGH
+                            </div>
+                            <div class="example-description">
+                                Creates a high-priority 5-hour task
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/create-bug</h3>
+                        <span class="command-badge">ISSUE</span>
+                    </div>
+                    <p class="command-description">
+                        Report and track bugs with automatic prioritization in the backlog.
+                    </p>
+                    <div class="command-syntax">
+                        /create-bug "description" severity [story_id]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">description</span>
+                            <span class="param-required">required</span>
+                            <span>Bug description with steps to reproduce</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">severity</span>
+                            <span class="param-required">required</span>
+                            <span>LOW, MEDIUM, HIGH, or CRITICAL</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">story_id</span>
+                            <span class="param-optional">optional</span>
+                            <span>Related story if applicable</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-bug "Login fails with email containing +" CRITICAL
+                            </div>
+                            <div class="example-description">
+                                Reports a critical bug in login functionality
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-bug "Pagination shows wrong count" MEDIUM STORY-003
+                            </div>
+                            <div class="example-description">
+                                Reports a medium-severity bug related to STORY-003
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="command-category">
+                <h2>🏃 Sprint Management</h2>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/create-sprint</h3>
+                        <span class="command-badge">SPRINT</span>
+                    </div>
+                    <p class="command-description">
+                        Plan a new sprint with automatic story selection based on velocity.
+                    </p>
+                    <div class="command-syntax">
+                        /create-sprint "name" duration_days [goal]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">name</span>
+                            <span class="param-required">required</span>
+                            <span>Sprint name or title</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">duration_days</span>
+                            <span class="param-required">required</span>
+                            <span>Sprint duration (typically 14 days)</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">goal</span>
+                            <span class="param-optional">optional</span>
+                            <span>Sprint goal or objective</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-sprint "Sprint 1: Authentication" 14
+                            </div>
+                            <div class="example-description">
+                                Creates a 2-week sprint focused on authentication
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-sprint "MVP Release" 7 "Complete core features for demo"
+                            </div>
+                            <div class="example-description">
+                                Creates a 1-week sprint with specific goal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/start-sprint</h3>
+                        <span class="command-badge">EXECUTION</span>
+                    </div>
+                    <p class="command-description">
+                        Begin sprint execution with strict sequential task processing and TDD enforcement.
+                    </p>
+                    <div class="command-syntax">
+                        /start-sprint [sprint_id] [strict_mode]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">sprint_id</span>
+                            <span class="param-optional">optional</span>
+                            <span>Sprint ID (uses latest if not specified)</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">strict_mode</span>
+                            <span class="param-optional">optional</span>
+                            <span>Enable strict sequential execution (default: true)</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /start-sprint
+                            </div>
+                            <div class="example-description">
+                                Starts the most recent planned sprint
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /start-sprint SPRINT-001
+                            </div>
+                            <div class="example-description">
+                                Starts specific sprint with ID SPRINT-001
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/show-backlog</h3>
+                        <span class="command-badge">VIEW</span>
+                    </div>
+                    <p class="command-description">
+                        Display the prioritized product backlog with story points and status.
+                    </p>
+                    <div class="command-syntax">
+                        /show-backlog [filter]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">filter</span>
+                            <span class="param-optional">optional</span>
+                            <span>Filter by status: pending, in_progress, completed</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /show-backlog
+                            </div>
+                            <div class="example-description">
+                                Shows complete backlog with all items
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /show-backlog pending
+                            </div>
+                            <div class="example-description">
+                                Shows only pending items in the backlog
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="command-category">
+                <h2>🛠️ System Commands</h2>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-help</h3>
+                        <span class="command-badge">HELP</span>
+                    </div>
+                    <p class="command-description">
+                        Display all available Xavier commands with descriptions and usage examples.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-help [command]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">command</span>
+                            <span class="param-optional">optional</span>
+                            <span>Get detailed help for specific command</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-help
+                            </div>
+                            <div class="example-description">
+                                Shows all available commands
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-help create-story
+                            </div>
+                            <div class="example-description">
+                                Shows detailed help for create-story command
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-config</h3>
+                        <span class="command-badge">CONFIG</span>
+                    </div>
+                    <p class="command-description">
+                        Configure Xavier settings including test coverage, Clean Code limits, and workflow options.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-config [setting] [value]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">setting</span>
+                            <span class="param-optional">optional</span>
+                            <span>Configuration key to modify</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">value</span>
+                            <span class="param-optional">optional</span>
+                            <span>New value for the setting</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-config
+                            </div>
+                            <div class="example-description">
+                                Shows current configuration
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-config max_function_lines 25
+                            </div>
+                            <div class="example-description">
+                                Sets maximum function lines to 25
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-stats</h3>
+                        <span class="command-badge">METRICS</span>
+                    </div>
+                    <p class="command-description">
+                        View project statistics including velocity, test coverage, and code quality metrics.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-stats [sprint_id]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">sprint_id</span>
+                            <span class="param-optional">optional</span>
+                            <span>Show stats for specific sprint</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-stats
+                            </div>
+                            <div class="example-description">
+                                Shows overall project statistics
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-stats SPRINT-001
+                            </div>
+                            <div class="example-description">
+                                Shows statistics for SPRINT-001
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="command-category">
+                <h2>🔧 Advanced Commands</h2>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-validate</h3>
+                        <span class="command-badge">QUALITY</span>
+                    </div>
+                    <p class="command-description">
+                        Validate code against Clean Code standards and test coverage requirements.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-validate [file_path]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">file_path</span>
+                            <span class="param-optional">optional</span>
+                            <span>Specific file to validate (validates all if not specified)</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-validate
+                            </div>
+                            <div class="example-description">
+                                Validates entire codebase
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-validate src/auth/login.py
+                            </div>
+                            <div class="example-description">
+                                Validates specific file
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-agent</h3>
+                        <span class="command-badge">AI</span>
+                    </div>
+                    <p class="command-description">
+                        Invoke specialized agents (Python, Go, Frontend, etc.) for language-specific tasks.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-agent agent_type "task_description"
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">agent_type</span>
+                            <span class="param-required">required</span>
+                            <span>python, golang, frontend, backend, devops</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">task_description</span>
+                            <span class="param-required">required</span>
+                            <span>Task for the agent to perform</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-agent python "Refactor authentication module for SOLID principles"
+                            </div>
+                            <div class="example-description">
+                                Python agent refactors code following SOLID
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-agent frontend "Create responsive dashboard component"
+                            </div>
+                            <div class="example-description">
+                                Frontend agent creates React component
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="info-box">
+                <h3>💡 Pro Tips</h3>
+                <ul style="margin: 16px 0;">
+                    <li>Commands are executed sequentially - Xavier won't allow parallel task execution</li>
+                    <li>All commands respect the 100% test coverage requirement</li>
+                    <li>Story points must follow Fibonacci sequence for accurate velocity tracking</li>
+                    <li>Bug severity automatically determines sprint priority</li>
+                    <li>Use <code>/show-backlog</code> frequently to track progress</li>
+                    <li>Configure settings with <code>/xavier-config</code> to match your team's standards</li>
+                </ul>
+            </div>
+
+            <div class="next-steps">
+                <h2>Need More Help?</h2>
+                <div class="steps-grid">
+                    <a href="documentation.html" class="step-card">
+                        <h3>📖 Full Documentation</h3>
+                        <p>Deep dive into Xavier architecture</p>
+                    </a>
+                    <a href="quick-start.html" class="step-card">
+                        <h3>🚀 Quick Start</h3>
+                        <p>Get started in 5 minutes</p>
+                    </a>
+                    <a href="https://github.com/gumruyanzh/xavier/discussions" class="step-card">
+                        <h3>💬 Community</h3>
+                        <p>Join the discussion</p>
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2024 Xavier Framework. Built with enterprise-grade standards.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/gumruyanzh/xavier">GitHub</a>
+                <a href="https://github.com/gumruyanzh/xavier/issues">Issues</a>
+                <a href="https://github.com/gumruyanzh/xavier/blob/main/LICENSE">License</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple command search functionality
+        document.getElementById('commandSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const commands = document.querySelectorAll('.command-item');
+
+            commands.forEach(command => {
+                const title = command.querySelector('.command-title').textContent.toLowerCase();
+                const description = command.querySelector('.command-description').textContent.toLowerCase();
+
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    command.style.display = 'block';
+                } else {
+                    command.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

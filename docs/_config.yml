@@ -1,0 +1,32 @@
+# GitHub Pages Configuration for Xavier Framework
+theme: null
+title: Xavier Framework
+description: Enterprise-grade SCRUM development framework for Claude Code with strict TDD and Clean Code enforcement
+baseurl: ""
+url: "https://gumruyanzh.github.io/xavier"
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# SEO
+twitter:
+  username: xavierframework
+  card: summary_large_image
+
+social:
+  name: Xavier Framework
+  links:
+    - https://github.com/gumruyanzh/xavier
+
+# Google Analytics (optional - add your tracking ID)
+# google_analytics: UA-XXXXXXXXX-X
+
+# Exclude files from build
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - install.sh
+  - xavier/
