@@ -3,342 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xavier Framework - Enterprise SCRUM Development for Claude Code</title>
-    <meta name="description" content="Xavier Framework brings enterprise-grade SCRUM methodology, test-first development, and Clean Code principles to Claude Code with 100% test coverage enforcement.">
-
-    <!-- Open Graph / Social Media Tags -->
-    <meta property="og:title" content="Xavier Framework - Enterprise SCRUM Development">
-    <meta property="og:description" content="Strict TDD, Clean Code, and SCRUM methodology for Claude Code">
-    <meta property="og:image" content="https://gumruyanzh.github.io/xavier/assets/images/xavier-og.png">
-    <meta property="og:url" content="https://gumruyanzh.github.io/xavier/">
-    <meta property="og:type" content="website">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Xavier Framework">
-    <meta name="twitter:description" content="Enterprise SCRUM Development for Claude Code">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="assets/images/xavier-icon.svg">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- CSS -->
+    <title>Xavier - Enterprise SCRUM Framework</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <svg class="logo" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
-                    <path d="M11 10L16 16L21 10M11 22L16 16L21 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#4F46E5"/>
-                            <stop offset="100%" stop-color="#7C3AED"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span class="brand-text">Xavier</span>
-            </div>
-            <ul class="nav-menu">
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">X</div>
+                <span>Xavier</span>
+            </a>
+            <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="documentation.html">Documentation</a></li>
                 <li><a href="quick-start.html">Quick Start</a></li>
                 <li><a href="commands.html">Commands</a></li>
-                <li><a href="https://github.com/gumruyanzh/xavier" target="_blank" class="github-link">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
-                    </svg>
-                    GitHub
-                </a></li>
+                <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">GitHub</a></li>
             </ul>
-            <button class="nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="badge">🚀 v1.0.1 - Now with Claude Code Commands!</div>
-                <h1 class="hero-title">
-                    Enterprise-Grade <span class="gradient-text">SCRUM Development</span><br>
-                    for Claude Code
-                </h1>
-                <p class="hero-description">
-                    Xavier Framework enforces test-first development, 100% test coverage, and Clean Code principles.
-                    Build production-ready software with strict sequential execution and specialized AI agents.
-                </p>
-                <div class="hero-actions">
-                    <div class="install-box">
-                        <pre><code id="install-command">curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/install.sh | bash</code></pre>
-                        <button class="copy-btn" onclick="copyToClipboard('install-command')">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="hero-links">
-                        <a href="quick-start.html" class="btn btn-primary">Get Started</a>
-                        <a href="documentation.html" class="btn btn-secondary">Documentation</a>
-                    </div>
+        <div class="hero-container">
+            <h1>Enterprise SCRUM Framework</h1>
+            <p class="hero-subtitle">For Claude Code</p>
+            <p class="hero-description">
+                Test-first development. 100% test coverage. Clean Code principles.
+                Build production-ready software with strict sequential execution.
+            </p>
+
+            <div class="install-box">
+                <div class="code-block">
+                    <code>curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/install.sh | bash</code>
+                    <button class="copy-button" onclick="copyCode()">Copy</button>
                 </div>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="quick-start.html" class="btn btn-primary">Get Started</a>
+                <a href="documentation.html" class="btn btn-secondary">Learn More</a>
             </div>
         </div>
     </section>
 
-    <!-- Features Grid -->
+    <!-- Features -->
     <section id="features" class="features">
         <div class="container">
-            <h2 class="section-title">Why Xavier?</h2>
-            <p class="section-subtitle">Enterprise standards, enforced automatically</p>
+            <div class="section-header">
+                <h2>Why Xavier</h2>
+                <p>Enterprise standards, enforced automatically.</p>
+            </div>
 
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
+                    <div class="feature-icon">✓</div>
                     <h3>100% Test Coverage</h3>
-                    <p>No task is complete without full test coverage. Xavier enforces TDD with automatic validation.</p>
+                    <p>Every line of code tested. No exceptions.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                    </div>
-                    <h3>Strict Sequential Execution</h3>
-                    <p>One task at a time. No parallel work until the current task is 100% complete and tested.</p>
+                    <div class="feature-icon">→</div>
+                    <h3>Sequential Execution</h3>
+                    <p>One task at a time. Complete before moving on.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                        </svg>
-                    </div>
-                    <h3>Clean Code Enforced</h3>
-                    <p>Functions ≤20 lines, classes ≤200 lines, SOLID principles, and IoC patterns validated automatically.</p>
+                    <div class="feature-icon">{ }</div>
+                    <h3>Clean Code</h3>
+                    <p>Functions ≤20 lines. Classes ≤200 lines. Always.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                    </div>
-                    <h3>Specialized AI Agents</h3>
-                    <p>Python Engineer writes Python only. Go Engineer writes Go only. Strict language boundaries enforced.</p>
+                    <div class="feature-icon">◆</div>
+                    <h3>Specialized Agents</h3>
+                    <p>Language-specific agents with strict boundaries.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-                        </svg>
-                    </div>
-                    <h3>Full SCRUM Workflow</h3>
-                    <p>Stories, tasks, bugs, sprints, and velocity tracking. Complete SCRUM methodology built-in.</p>
+                    <div class="feature-icon">□</div>
+                    <h3>Full SCRUM</h3>
+                    <p>Stories, sprints, and velocity tracking built-in.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
+                    <div class="feature-icon">↻</div>
                     <h3>Sprint Automation</h3>
-                    <p>Automatic sprint planning, velocity calculation, and task prioritization based on dependencies.</p>
+                    <p>Automatic planning and task prioritization.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Commands Preview -->
-    <section class="commands-preview">
+    <section class="commands">
         <div class="container">
-            <h2 class="section-title">Powerful Commands</h2>
-            <p class="section-subtitle">Everything you need for enterprise development</p>
-
-            <div class="terminal">
-                <div class="terminal-header">
-                    <div class="terminal-buttons">
-                        <span class="terminal-button red"></span>
-                        <span class="terminal-button yellow"></span>
-                        <span class="terminal-button green"></span>
-                    </div>
-                    <span class="terminal-title">Claude Code with Xavier</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">></span>
-                        <span class="terminal-command">/create-story</span>
-                    </div>
-                    <div class="terminal-output">
-Creating user story with automatic estimation...
-✅ Story US-ABC123 created with 5 story points</div>
-
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">></span>
-                        <span class="terminal-command">/create-sprint</span>
-                    </div>
-                    <div class="terminal-output">
-Planning Sprint 1...
-✅ Sprint created with 8 stories (20 points)</div>
-
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">></span>
-                        <span class="terminal-command">/start-sprint</span>
-                    </div>
-                    <div class="terminal-output">
-Starting sequential execution...
-🧪 Writing tests first...
-✅ Tests passing with 100% coverage
-📝 Implementing feature...
-✅ Clean Code validated
-✅ Task 1/8 complete</div>
-                </div>
+            <div class="section-header">
+                <h2>Simple Commands</h2>
+                <p>Everything you need for enterprise development.</p>
             </div>
 
-            <div class="commands-grid">
-                <div class="command-item">
-                    <code>/create-story</code>
-                    <span>User story with acceptance criteria</span>
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-name">/create-story</div>
+                    <div class="command-description">Create user story with acceptance criteria</div>
                 </div>
-                <div class="command-item">
-                    <code>/create-task</code>
-                    <span>Task under story</span>
+                <div class="command-card">
+                    <div class="command-name">/create-task</div>
+                    <div class="command-description">Break down stories into tasks</div>
                 </div>
-                <div class="command-item">
-                    <code>/create-bug</code>
-                    <span>Bug report with steps</span>
+                <div class="command-card">
+                    <div class="command-name">/create-sprint</div>
+                    <div class="command-description">Plan your next iteration</div>
                 </div>
-                <div class="command-item">
-                    <code>/create-sprint</code>
-                    <span>Plan new sprint</span>
+                <div class="command-card">
+                    <div class="command-name">/start-sprint</div>
+                    <div class="command-description">Begin sequential execution</div>
                 </div>
-                <div class="command-item">
-                    <code>/start-sprint</code>
-                    <span>Execute sprint tasks</span>
+                <div class="command-card">
+                    <div class="command-name">/show-backlog</div>
+                    <div class="command-description">View prioritized work items</div>
                 </div>
-                <div class="command-item">
-                    <code>/show-backlog</code>
-                    <span>View prioritized backlog</span>
+                <div class="command-card">
+                    <div class="command-name">/xavier-help</div>
+                    <div class="command-description">Get help with any command</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works">
-        <div class="container">
-            <h2 class="section-title">How Xavier Works</h2>
-            <p class="section-subtitle">Enterprise workflow, automated</p>
-
-            <div class="workflow-steps">
-                <div class="workflow-step">
-                    <div class="step-number">1</div>
-                    <h3>Create Stories</h3>
-                    <p>Define user stories with acceptance criteria. Xavier automatically estimates story points.</p>
-                </div>
-
-                <div class="workflow-connector"></div>
-
-                <div class="workflow-step">
-                    <div class="step-number">2</div>
-                    <h3>Plan Sprint</h3>
-                    <p>Xavier selects highest priority items that fit within velocity, resolving dependencies.</p>
-                </div>
-
-                <div class="workflow-connector"></div>
-
-                <div class="workflow-step">
-                    <div class="step-number">3</div>
-                    <h3>Execute Tasks</h3>
-                    <p>Agents work sequentially. Tests first, then implementation, with 100% coverage required.</p>
-                </div>
-
-                <div class="workflow-connector"></div>
-
-                <div class="workflow-step">
-                    <div class="step-number">4</div>
-                    <h3>Deliver Quality</h3>
-                    <p>Every task is production-ready with full tests, Clean Code validation, and documentation.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <h2>Ready for Enterprise Development?</h2>
-            <p>Join developers who demand 100% test coverage and Clean Code standards</p>
-            <div class="cta-buttons">
-                <a href="quick-start.html" class="btn btn-large">Get Started Now</a>
-                <a href="https://github.com/gumruyanzh/xavier" target="_blank" class="btn btn-large btn-secondary">
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/>
-                    </svg>
-                    View on GitHub
-                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Xavier Framework</h4>
-                    <p>Enterprise-grade SCRUM development for Claude Code with strict TDD and Clean Code enforcement.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Documentation</h4>
-                    <ul>
-                        <li><a href="quick-start.html">Quick Start</a></li>
-                        <li><a href="documentation.html">Full Documentation</a></li>
-                        <li><a href="commands.html">Commands Reference</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Community</h4>
-                    <ul>
-                        <li><a href="https://github.com/gumruyanzh/xavier">GitHub</a></li>
-                        <li><a href="https://github.com/gumruyanzh/xavier/issues">Issues</a></li>
-                        <li><a href="https://github.com/gumruyanzh/xavier/discussions">Discussions</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://github.com/gumruyanzh/xavier/releases">Releases</a></li>
-                        <li><a href="https://github.com/gumruyanzh/xavier/blob/main/LICENSE">License</a></li>
-                        <li><a href="https://github.com/gumruyanzh/xavier/blob/main/CONTRIBUTING.md">Contributing</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Xavier Framework. Built with ❤️ for enterprise developers.</p>
+    <footer>
+        <div class="footer-content">
+            <p>© 2024 Xavier Framework</p>
+            <div class="footer-links">
+                <a href="https://github.com/gumruyanzh/xavier">GitHub</a>
+                <a href="documentation.html">Docs</a>
+                <a href="https://github.com/gumruyanzh/xavier/issues">Support</a>
             </div>
         </div>
     </footer>
 
-    <script src="assets/js/main.js"></script>
+    <script>
+        function copyCode() {
+            const code = document.querySelector('.code-block code').textContent;
+            navigator.clipboard.writeText(code);
+            const button = document.querySelector('.copy-button');
+            button.textContent = 'Copied';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
