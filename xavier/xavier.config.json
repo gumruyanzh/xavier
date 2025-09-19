@@ -1,0 +1,78 @@
+{
+  "name": "Xavier Framework",
+  "version": "1.0.0",
+  "description": "Enterprise-grade SCRUM development framework for Claude Code",
+  "settings": {
+    "strict_mode": true,
+    "test_first": true,
+    "clean_code_enforcement": true,
+    "ioc_patterns": true,
+    "sequential_execution": true,
+    "test_coverage_required": 100,
+    "sprint_velocity": 20,
+    "default_sprint_duration": 14
+  },
+  "agents": {
+    "project_manager": {
+      "enabled": true,
+      "responsibilities": ["sprint planning", "story point estimation", "backlog management", "progress tracking"]
+    },
+    "context_manager": {
+      "enabled": true,
+      "responsibilities": ["codebase understanding", "context preservation", "knowledge management"]
+    },
+    "devops": {
+      "enabled": true,
+      "responsibilities": ["CI/CD", "deployment", "infrastructure", "monitoring"]
+    },
+    "ui_ux_designer": {
+      "enabled": true,
+      "responsibilities": ["design systems", "user experience", "interface design", "accessibility"]
+    },
+    "frontend_engineer": {
+      "enabled": true,
+      "tech_stack": ["typescript", "react", "vue", "angular"],
+      "responsibilities": ["frontend development", "component architecture", "state management"]
+    },
+    "backend_python_engineer": {
+      "enabled": true,
+      "tech_stack": ["python", "django", "fastapi", "flask"],
+      "responsibilities": ["python backend development", "API design", "database design"]
+    },
+    "backend_golang_engineer": {
+      "enabled": true,
+      "tech_stack": ["go", "gin", "fiber", "echo"],
+      "responsibilities": ["golang backend development", "microservices", "performance optimization"]
+    }
+  },
+  "commands": [
+    "create-story",
+    "create-task",
+    "create-bug",
+    "create-roadmap",
+    "create-project",
+    "learn-project",
+    "create-sprint",
+    "start-sprint",
+    "end-sprint",
+    "review-code",
+    "estimate-story",
+    "assign-task",
+    "generate-report",
+    "tech-stack-analyze",
+    "create-agent"
+  ],
+  "scrum": {
+    "story_point_scale": [1, 2, 3, 5, 8, 13, 21],
+    "priority_levels": ["Critical", "High", "Medium", "Low"],
+    "task_statuses": ["Backlog", "Ready", "In Progress", "Testing", "Review", "Done"],
+    "definition_of_done": {
+      "code_complete": true,
+      "tests_written": true,
+      "tests_passing": true,
+      "code_reviewed": true,
+      "clean_code_validated": true,
+      "documentation_updated": true
+    }
+  }
+}
