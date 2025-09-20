@@ -64,7 +64,7 @@
                 <p class="lead">Welcome to Xavier, the enterprise-grade SCRUM development framework designed for Claude Code integration.</p>
 
                 <div class="info-box">
-                    <strong>📚 Version:</strong> 1.0.3<br>
+                    <strong>📚 Version:</strong> 1.1.0<br>
                     <strong>🔧 Requirements:</strong> Python 3.8+, Claude Code<br>
                     <strong>📝 License:</strong> MIT
                 </div>
@@ -237,26 +237,43 @@
 
             <section id="agents">
                 <h2>Specialized Agents</h2>
-                <p>Xavier employs specialized agents with strict responsibilities:</p>
+                <p>Xavier employs specialized agents with strict responsibilities, now with <strong>colored visual identification</strong> for clear task tracking:</p>
 
                 <div class="agent-grid">
                     <div class="agent-card">
-                        <h3>🎯 Project Manager</h3>
-                        <p>Manages SCRUM ceremonies, sprint planning, and task prioritization.</p>
+                        <h3>📊 [PM] Project Manager</h3>
+                        <p>Manages SCRUM ceremonies, sprint planning, and task prioritization. <span style="color: #FF00FF;">Magenta</span> in CLI.</p>
                     </div>
                     <div class="agent-card">
-                        <h3>🐍 Python Engineer</h3>
-                        <p>Writes Python code exclusively, following PEP 8 and best practices.</p>
+                        <h3>🐍 [PY] Python Engineer</h3>
+                        <p>Writes Python code exclusively, following PEP 8 and TDD. <span style="color: #00FF00;">Green</span> in CLI.</p>
                     </div>
                     <div class="agent-card">
-                        <h3>🔷 Golang Engineer</h3>
-                        <p>Develops Go code with proper error handling and concurrency.</p>
+                        <h3>🐹 [GO] Golang Engineer</h3>
+                        <p>Develops Go code with proper error handling. <span style="color: #00FFFF;">Cyan</span> in CLI.</p>
                     </div>
                     <div class="agent-card">
-                        <h3>🎨 Frontend Engineer</h3>
-                        <p>Creates React/TypeScript components with modern patterns.</p>
+                        <h3>🎨 [FE] Frontend Engineer</h3>
+                        <p>Creates React/TypeScript components. <span style="color: #FFFF00;">Yellow</span> in CLI.</p>
+                    </div>
+                    <div class="agent-card">
+                        <h3>🔍 [CTX] Context Manager</h3>
+                        <p>Analyzes codebase and finds patterns. <span style="color: #0000FF;">Blue</span> in CLI.</p>
+                    </div>
+                    <div class="agent-card">
+                        <h3>💎 [RB] Ruby Engineer</h3>
+                        <p>Ruby/Rails development specialist. <span style="color: #FF0000;">Red</span> in CLI.</p>
                     </div>
                 </div>
+
+                <h3>New: Visual Agent Tracking</h3>
+                <p>Version 1.1.0 introduces colored agent visualization:</p>
+                <ul>
+                    <li><strong>Agent Takeover:</strong> Colored boxes show when agents start tasks</li>
+                    <li><strong>Status Updates:</strong> Real-time indicators (⚙️ Working, 🧪 Testing, ✅ Complete)</li>
+                    <li><strong>Agent Handoffs:</strong> Visual transitions between specialists</li>
+                    <li><strong>Sprint Progress:</strong> Colored task counters and success indicators</li>
+                </ul>
             </section>
 
             <section id="scrum">
