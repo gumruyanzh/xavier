@@ -145,16 +145,25 @@ if [ -d ".claude/commands" ]; then
         fi
     done
 
-    # Update all command files from the new installation script
-    temp_install_dir=$(mktemp -d)
-    cd "$temp_install_dir"
-    bash "$TEMP_DIR/xavier/install.sh" > /dev/null 2>&1 || true
-    cd - > /dev/null
+    # Extract command files directly from install.sh without running it
+    # This avoids any Python execution errors
+    mkdir -p /tmp/xavier_commands_extract
 
-    if [ -d "$temp_install_dir/.claude/commands" ]; then
-        cp -r "$temp_install_dir/.claude/commands/"* .claude/commands/ 2>/dev/null || true
-    fi
-    rm -rf "$temp_install_dir"
+    # Extract each command file from install.sh
+    commands=(
+        "create-story" "create-task" "create-bug" "create-sprint"
+        "start-sprint" "show-backlog" "xavier-help" "xavier-update" "create-project"
+    )
+
+    for cmd in "${commands[@]}"; do
+        # Extract the command content from install.sh
+        sed -n "/^cat > .claude\/commands\/$cmd.md << 'EOF'$/,/^EOF$/p" "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > "/tmp/xavier_commands_extract/$cmd.md" 2>/dev/null || true
+        if [ -s "/tmp/xavier_commands_extract/$cmd.md" ]; then
+            cp "/tmp/xavier_commands_extract/$cmd.md" ".claude/commands/$cmd.md" 2>/dev/null || true
+        fi
+    done
+
+    rm -rf /tmp/xavier_commands_extract
 fi
 
 # Update instructions
@@ -167,27 +176,40 @@ fi
 # Update agents
 if [ -d ".claude/agents" ]; then
     echo "• Updating agent definitions..."
-    # Extract agent files from install.sh
-    temp_install_dir=$(mktemp -d)
-    cd "$temp_install_dir"
-    bash "$TEMP_DIR/xavier/install.sh" > /dev/null 2>&1 || true
-    cd - > /dev/null
+    # Extract agent files directly from install.sh without running it
+    mkdir -p /tmp/xavier_agents_extract
 
-    if [ -d "$temp_install_dir/.claude/agents" ]; then
-        cp -r "$temp_install_dir/.claude/agents/"* .claude/agents/ 2>/dev/null || true
-    fi
-    rm -rf "$temp_install_dir"
+    # Extract each agent file from install.sh
+    agents=(
+        "project_manager" "python_engineer" "golang_engineer"
+        "frontend_engineer" "context_manager"
+    )
+
+    for agent in "${agents[@]}"; do
+        # Extract the agent content from install.sh
+        sed -n "/^cat > .claude\/agents\/${agent}.md << 'EOF'$/,/^EOF$/p" "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > "/tmp/xavier_agents_extract/${agent}.md" 2>/dev/null || true
+        if [ -s "/tmp/xavier_agents_extract/${agent}.md" ]; then
+            cp "/tmp/xavier_agents_extract/${agent}.md" ".claude/agents/${agent}.md" 2>/dev/null || true
+        fi
+    done
+
+    rm -rf /tmp/xavier_agents_extract
 fi
 
 # Update version in config
 echo "• Updating version information..."
-python3 << EOF
+cat > /tmp/update_config.py << EOPYTH
 import json
+import sys
+
 config_path = '.xavier/config.json'
+
+# Read existing config
 try:
     with open(config_path, 'r') as f:
         config = json.load(f)
-except:
+except Exception as e:
+    print(f"Warning: Could not read config.json: {e}", file=sys.stderr)
     config = {}
 
 # Update version
@@ -198,13 +220,26 @@ if 'settings' not in config:
     config['settings'] = {}
 
 # Add any new config options from latest version
-if 'auto_update_check' not in config['settings']:
+if 'auto_update_check' not in config.get('settings', {}):
+    if 'settings' not in config:
+        config['settings'] = {}
     config['settings']['auto_update_check'] = True
 
 # Write updated config
-with open(config_path, 'w') as f:
-    json.dump(config, f, indent=2)
-EOF
+try:
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=2)
+    print(f"Successfully updated config to version $LATEST_VERSION")
+except Exception as e:
+    print(f"Error writing config: {e}", file=sys.stderr)
+    sys.exit(1)
+EOPYTH
+
+python3 /tmp/update_config.py || {
+    echo -e "${RED}Failed to update version information${NC}"
+    echo "Attempting to continue with update..."
+}
+rm -f /tmp/update_config.py
 
 # Update xavier_bridge.py if it exists
 if [ -f ".xavier/xavier_bridge.py" ]; then
