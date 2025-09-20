@@ -5,6 +5,39 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2025-09-19
+
+### Fixed
+- **Critical Data Persistence Bug**: Fixed fundamental dataclass/dictionary mismatch
+  - Data models were defined as dataclasses but stored/loaded as plain dictionaries
+  - Caused AttributeError when accessing loaded data (e.g., story.status, story.story_points)
+  - Affected all SCRUM operations: stories, tasks, bugs, sprints, epics
+
+### Added
+- **Proper Serialization/Deserialization**: Complete data persistence solution
+  - Added `serialize_dataclass()` and `deserialize_to_dataclass()` utilities
+  - Handles datetime conversion between objects and ISO strings
+  - Supports enum serialization for SprintStatus
+- **Compatibility Layer**: Safe attribute access for mixed data types
+  - `safe_get_attr()` works with both dataclass instances and dictionaries
+  - `safe_set_attr()` provides unified interface for modifications
+  - Ensures backward compatibility with existing data
+- **Comprehensive Unit Tests**: Full test coverage for persistence
+  - Tests for serialization/deserialization
+  - Tests for compatibility layer
+  - Tests for backward compatibility with old JSON format
+  - End-to-end persistence tests
+
+### Technical Details
+- Fixed `_load_data()` to properly convert JSON to dataclass instances
+- Fixed `_save_data()` to properly serialize dataclasses to JSON
+- Updated all attribute access in `scrum_manager.py` to use compatibility helpers
+- Updated `xavier_commands.py` methods for safe attribute access
+- Maintains backward compatibility with projects using old dictionary format
+
+### Impact
+This fix resolves critical issues reported by partners where Xavier would crash with AttributeError when loading saved data. All SCRUM operations now work correctly with persisted data.
+
 ## [1.1.3] - 2025-09-19
 
 ### Fixed

@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from ..core.xavier_engine import XavierEngine, ItemType, Priority
-from ..scrum.scrum_manager import SCRUMManager
+from ..scrum.scrum_manager import SCRUMManager, safe_get_attr, safe_set_attr
 from ..agents.orchestrator import AgentOrchestrator, AgentTask
 
 # Try to import ANSI art module
@@ -345,7 +345,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.1.3"
+            "xavier_version": "1.1.4"
         }
 
         # Save project configuration
@@ -939,7 +939,8 @@ This project follows Xavier Framework standards:
             # Estimate all unestimated backlog stories
             stories_to_estimate = [
                 s for s in self.scrum.stories.values()
-                if s.status == "Backlog" and (s.story_points == 0 or estimate_all)
+                if safe_get_attr(s, 'status') == "Backlog" and
+                (safe_get_attr(s, 'story_points', 0) == 0 or estimate_all)
             ]
 
         if not stories_to_estimate:
@@ -957,11 +958,16 @@ This project follows Xavier Framework standards:
         results = []
         for story in stories_to_estimate:
             # Create estimation task for PM agent
+            story_id = safe_get_attr(story, 'id')
+            story_title = safe_get_attr(story, 'title', 'Untitled Story')
+            story_description = safe_get_attr(story, 'description', '')
+            story_criteria = safe_get_attr(story, 'acceptance_criteria', [])
+
             task = AgentTask(
-                task_id=f"ESTIMATE-{story.id}",
+                task_id=f"ESTIMATE-{story_id}",
                 task_type="estimate_story",
-                description=f"{story.title}. {story.description}",
-                requirements=story.acceptance_criteria,
+                description=f"{story_title}. {story_description}",
+                requirements=story_criteria,
                 test_requirements={},
                 acceptance_criteria=["Provide story point estimate"],
                 tech_constraints=[]
@@ -972,12 +978,12 @@ This project follows Xavier Framework standards:
 
             if result.success:
                 points = result.validation_results.get("story_points", 5)
-                self.scrum.estimate_story(story.id, points)
-                story.story_points = points
+                self.scrum.estimate_story(story_id, points)
+                safe_set_attr(story, 'story_points', points)
 
                 results.append({
-                    "story_id": story.id,
-                    "title": story.title,
+                    "story_id": story_id,
+                    "title": story_title,
                     "points": points
                 })
 
@@ -1168,24 +1174,26 @@ This project follows Xavier Framework standards:
         # Get top priority items
         priority_items = []
         for story in self.scrum.stories.values():
-            if story.status == "Backlog":
+            if safe_get_attr(story, 'status') == "Backlog":
                 priority_items.append({
                     "type": "Story",
-                    "id": story.id,
-                    "title": story.title,
-                    "points": story.story_points,
-                    "priority": story.priority
+                    "id": safe_get_attr(story, 'id'),
+                    "title": safe_get_attr(story, 'title'),
+                    "points": safe_get_attr(story, 'story_points', 0),
+                    "priority": safe_get_attr(story, 'priority', 'Medium')
                 })
 
         for bug in self.scrum.bugs.values():
-            if bug.status == "Open" and bug.severity in ["Critical", "High"]:
+            status = safe_get_attr(bug, 'status')
+            severity = safe_get_attr(bug, 'severity', 'Medium')
+            if status == "Open" and severity in ["Critical", "High"]:
                 priority_items.append({
                     "type": "Bug",
-                    "id": bug.id,
-                    "title": bug.title,
-                    "points": bug.story_points,
-                    "priority": bug.priority,
-                    "severity": bug.severity
+                    "id": safe_get_attr(bug, 'id'),
+                    "title": safe_get_attr(bug, 'title'),
+                    "points": safe_get_attr(bug, 'story_points', 0),
+                    "priority": safe_get_attr(bug, 'priority', 'Medium'),
+                    "severity": severity
                 })
 
         report["top_priority_items"] = sorted(
@@ -1209,7 +1217,7 @@ This project follows Xavier Framework standards:
         import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
-            subprocess.run([greeting_script, "welcome", "1.1.3"], check=False)
+            subprocess.run([greeting_script, "welcome", "1.1.4"], check=False)
 
         help_text = """# Xavier Framework Commands
 
@@ -1353,7 +1361,7 @@ Estimated sprints: 0.7
         return {
             "help": help_text,
             "commands_count": 22,
-            "framework_version": "1.1.3"
+            "framework_version": "1.1.4"
         }
 
     def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:

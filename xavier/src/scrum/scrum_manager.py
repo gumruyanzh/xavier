@@ -7,7 +7,7 @@ import json
 import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from enum import Enum
 import os
 
@@ -128,6 +128,75 @@ class Roadmap:
     created_at: datetime = field(default_factory=datetime.now)
 
 
+# Serialization utilities for dataclass persistence
+def datetime_to_str(dt: Optional[datetime]) -> Optional[str]:
+    """Convert datetime to ISO format string"""
+    return dt.isoformat() if dt else None
+
+
+def str_to_datetime(dt_str: Optional[str]) -> Optional[datetime]:
+    """Convert ISO format string to datetime"""
+    return datetime.fromisoformat(dt_str) if dt_str else None
+
+
+def serialize_dataclass(obj: Any) -> Dict[str, Any]:
+    """Convert dataclass instance to JSON-serializable dict"""
+    data = asdict(obj)
+
+    # Convert datetime fields to strings
+    for key, value in data.items():
+        if isinstance(value, datetime):
+            data[key] = datetime_to_str(value)
+        elif isinstance(value, Enum):
+            data[key] = value.value
+
+    return data
+
+
+def deserialize_to_dataclass(data: Dict[str, Any], dataclass_type: type) -> Any:
+    """Convert dict to dataclass instance with proper type conversion"""
+    # Convert datetime strings back to datetime objects
+    datetime_fields = {
+        'created_at', 'updated_at', 'resolved_at', 'start_date', 'end_date'
+    }
+
+    for field_name in datetime_fields:
+        if field_name in data and data[field_name]:
+            data[field_name] = str_to_datetime(data[field_name])
+
+    # Handle SprintStatus enum for Sprint dataclass
+    if dataclass_type == Sprint and 'status' in data:
+        if isinstance(data['status'], str):
+            try:
+                data['status'] = SprintStatus(data['status'])
+            except ValueError:
+                # Keep as string if not a valid enum value
+                pass
+
+    return dataclass_type(**data)
+
+
+def safe_get_attr(obj: Any, attr: str, default: Any = None) -> Any:
+    """
+    Safely get attribute from either a dataclass instance or dictionary.
+    This provides compatibility between the two data representations.
+    """
+    if isinstance(obj, dict):
+        return obj.get(attr, default)
+    return getattr(obj, attr, default)
+
+
+def safe_set_attr(obj: Any, attr: str, value: Any) -> None:
+    """
+    Safely set attribute on either a dataclass instance or dictionary.
+    This provides compatibility between the two data representations.
+    """
+    if isinstance(obj, dict):
+        obj[attr] = value
+    else:
+        setattr(obj, attr, value)
+
+
 class SCRUMManager:
     """Manages SCRUM workflow with strict process enforcement"""
 
@@ -153,27 +222,35 @@ class SCRUMManager:
         self._load_data()
 
     def _load_data(self):
-        """Load existing SCRUM data from disk"""
-        data_files = {
-            "stories": self.stories,
-            "tasks": self.tasks,
-            "bugs": self.bugs,
-            "sprints": self.sprints,
-            "epics": self.epics,
-            "roadmaps": self.roadmaps
+        """Load existing SCRUM data from disk with proper deserialization"""
+        data_type_map = {
+            "stories": (self.stories, UserStory),
+            "tasks": (self.tasks, Task),
+            "bugs": (self.bugs, Bug),
+            "sprints": (self.sprints, Sprint),
+            "epics": (self.epics, Epic),
+            "roadmaps": (self.roadmaps, Roadmap)
         }
 
-        for data_type, storage in data_files.items():
+        for data_type, (storage, dataclass_type) in data_type_map.items():
             file_path = os.path.join(self.data_dir, f"{data_type}.json")
             if os.path.exists(file_path):
-                with open(file_path, 'r') as f:
-                    data = json.load(f)
-                    # Convert back to dataclass instances
-                    # Note: In production, use proper serialization
-                    storage.update(data)
+                try:
+                    with open(file_path, 'r') as f:
+                        data = json.load(f)
+                        # Convert dictionaries to dataclass instances
+                        for key, value in data.items():
+                            try:
+                                storage[key] = deserialize_to_dataclass(value, dataclass_type)
+                            except Exception as e:
+                                print(f"Warning: Failed to deserialize {data_type} {key}: {e}")
+                                # Fall back to dict for backward compatibility
+                                storage[key] = value
+                except Exception as e:
+                    print(f"Error loading {data_type}: {e}")
 
     def _save_data(self):
-        """Save SCRUM data to disk"""
+        """Save SCRUM data to disk with proper serialization"""
         data_files = {
             "stories": self.stories,
             "tasks": self.tasks,
@@ -185,9 +262,21 @@ class SCRUMManager:
 
         for data_type, storage in data_files.items():
             file_path = os.path.join(self.data_dir, f"{data_type}.json")
-            # Note: In production, use proper serialization for dataclasses
-            # with open(file_path, 'w') as f:
-            #     json.dump(storage, f, indent=2, default=str)
+            try:
+                serializable_data = {}
+                for key, obj in storage.items():
+                    # Handle both dataclass instances and dicts (for backward compatibility)
+                    if hasattr(obj, '__dataclass_fields__'):
+                        # It's a dataclass instance
+                        serializable_data[key] = serialize_dataclass(obj)
+                    else:
+                        # It's already a dict (backward compatibility)
+                        serializable_data[key] = obj
+
+                with open(file_path, 'w') as f:
+                    json.dump(serializable_data, f, indent=2, default=str)
+            except Exception as e:
+                print(f"Error saving {data_type}: {e}")
 
     def create_story(self, title: str, as_a: str, i_want: str, so_that: str,
                     acceptance_criteria: List[str], priority: str = "Medium",
@@ -345,12 +434,13 @@ class SCRUMManager:
             raise ValueError(f"Points must be in Fibonacci scale: {self.story_point_scale}")
 
         story = self.stories[story_id]
-        story.story_points = points
-        story.updated_at = datetime.now()
+        safe_set_attr(story, 'story_points', points)
+        safe_set_attr(story, 'updated_at', datetime.now())
 
         # Update epic total if part of one
-        if story.epic_id and story.epic_id in self.epics:
-            self._update_epic_points(story.epic_id)
+        epic_id = safe_get_attr(story, 'epic_id')
+        if epic_id and epic_id in self.epics:
+            self._update_epic_points(epic_id)
 
         self._save_data()
         return story
@@ -361,15 +451,17 @@ class SCRUMManager:
         total_points = 0
         completed_points = 0
 
-        for story_id in epic.stories:
+        epic_stories = safe_get_attr(epic, 'stories', [])
+        for story_id in epic_stories:
             if story_id in self.stories:
                 story = self.stories[story_id]
-                total_points += story.story_points
-                if story.status == "Done":
-                    completed_points += story.story_points
+                story_points = safe_get_attr(story, 'story_points', 0)
+                total_points += story_points
+                if safe_get_attr(story, 'status') == "Done":
+                    completed_points += story_points
 
-        epic.total_points = total_points
-        epic.completed_points = completed_points
+        safe_set_attr(epic, 'total_points', total_points)
+        safe_set_attr(epic, 'completed_points', completed_points)
 
     def create_sprint(self, name: str, goal: str, duration_days: int = 14) -> Sprint:
         """Create a new sprint"""
@@ -602,14 +694,18 @@ class SCRUMManager:
         """Get all backlog stories that haven't been estimated"""
         return [
             s for s in self.stories.values()
-            if s.status == "Backlog" and s.story_points == 0
+            if safe_get_attr(s, 'status') == "Backlog" and safe_get_attr(s, 'story_points', 0) == 0
         ]
 
     def get_backlog_report(self) -> Dict[str, Any]:
         """Generate backlog report with metrics"""
-        total_stories = len([s for s in self.stories.values() if s.status == "Backlog"])
-        total_bugs = len([b for b in self.bugs.values() if b.status == "Open"])
-        total_points = sum(s.story_points for s in self.stories.values() if s.status == "Backlog")
+        total_stories = len([s for s in self.stories.values() if safe_get_attr(s, 'status') == "Backlog"])
+        total_bugs = len([b for b in self.bugs.values() if safe_get_attr(b, 'status') == "Open"])
+        total_points = sum(
+            safe_get_attr(s, 'story_points', 0)
+            for s in self.stories.values()
+            if safe_get_attr(s, 'status') == "Backlog"
+        )
         unestimated_count = len(self.get_unestimated_stories())
 
         return {
@@ -619,7 +715,8 @@ class SCRUMManager:
             "unestimated_stories": unestimated_count,
             "estimated_sprints": total_points / self._calculate_velocity() if total_points > 0 else 0,
             "critical_bugs": len([b for b in self.bugs.values()
-                                if b.status == "Open" and b.severity == "Critical"])
+                                if safe_get_attr(b, 'status') == "Open" and
+                                safe_get_attr(b, 'severity') == "Critical"])
         }
 
     def get_sprint_report(self, sprint_id: str) -> Dict[str, Any]:
