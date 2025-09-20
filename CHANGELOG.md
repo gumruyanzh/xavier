@@ -5,6 +5,20 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2025-09-19
+
+### Fixed
+- **Critical Update Script Bug**: Fixed command extraction failing when Xavier downloaded as archive
+  - Update script now properly detects install.sh location for both git clone and archive download
+  - Commands properly extracted regardless of download method
+  - Added verbose output showing which commands are being updated
+
+### Added
+- **fix-commands.sh**: Quick fix script for users affected by 1.1.2 update issue
+  - Manually installs estimate-story and set-story-points commands
+  - Can be run without full Xavier update
+  - Validates Xavier version before applying fix
+
 ## [1.1.2] - 2025-09-19
 
 ### Added

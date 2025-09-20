@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.0.3
+# Version 1.1.3
 
 set -e
 set -o pipefail
@@ -133,6 +133,14 @@ fi
 # Return to original directory
 cd - > /dev/null
 
+# Find install.sh in either location (git clone vs archive)
+INSTALL_SCRIPT=""
+if [ -f "$TEMP_DIR/xavier/install.sh" ]; then
+    INSTALL_SCRIPT="$TEMP_DIR/xavier/install.sh"
+elif [ -f "$TEMP_DIR/install.sh" ]; then
+    INSTALL_SCRIPT="$TEMP_DIR/install.sh"
+fi
+
 # Update framework files
 echo -e "${BLUE}Updating Xavier Framework files...${NC}"
 
@@ -169,13 +177,18 @@ if [ -d ".claude/commands" ]; then
         "create-project" "estimate-story" "set-story-points"
     )
 
-    for cmd in "${commands[@]}"; do
-        # Extract the command content from install.sh
-        sed -n "/^cat > .claude\/commands\/$cmd.md << 'EOF'$/,/^EOF$/p" "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > "/tmp/xavier_commands_extract/$cmd.md" 2>/dev/null || true
-        if [ -s "/tmp/xavier_commands_extract/$cmd.md" ]; then
-            cp "/tmp/xavier_commands_extract/$cmd.md" ".claude/commands/$cmd.md" 2>/dev/null || true
-        fi
-    done
+    if [ -n "$INSTALL_SCRIPT" ]; then
+        for cmd in "${commands[@]}"; do
+            # Extract the command content from install.sh
+            sed -n "/^cat > .claude\/commands\/$cmd.md << 'EOF'$/,/^EOF$/p" "$INSTALL_SCRIPT" | sed '1d;$d' > "/tmp/xavier_commands_extract/$cmd.md" 2>/dev/null || true
+            if [ -s "/tmp/xavier_commands_extract/$cmd.md" ]; then
+                cp "/tmp/xavier_commands_extract/$cmd.md" ".claude/commands/$cmd.md" 2>/dev/null || true
+                echo "  - Updated command: $cmd"
+            fi
+        done
+    else
+        echo -e "${YELLOW}Warning: Could not find install.sh to extract commands${NC}"
+    fi
 
     rm -rf /tmp/xavier_commands_extract
 fi
@@ -184,7 +197,9 @@ fi
 if [ -f ".claude/instructions.md" ]; then
     echo "• Updating Claude Code instructions..."
     # Extract the instructions from install.sh and update
-    sed -n '/^cat > .claude\/instructions.md << '\''EOF'\''/,/^EOF$/p' "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > .claude/instructions.md
+    if [ -n "$INSTALL_SCRIPT" ]; then
+        sed -n '/^cat > .claude\/instructions.md << '\''EOF'\''/,/^EOF$/p' "$INSTALL_SCRIPT" | sed '1d;$d' > .claude/instructions.md
+    fi
 fi
 
 # Update agents
@@ -201,7 +216,9 @@ if [ -d ".claude/agents" ]; then
 
     for agent in "${agents[@]}"; do
         # Extract the agent content from install.sh
-        sed -n "/^cat > .claude\/agents\/${agent}.md << 'EOF'$/,/^EOF$/p" "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > "/tmp/xavier_agents_extract/${agent}.md" 2>/dev/null || true
+        if [ -n "$INSTALL_SCRIPT" ]; then
+            sed -n "/^cat > .claude\/agents\/${agent}.md << 'EOF'$/,/^EOF$/p" "$INSTALL_SCRIPT" | sed '1d;$d' > "/tmp/xavier_agents_extract/${agent}.md" 2>/dev/null || true
+        fi
         if [ -s "/tmp/xavier_agents_extract/${agent}.md" ]; then
             cp "/tmp/xavier_agents_extract/${agent}.md" ".claude/agents/${agent}.md" 2>/dev/null || true
         fi
@@ -258,9 +275,9 @@ rm -f /tmp/update_config.py
 # Update xavier_bridge.py if it exists
 if [ -f ".xavier/xavier_bridge.py" ]; then
     echo "• Updating xavier_bridge.py..."
-    if [ -f "$TEMP_DIR/xavier/install.sh" ]; then
+    if [ -n "$INSTALL_SCRIPT" ]; then
         # Extract xavier_bridge.py from install.sh
-        sed -n '/^cat > .xavier\/xavier_bridge.py << '\''EOF'\''/,/^EOF$/p' "$TEMP_DIR/xavier/install.sh" | sed '1d;$d' > .xavier/xavier_bridge.py
+        sed -n '/^cat > .xavier\/xavier_bridge.py << '\''EOF'\''/,/^EOF$/p' "$INSTALL_SCRIPT" | sed '1d;$d' > .xavier/xavier_bridge.py
         chmod +x .xavier/xavier_bridge.py
     fi
 fi
