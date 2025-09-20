@@ -452,9 +452,7 @@ MIT License - See LICENSE file for details
 
 ## Support
 
-- Documentation: https://xavier-framework.dev
-- Issues: https://github.com/xavier-framework/xavier/issues
-- Discord: https://discord.gg/xavier-dev
+- Documentation: https://gumruyan.com/xavier/documentation.html
 
 ## Credits
 
