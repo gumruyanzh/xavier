@@ -33,6 +33,27 @@ else
     exit 1
 fi
 
+# Check if Xavier is already installed
+if [ -d ".xavier" ] && [ -f ".xavier/config.json" ]; then
+    echo -e "${YELLOW}Xavier Framework is already installed in this project!${NC}"
+    CURRENT_VERSION=$(python3 -c "import json; print(json.load(open('.xavier/config.json'))['xavier_version'])" 2>/dev/null || echo "1.0.0")
+    echo -e "${BLUE}Current version: ${YELLOW}$CURRENT_VERSION${NC}"
+    echo ""
+    echo "To update Xavier to the latest version, run:"
+    echo -e "${GREEN}  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash${NC}"
+    echo ""
+    echo "Or use the Xavier command:"
+    echo -e "${GREEN}  /xavier-update${NC}"
+    echo ""
+    read -p "Do you want to reinstall anyway? This will overwrite your installation (y/n): " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Installation cancelled. Use the update command to get latest features.${NC}"
+        exit 0
+    fi
+    echo -e "${YELLOW}Proceeding with reinstallation...${NC}"
+fi
+
 # Detect installation mode
 if [ "$1" == "new" ]; then
     MODE="new"
@@ -125,7 +146,7 @@ print("Initializing Xavier Framework...")
 config = {
     "name": Path.cwd().name,
     "version": "1.0.0",
-    "xavier_version": "1.0.0",
+    "xavier_version": "1.0.2",
     "settings": {
         "strict_mode": True,
         "test_first": True,
@@ -724,6 +745,45 @@ Type `/xavier-help` to see all commands.
 Displays all available Xavier commands with descriptions and examples.
 EOF
 
+# xavier-update command
+cat > .claude/commands/xavier-update.md << 'EOF'
+# xavier-update
+
+Check for and install Xavier Framework updates.
+
+## Usage
+
+Type `/xavier-update` to check for updates.
+
+## Features
+
+- Checks current version against latest
+- Shows changelog of new features
+- Backs up user data before updating
+- Preserves stories, tasks, and sprints
+- Updates framework code and commands
+
+## Response
+
+When updates are available:
+```
+Xavier Framework update available: 1.0.0 → 1.0.2
+
+What's new:
+• Intelligent /create-project command
+• Strict command boundaries
+• Enhanced documentation
+
+To update, run:
+  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash
+```
+
+When up to date:
+```
+✅ Xavier Framework is up to date (version 1.0.2)
+```
+EOF
+
 # create-project command
 cat > .claude/commands/create-project.md << 'EOF'
 # create-project
@@ -863,7 +923,8 @@ def main():
         'create-sprint': '/create-sprint',
         'start-sprint': '/start-sprint',
         'show-backlog': '/show-backlog',
-        'xavier-help': '/xavier-help'
+        'xavier-help': '/xavier-help',
+        'xavier-update': '/xavier-update'
     }
 
     xavier_command = command_map.get(command.replace('/', ''), f"/{command}")

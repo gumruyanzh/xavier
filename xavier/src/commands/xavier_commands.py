@@ -66,7 +66,8 @@ class XavierCommands:
             "/list-bugs": self.list_bugs,
             "/show-backlog": self.show_backlog,
             "/show-sprint": self.show_sprint,
-            "/xavier-help": self.show_help
+            "/xavier-help": self.show_help,
+            "/xavier-update": self.xavier_update
         }
 
     def execute(self, command: str, args: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -1217,9 +1218,78 @@ Creates a new project with AI-powered analysis of requirements and automatic tec
 """
         return {
             "help": help_text,
-            "commands_count": 21,
-            "framework_version": "1.0.1"
+            "commands_count": 22,
+            "framework_version": "1.0.2"
         }
+
+    def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Check for and install Xavier Framework updates"""
+        import subprocess
+        import requests
+
+        # Get current version
+        current_version = "1.0.2"  # Will be read from VERSION file
+        try:
+            with open(os.path.join(self.project_path, ".xavier", "config.json"), 'r') as f:
+                config = json.load(f)
+                current_version = config.get("xavier_version", "1.0.0")
+        except:
+            pass
+
+        # Check for latest version
+        try:
+            response = requests.get("https://raw.githubusercontent.com/gumruyanzh/xavier/main/VERSION")
+            latest_version = response.text.strip()
+        except:
+            return {
+                "success": False,
+                "error": "Unable to check for updates. Please check your internet connection.",
+                "current_version": current_version
+            }
+
+        # Compare versions
+        def version_tuple(v):
+            return tuple(map(int, (v.split("."))))
+
+        if version_tuple(latest_version) > version_tuple(current_version):
+            # New version available
+            changelog = self._get_update_changelog(current_version, latest_version)
+
+            return {
+                "success": True,
+                "update_available": True,
+                "current_version": current_version,
+                "latest_version": latest_version,
+                "changelog": changelog,
+                "update_command": "curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash",
+                "message": f"Xavier Framework update available: {current_version} → {latest_version}\n\n" +
+                          f"What's new:\n{changelog}\n\n" +
+                          f"To update, run:\n  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash"
+            }
+        else:
+            return {
+                "success": True,
+                "update_available": False,
+                "current_version": current_version,
+                "message": f"✅ Xavier Framework is up to date (version {current_version})"
+            }
+
+    def _get_update_changelog(self, current_version: str, latest_version: str) -> str:
+        """Get changelog for version update"""
+        # This could fetch from CHANGELOG.md in the future
+        changelog = ""
+
+        if current_version in ["1.0.0", "1.0.1"]:
+            changelog += "• Intelligent /create-project command with AI-powered analysis\n"
+            changelog += "• Strict command boundaries preventing auto-implementation\n"
+            changelog += "• /xavier-update command for easy updates\n"
+            changelog += "• Enhanced project templates and tech stack detection\n"
+            changelog += "• Improved command documentation with examples\n"
+
+        if not changelog:
+            changelog = "• Bug fixes and improvements"
+
+        return changelog
 
     def _detect_task_tech_constraints(self, task) -> List[str]:
         """Detect technology constraints from task description"""
