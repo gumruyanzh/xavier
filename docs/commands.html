@@ -415,6 +415,62 @@
 
                 <div class="command-item">
                     <div class="command-header">
+                        <h3 class="command-title">/estimate-story</h3>
+                        <span class="command-badge" style="background: #FF00FF; color: white;">PM AGENT</span>
+                    </div>
+                    <p class="command-description">
+                        Automatically estimate story points using the Project Manager agent's complexity analysis algorithm.
+                    </p>
+                    <div class="command-syntax">
+                        /estimate-story [story_id] [--all]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">story_id</span>
+                            <span class="param-optional">optional</span>
+                            <span>Specific story to estimate (estimates all unestimated if omitted)</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">--all</span>
+                            <span class="param-optional">optional</span>
+                            <span>Force re-estimation of all stories</span>
+                        </div>
+                    </div>
+                    <div class="command-features">
+                        <h4>PM Agent Analysis:</h4>
+                        <ul>
+                            <li>Technical complexity (API, database, authentication)</li>
+                            <li>CRUD operations count</li>
+                            <li>Acceptance criteria complexity</li>
+                            <li>UI/UX requirements</li>
+                            <li>Testing requirements</li>
+                            <li>Maps to Fibonacci points (1,2,3,5,8,13,21)</li>
+                        </ul>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /estimate-story
+                            </div>
+                            <div class="example-description">
+                                Estimates all unestimated backlog stories
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /estimate-story STORY-001
+                            </div>
+                            <div class="example-description">
+                                Estimates specific story STORY-001
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-item">
+                    <div class="command-header">
                         <h3 class="command-title">/create-sprint</h3>
                         <span class="command-badge">SPRINT</span>
                     </div>

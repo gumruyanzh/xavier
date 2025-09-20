@@ -5,6 +5,24 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-09-19
+
+### Added
+- **Automatic Story Estimation Command**: `/estimate-story` now uses PM agent for intelligent estimation
+  - Comprehensive complexity analysis algorithm
+  - Batch estimation for entire backlog
+  - Specific story estimation with story ID
+  - Force re-estimation with --all flag
+
+### Changed
+- Renamed `/estimate-story` to `/set-story-points` for manual point setting
+- Enhanced PM agent with sophisticated scoring system
+
+### Improved
+- PM agent analyzes technical complexity, CRUD operations, UI/UX requirements
+- Complexity scores map to Fibonacci story points
+- Visual feedback shows PM agent working with colored display
+
 ## [1.1.0] - 2025-09-19
 
 ### Added

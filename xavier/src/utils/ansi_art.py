@@ -182,7 +182,7 @@ class XavierArt:
         return f"{color}{'═' * width}{ANSIColors.RESET}"
 
 
-def display_welcome(version: str = "1.1.0") -> None:
+def display_welcome(version: str = "1.1.1") -> None:
     """Display welcome screen for Xavier Framework"""
     width = XavierArt.get_terminal_width()
 
