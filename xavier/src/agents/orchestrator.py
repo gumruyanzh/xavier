@@ -5,12 +5,17 @@ Manages and coordinates all sub-agents with strict task delegation
 
 import json
 import os
+import sys
 from typing import Dict, List, Optional, Any, Type
 from dataclasses import dataclass
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import importlib
 import inspect
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.ansi_art import display_agent_handoff, display_agent_status, ANSIColors
 
 from .base_agent import (
     BaseAgent, AgentTask, AgentResult, AgentCapability,
@@ -40,6 +45,7 @@ class AgentOrchestrator:
         self.agent_registry: Dict[str, Type[BaseAgent]] = {}
         self.tech_stack: Optional[TechStackInfo] = None
         self.logger = logging.getLogger("Xavier.Orchestrator")
+        self._last_agent: Optional[str] = None  # Track last active agent for handoffs
 
         # Initialize default agents
         self._initialize_default_agents()
@@ -283,6 +289,7 @@ class AgentOrchestrator:
         selected_agent = self._select_agent_for_task(task)
 
         if not selected_agent:
+            print(f"\n{ANSIColors.RED}❌ No suitable agent found for task: {task.task_id}{ANSIColors.RESET}")
             return AgentResult(
                 success=False,
                 task_id=task.task_id,
@@ -297,6 +304,7 @@ class AgentOrchestrator:
         # Validate agent can handle task
         can_handle, validation_errors = selected_agent.validate_task(task)
         if not can_handle:
+            print(f"\n{ANSIColors.YELLOW}⚠️ {selected_agent.name} cannot handle task{ANSIColors.RESET}")
             return AgentResult(
                 success=False,
                 task_id=task.task_id,
@@ -308,8 +316,13 @@ class AgentOrchestrator:
                 errors=validation_errors
             )
 
+        # Show agent handoff if there was a previous agent
+        if hasattr(self, '_last_agent') and self._last_agent and self._last_agent != selected_agent.name:
+            display_agent_handoff(self._last_agent, selected_agent.name, f"Task: {task.task_type}")
+
         # Execute task with selected agent
         self.logger.info(f"Delegating task {task.task_id} to {selected_agent.name}")
+        self._last_agent = selected_agent.name
         result = selected_agent.execute_task(task)
 
         # Validate result meets acceptance criteria
@@ -373,12 +386,18 @@ class AgentOrchestrator:
         # Sort tasks by dependencies and priority
         sorted_tasks = self._topological_sort_tasks(tasks)
 
-        for task in sorted_tasks:
+        print(f"\n{ANSIColors.BOLD_CYAN}{'═' * 60}{ANSIColors.RESET}")
+        print(f"{ANSIColors.BOLD_WHITE}🚀 Sprint Execution Started - {len(sorted_tasks)} tasks{ANSIColors.RESET}")
+        print(f"{ANSIColors.BOLD_CYAN}{'═' * 60}{ANSIColors.RESET}\n")
+
+        for i, task in enumerate(sorted_tasks, 1):
+            print(f"\n{ANSIColors.LIGHT_CYAN}Task {i}/{len(sorted_tasks)}: {task.task_id}{ANSIColors.RESET}")
             self.logger.info(f"Executing task: {task.task_id}")
 
             # Check if all dependencies are complete
             dependent_results = [r for r in results if r.task_id in task.dependencies]
             if not all(r.success for r in dependent_results):
+                display_agent_status("Orchestrator", "Failed", "Dependencies not satisfied")
                 result = AgentResult(
                     success=False,
                     task_id=task.task_id,
@@ -397,10 +416,17 @@ class AgentOrchestrator:
 
             # Strict check - stop if task fails
             if not result.success:
+                print(f"\n{ANSIColors.RED}❌ Task {task.task_id} failed. Stopping sprint execution.{ANSIColors.RESET}")
                 self.logger.error(f"Task {task.task_id} failed. Stopping sprint execution.")
                 break
 
             results.append(result)
+
+        # Sprint summary
+        successful = sum(1 for r in results if r.success)
+        print(f"\n{ANSIColors.BOLD_CYAN}{'═' * 60}{ANSIColors.RESET}")
+        print(f"{ANSIColors.BOLD_WHITE}Sprint Execution Complete: {successful}/{len(sorted_tasks)} tasks successful{ANSIColors.RESET}")
+        print(f"{ANSIColors.BOLD_CYAN}{'═' * 60}{ANSIColors.RESET}\n")
 
         return results
 

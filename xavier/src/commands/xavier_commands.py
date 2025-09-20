@@ -344,7 +344,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.0.3"
+            "xavier_version": "1.1.0"
         }
 
         # Save project configuration
@@ -1126,7 +1126,7 @@ This project follows Xavier Framework standards:
         import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
-            subprocess.run([greeting_script, "welcome", "1.0.3"], check=False)
+            subprocess.run([greeting_script, "welcome", "1.1.0"], check=False)
 
         help_text = """# Xavier Framework Commands
 
@@ -1239,7 +1239,7 @@ Creates a new project with AI-powered analysis of requirements and automatic tec
         return {
             "help": help_text,
             "commands_count": 22,
-            "framework_version": "1.0.2"
+            "framework_version": "1.1.0"
         }
 
     def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:

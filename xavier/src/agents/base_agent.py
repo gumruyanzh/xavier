@@ -11,6 +11,12 @@ from dataclasses import dataclass
 import logging
 import re
 import ast
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.ansi_art import AgentColors, ANSIColors, display_agent_takeover, display_agent_status, display_agent_result
 
 
 @dataclass
@@ -78,6 +84,21 @@ class BaseAgent(ABC):
         """Check if action is permitted for this agent"""
         return action not in self.capabilities.restricted_actions
 
+    def start_task(self, task: AgentTask) -> None:
+        """Start working on a task with colored output"""
+        self.current_task = task
+        display_agent_takeover(self.name, task.description)
+        display_agent_status(self.name, "Working", f"Task: {task.task_id}")
+
+    def update_status(self, status: str, details: Optional[str] = None) -> None:
+        """Update agent status with colored output"""
+        display_agent_status(self.name, status, details)
+
+    def complete_task(self, success: bool, summary: str) -> None:
+        """Complete current task with colored result display"""
+        display_agent_result(self.name, success, summary)
+        self.current_task = None
+
 
 class ProjectManagerAgent(BaseAgent):
     """Project Manager - Handles sprint planning and task assignment"""
@@ -106,14 +127,16 @@ class ProjectManagerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute project management tasks"""
+        self.start_task(task)
+
         if task.task_type == "estimate_story":
-            return self._estimate_story_points(task)
+            result = self._estimate_story_points(task)
         elif task.task_type == "plan_sprint":
-            return self._plan_sprint(task)
+            result = self._plan_sprint(task)
         elif task.task_type == "assign_tasks":
-            return self._assign_tasks(task)
+            result = self._assign_tasks(task)
         else:
-            return AgentResult(
+            result = AgentResult(
                 success=False,
                 task_id=task.task_id,
                 output="",
@@ -123,6 +146,9 @@ class ProjectManagerAgent(BaseAgent):
                 validation_results={},
                 errors=[f"Unknown task type: {task.task_type}"]
             )
+
+        self.complete_task(result.success, result.output[:100] if result.output else "Task completed")
+        return result
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate project management task"""
@@ -206,14 +232,16 @@ class ContextManagerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute context management tasks"""
+        self.start_task(task)
+
         if task.task_type == "analyze_codebase":
-            return self._analyze_codebase(task)
+            result = self._analyze_codebase(task)
         elif task.task_type == "find_implementations":
-            return self._find_implementations(task)
+            result = self._find_implementations(task)
         elif task.task_type == "check_dependencies":
-            return self._check_dependencies(task)
+            result = self._check_dependencies(task)
         else:
-            return AgentResult(
+            result = AgentResult(
                 success=False,
                 task_id=task.task_id,
                 output="",
@@ -223,6 +251,9 @@ class ContextManagerAgent(BaseAgent):
                 validation_results={},
                 errors=[f"Unknown task type: {task.task_type}"]
             )
+
+        self.complete_task(result.success, result.output[:100] if result.output else "Analysis completed")
+        return result
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate context management task"""
@@ -289,9 +320,11 @@ class PythonEngineerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Python development tasks with test-first approach"""
+        self.start_task(task)
+
         # Validate language constraint
         if not self._validate_python_only(task):
-            return AgentResult(
+            result = AgentResult(
                 success=False,
                 task_id=task.task_id,
                 output="",
@@ -301,18 +334,26 @@ class PythonEngineerAgent(BaseAgent):
                 validation_results={},
                 errors=["Task requires non-Python code. Python Engineer can only write Python."]
             )
+            self.complete_task(False, "Task requires non-Python code")
+            return result
 
         # Test-first enforcement
         if task.task_type == "implement_feature":
+            self.update_status("Testing", "Writing tests first (TDD)")
             # Write tests first
             test_result = self._write_tests_first(task)
             if not test_result.success:
+                self.complete_task(False, "Failed to write tests")
                 return test_result
 
+            self.update_status("Working", "Implementing feature")
             # Then implement
-            return self._implement_python_feature(task)
+            result = self._implement_python_feature(task)
+        else:
+            result = self._execute_python_task(task)
 
-        return self._execute_python_task(task)
+        self.complete_task(result.success, result.output[:100] if result.output else "Python task completed")
+        return result
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate Python-only constraint"""
@@ -430,9 +471,11 @@ class GolangEngineerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Go development tasks with test-first approach"""
+        self.start_task(task)
+
         # Validate language constraint
         if not self._validate_golang_only(task):
-            return AgentResult(
+            result = AgentResult(
                 success=False,
                 task_id=task.task_id,
                 output="",
@@ -442,18 +485,26 @@ class GolangEngineerAgent(BaseAgent):
                 validation_results={},
                 errors=["Task requires non-Go code. Golang Engineer can only write Go."]
             )
+            self.complete_task(False, "Task requires non-Go code")
+            return result
 
         # Test-first enforcement
         if task.task_type == "implement_feature":
+            self.update_status("Testing", "Writing Go tests first (TDD)")
             # Write tests first
             test_result = self._write_tests_first(task)
             if not test_result.success:
+                self.complete_task(False, "Failed to write tests")
                 return test_result
 
+            self.update_status("Working", "Implementing Go feature")
             # Then implement
-            return self._implement_go_feature(task)
+            result = self._implement_go_feature(task)
+        else:
+            result = self._execute_go_task(task)
 
-        return self._execute_go_task(task)
+        self.complete_task(result.success, result.output[:100] if result.output else "Go task completed")
+        return result
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate Go-only constraint"""
@@ -568,9 +619,11 @@ class FrontendEngineerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute frontend tasks with test-first approach"""
+        self.start_task(task)
+
         # Ensure TypeScript usage
         if not self._enforce_typescript(task):
-            return AgentResult(
+            result = AgentResult(
                 success=False,
                 task_id=task.task_id,
                 output="",
@@ -580,17 +633,25 @@ class FrontendEngineerAgent(BaseAgent):
                 validation_results={},
                 errors=["Frontend must use TypeScript for type safety"]
             )
+            self.complete_task(False, "TypeScript not enforced")
+            return result
 
         if task.task_type == "implement_component":
+            self.update_status("Testing", "Writing component tests first")
             # Write component tests first
             test_result = self._write_component_tests_first(task)
             if not test_result.success:
+                self.complete_task(False, "Failed to write component tests")
                 return test_result
 
+            self.update_status("Working", "Implementing React component")
             # Then implement component
-            return self._implement_component(task)
+            result = self._implement_component(task)
+        else:
+            result = self._execute_frontend_task(task)
 
-        return self._execute_frontend_task(task)
+        self.complete_task(result.success, result.output[:100] if result.output else "Frontend task completed")
+        return result
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate frontend task"""

@@ -45,6 +45,72 @@ class ANSIColors:
     LIGHT_WHITE = '\033[0;97m'
 
 
+class AgentColors:
+    """Color assignments for different agent types"""
+    AGENT_COLORS = {
+        'ProjectManager': {
+            'color': ANSIColors.BOLD_MAGENTA,
+            'emoji': '📊',
+            'label': 'PM'
+        },
+        'ContextManager': {
+            'color': ANSIColors.BOLD_BLUE,
+            'emoji': '🔍',
+            'label': 'CTX'
+        },
+        'PythonEngineer': {
+            'color': ANSIColors.BOLD_GREEN,
+            'emoji': '🐍',
+            'label': 'PY'
+        },
+        'GolangEngineer': {
+            'color': ANSIColors.BOLD_CYAN,
+            'emoji': '🐹',
+            'label': 'GO'
+        },
+        'FrontendEngineer': {
+            'color': ANSIColors.BOLD_YELLOW,
+            'emoji': '🎨',
+            'label': 'FE'
+        },
+        'RubyEngineer': {
+            'color': ANSIColors.BOLD_RED,
+            'emoji': '💎',
+            'label': 'RB'
+        },
+        'JavaEngineer': {
+            'color': ANSIColors.LIGHT_RED,
+            'emoji': '☕',
+            'label': 'JV'
+        },
+        'DevOpsEngineer': {
+            'color': ANSIColors.LIGHT_MAGENTA,
+            'emoji': '🚀',
+            'label': 'OPS'
+        },
+        'DatabaseEngineer': {
+            'color': ANSIColors.LIGHT_BLUE,
+            'emoji': '🗄️',
+            'label': 'DB'
+        }
+    }
+
+    @classmethod
+    def get_agent_color(cls, agent_name: str) -> str:
+        """Get color for an agent"""
+        return cls.AGENT_COLORS.get(agent_name, {}).get('color', ANSIColors.WHITE)
+
+    @classmethod
+    def get_agent_emoji(cls, agent_name: str) -> str:
+        """Get emoji for an agent"""
+        return cls.AGENT_COLORS.get(agent_name, {}).get('emoji', '🤖')
+
+    @classmethod
+    def get_agent_label(cls, agent_name: str) -> str:
+        """Get short label for an agent"""
+        return cls.AGENT_COLORS.get(agent_name, {}).get('label', 'AGT')
+
+
 class XavierArt:
     """ASCII art components for Xavier Framework"""
 
@@ -116,7 +182,7 @@ class XavierArt:
         return f"{color}{'═' * width}{ANSIColors.RESET}"
 
 
-def display_welcome(version: str = "1.0.3") -> None:
+def display_welcome(version: str = "1.1.0") -> None:
     """Display welcome screen for Xavier Framework"""
     width = XavierArt.get_terminal_width()
 
@@ -233,6 +299,93 @@ def display_mini_banner() -> None:
     print(f"{ANSIColors.BOLD_CYAN}╔═══════════════════════════════════════╗{ANSIColors.RESET}")
     print(f"{ANSIColors.BOLD_CYAN}║  XAVIER  │  Enterprise SCRUM Framework ║{ANSIColors.RESET}")
     print(f"{ANSIColors.BOLD_CYAN}╚═══════════════════════════════════════╝{ANSIColors.RESET}")
+
+
+def display_agent_takeover(agent_name: str, task_description: str) -> None:
+    """Display when an agent takes over a task"""
+    width = min(XavierArt.get_terminal_width(), 80)
+
+    # Get agent styling
+    color = AgentColors.get_agent_color(agent_name)
+    emoji = AgentColors.get_agent_emoji(agent_name)
+    label = AgentColors.get_agent_label(agent_name)
+
+    # Create agent header
+    header = f"{emoji} [{label}] {agent_name}"
+
+    # Create content
+    content = []
+    content.append(f"{color}{header}{ANSIColors.RESET}")
+    content.append(f"{ANSIColors.LIGHT_WHITE}Taking over task:{ANSIColors.RESET}")
+    content.append(f"  {task_description[:70]}...")
+
+    # Create box
+    box = XavierArt.create_box(content, width=width, color=color)
+
+    # Display
+    print()
+    for line in box:
+        print(line)
+    print()
+
+
+def display_agent_status(agent_name: str, status: str, details: Optional[str] = None) -> None:
+    """Display agent status update"""
+    # Get agent styling
+    color = AgentColors.get_agent_color(agent_name)
+    emoji = AgentColors.get_agent_emoji(agent_name)
+    label = AgentColors.get_agent_label(agent_name)
+
+    # Status icons
+    status_icons = {
+        'working': '⚙️',
+        'completed': '✅',
+        'failed': '❌',
+        'waiting': '⏳',
+        'testing': '🧪',
+        'reviewing': '👀'
+    }
+
+    status_icon = status_icons.get(status.lower(), '•')
+
+    # Create status line
+    status_line = f"{color}[{label}]{ANSIColors.RESET} {emoji} {agent_name} {status_icon} {status}"
+
+    if details:
+        status_line += f" - {ANSIColors.LIGHT_WHITE}{details}{ANSIColors.RESET}"
+
+    print(status_line)
+
+
+def display_agent_handoff(from_agent: str, to_agent: str, reason: str) -> None:
+    """Display handoff between agents"""
+    from_color = AgentColors.get_agent_color(from_agent)
+    from_emoji = AgentColors.get_agent_emoji(from_agent)
+    from_label = AgentColors.get_agent_label(from_agent)
+
+    to_color = AgentColors.get_agent_color(to_agent)
+    to_emoji = AgentColors.get_agent_emoji(to_agent)
+    to_label = AgentColors.get_agent_label(to_agent)
+
+    print(f"\n{ANSIColors.LIGHT_CYAN}{'─' * 50}{ANSIColors.RESET}")
+    print(f"{from_color}[{from_label}]{ANSIColors.RESET} {from_emoji} {from_agent} → " +
+          f"{to_color}[{to_label}]{ANSIColors.RESET} {to_emoji} {to_agent}")
+    print(f"{ANSIColors.LIGHT_WHITE}Handoff: {reason}{ANSIColors.RESET}")
+    print(f"{ANSIColors.LIGHT_CYAN}{'─' * 50}{ANSIColors.RESET}\n")
+
+
+def display_agent_result(agent_name: str, success: bool, summary: str) -> None:
+    """Display agent task result"""
+    color = AgentColors.get_agent_color(agent_name)
+    emoji = AgentColors.get_agent_emoji(agent_name)
+    label = AgentColors.get_agent_label(agent_name)
+
+    result_icon = '✅' if success else '❌'
+    result_color = ANSIColors.GREEN if success else ANSIColors.RED
+
+    print(f"{color}[{label}]{ANSIColors.RESET} {emoji} {agent_name} - " +
+          f"{result_color}{result_icon} Task {'Completed' if success else 'Failed'}{ANSIColors.RESET}")
+    print(f"  {ANSIColors.LIGHT_WHITE}{summary}{ANSIColors.RESET}")
 
 
 if __name__ == "__main__":
