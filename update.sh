@@ -152,7 +152,7 @@ if [ -d ".claude/commands" ]; then
     echo "• Updating Claude Code commands..."
 
     # Create new commands that don't exist
-    for cmd in create-project xavier-update; do
+    for cmd in create-project xavier-update estimate-story set-story-points; do
         if [ ! -f ".claude/commands/$cmd.md" ]; then
             echo "  - Adding new command: $cmd"
         fi
@@ -165,7 +165,8 @@ if [ -d ".claude/commands" ]; then
     # Extract each command file from install.sh
     commands=(
         "create-story" "create-task" "create-bug" "create-sprint"
-        "start-sprint" "show-backlog" "xavier-help" "xavier-update" "create-project"
+        "start-sprint" "show-backlog" "xavier-help" "xavier-update"
+        "create-project" "estimate-story" "set-story-points"
     )
 
     for cmd in "${commands[@]}"; do

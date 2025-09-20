@@ -367,6 +367,31 @@ Report a bug with reproduction steps.
 }
 ```
 
+## /estimate-story
+Automatically estimate story points using PM agent's complexity analysis.
+
+```json
+{
+  "story_id": "STORY-001",  // Optional - specific story to estimate
+  "all": false              // Optional - re-estimate all stories
+}
+```
+
+Examples:
+- Estimate all unestimated: `{}`
+- Estimate specific: `{"story_id": "STORY-001"}`
+- Re-estimate all: `{"all": true}`
+
+## /set-story-points
+Manually set story points for a story.
+
+```json
+{
+  "story_id": "STORY-001",
+  "points": 5  // Must be Fibonacci: 1,2,3,5,8,13,21
+}
+```
+
 ## /create-sprint
 Create and plan a sprint.
 
@@ -896,6 +921,111 @@ Maintains codebase understanding and finds existing implementations.
 Ensures no duplicate code is created and existing patterns are followed.
 EOF
 
+# estimate-story command
+cat > .claude/commands/estimate-story.md << 'EOF'
+# estimate-story
+
+Automatically estimate story points using Project Manager agent's complexity analysis.
+
+## 📊 PM AGENT POWERED
+
+The Project Manager agent analyzes:
+- Technical complexity (API, database, auth, etc.)
+- CRUD operations
+- Acceptance criteria count and complexity
+- UI/UX requirements
+- Testing requirements
+- Maps complexity to Fibonacci points (1,2,3,5,8,13,21)
+
+## Usage
+
+```
+/estimate-story                # Estimate all unestimated backlog stories
+/estimate-story STORY-001      # Estimate specific story
+/estimate-story --all          # Re-estimate all stories
+```
+
+## Examples
+
+### Estimate entire backlog
+```json
+{
+  "command": "/estimate-story",
+  "args": {}
+}
+```
+
+### Estimate specific story
+```json
+{
+  "command": "/estimate-story",
+  "args": {
+    "story_id": "STORY-001"
+  }
+}
+```
+
+### Re-estimate all stories
+```json
+{
+  "command": "/estimate-story",
+  "args": {
+    "all": true
+  }
+}
+```
+
+## Output
+
+Returns:
+- Stories estimated count
+- Total story points
+- Estimated sprints needed
+- Individual story estimates with complexity scores
+
+## Visual Feedback
+
+Watch for:
+- 📊 [PM] ProjectManager colored display
+- Complexity score analysis
+- Fibonacci point mapping
+- Sprint capacity calculations
+EOF
+
+# set-story-points command (manual)
+cat > .claude/commands/set-story-points.md << 'EOF'
+# set-story-points
+
+Manually set story points for a specific story (formerly /estimate-story).
+
+## Usage
+
+```
+/set-story-points STORY-001 5
+```
+
+## Arguments
+
+- **story_id** (required): Story ID
+- **points** (required): Story points (must be Fibonacci: 1,2,3,5,8,13,21)
+
+## Example
+
+```json
+{
+  "command": "/set-story-points",
+  "args": {
+    "story_id": "STORY-001",
+    "points": 5
+  }
+}
+```
+
+## Purpose
+
+Use this when you want to manually override story points instead of using the PM agent's automatic estimation.
+EOF
+
 # Create Xavier bridge for Claude commands
 cat > .xavier/xavier_bridge.py << 'EOF'
 #!/usr/bin/env python3
@@ -938,7 +1068,9 @@ def main():
         'start-sprint': '/start-sprint',
         'show-backlog': '/show-backlog',
         'xavier-help': '/xavier-help',
-        'xavier-update': '/xavier-update'
+        'xavier-update': '/xavier-update',
+        'estimate-story': '/estimate-story',
+        'set-story-points': '/set-story-points'
     }
 
     xavier_command = command_map.get(command.replace('/', ''), f"/{command}")
@@ -1048,13 +1180,16 @@ This project is configured with Xavier Framework for enterprise SCRUM developmen
 ## Claude Code Commands
 
 All commands are available as slash commands in Claude Code:
-- `/create-story`
-- `/create-task`
-- `/create-bug`
-- `/create-sprint`
-- `/start-sprint`
-- `/show-backlog`
-- `/xavier-help`
+- `/create-story` - Create user stories with acceptance criteria
+- `/create-task` - Create development tasks
+- `/create-bug` - Report bugs
+- `/estimate-story` - Automatically estimate story points using PM agent
+- `/set-story-points` - Manually set story points
+- `/create-sprint` - Plan a sprint
+- `/start-sprint` - Begin sprint execution
+- `/show-backlog` - View backlog status
+- `/xavier-help` - Show all commands
+- `/xavier-update` - Update Xavier Framework
 
 ## Configuration
 
