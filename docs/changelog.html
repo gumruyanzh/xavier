@@ -154,11 +154,196 @@
     <div class="docs-container">
         <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
 
+            <!-- Version 1.1.5 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.5</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">January 19, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Critical Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Complete Sprint Management Dictionary Issues</strong> - Fixed all sprint-related dict/dataclass mismatches including <code>plan_sprint()</code>, <code>start_sprint()</code>, <code>complete_sprint()</code>, and velocity calculations.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Sprint Status Compatibility</strong> - Fixed handling of both SprintStatus enum and string values throughout the system.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>DateTime Comparison Fix</strong> - Resolved datetime vs string comparison errors in velocity calculations.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> New Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Sprint Status Compatibility Helper</strong> - Added <code>get_sprint_status_value()</code> for consistent status handling across enum and string formats.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Comprehensive Sprint Tests</strong> - Full test coverage for sprint operations including lifecycle, velocity, and burndown calculations.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">🔧</span> Improvements</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                All sprint methods in <code>xavier_commands.py</code> now use safe accessors for reliable operation
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Sprint burndown calculations now properly handle mixed data formats
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Version 1.1.4 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.4</span>
+                    <span class="version-date">January 19, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Critical Bug Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Critical Data Persistence Bug</strong> - Fixed fundamental dataclass/dictionary mismatch where models were defined as dataclasses but stored/loaded as plain dictionaries, causing AttributeError throughout the system.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> New Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Proper Serialization/Deserialization</strong> - Complete data persistence solution with <code>serialize_dataclass()</code> and <code>deserialize_to_dataclass()</code> utilities handling datetime and enum conversion.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Compatibility Layer</strong> - Safe attribute access with <code>safe_get_attr()</code> and <code>safe_set_attr()</code> working with both dataclass instances and dictionaries.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Comprehensive Unit Tests</strong> - Full test coverage for persistence, serialization, and backward compatibility scenarios.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">🔧</span> Technical Details</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Fixed <code>_load_data()</code> to properly convert JSON to dataclass instances
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Fixed <code>_save_data()</code> to properly serialize dataclasses to JSON
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Maintains backward compatibility with projects using old dictionary format
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="breaking-changes">
+                    <h4>⚠️ Impact</h4>
+                    <p>This fix resolves critical issues where Xavier would crash with AttributeError when loading saved data. All SCRUM operations now work correctly with persisted data.</p>
+                </div>
+            </section>
+
+            <!-- Version 1.1.3 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.3</span>
+                    <span class="version-date">January 19, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Critical Update Script Bug</strong> - Fixed command extraction failing when Xavier downloaded as archive vs git clone. Update script now properly detects install.sh location in both scenarios.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> New Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>fix-commands.sh Script</strong> - Quick fix script for users affected by v1.1.2 update issue. Manually installs estimate-story and set-story-points commands without full update.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">🔧</span> Improvements</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Added verbose output showing which commands are being updated during installation
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
             <!-- Version 1.1.2 -->
             <section class="version-section">
                 <div class="version-header">
                     <span class="version-number">v1.1.2</span>
-                    <span class="version-badge">LATEST</span>
                     <span class="version-date">January 2025</span>
                 </div>
 
