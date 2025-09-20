@@ -168,16 +168,42 @@ cat > .claude/instructions.md << 'EOF'
 
 This project uses Xavier Framework for enterprise-grade SCRUM development with Claude Code.
 
+## 🚨 CRITICAL: Command Boundaries
+
+**EXTREMELY IMPORTANT - YOU MUST FOLLOW THESE RULES:**
+
+1. **NO AUTOMATIC IMPLEMENTATION** - When the user runs `/create-story`, `/create-task`, or `/create-bug`, you must ONLY create the item. DO NOT start implementing anything.
+
+2. **STRICT COMMAND SEPARATION:**
+   - `/create-story` → ONLY creates a story (no implementation)
+   - `/create-task` → ONLY creates a task (no implementation)
+   - `/create-bug` → ONLY creates a bug report (no implementation)
+   - `/create-sprint` → ONLY creates and plans sprint (no implementation)
+   - `/start-sprint` → THIS IS THE ONLY COMMAND THAT STARTS IMPLEMENTATION
+
+3. **IMPLEMENTATION RULE:** You are FORBIDDEN from writing any implementation code until the user explicitly runs `/start-sprint`. This includes:
+   - No writing tests
+   - No writing functions
+   - No creating files
+   - No modifying code
+   - Only planning and organizing
+
+4. **WHEN USER CREATES A STORY:** Simply confirm the story was created and show its ID. DO NOT offer to implement it or start working on it.
+
+5. **WHEN USER CREATES A TASK:** Simply confirm the task was created and show its ID. DO NOT start implementing the task.
+
+6. **ONLY START DEVELOPMENT WHEN:** The user explicitly types `/start-sprint` - then and only then should you begin the implementation process following TDD.
+
 ## Custom Commands
 
 Xavier provides the following commands:
 
-- `/create-project` - Intelligently initialize a new project
-- `/create-story` - Create a user story with acceptance criteria
-- `/create-task` - Create a task under a story
-- `/create-bug` - Report a bug with reproduction steps
-- `/create-sprint` - Plan a new sprint
-- `/start-sprint` - Begin sprint execution
+- `/create-project` - Intelligently initialize a new project (planning only)
+- `/create-story` - Create a user story with acceptance criteria (no implementation)
+- `/create-task` - Create a task under a story (no implementation)
+- `/create-bug` - Report a bug with reproduction steps (no implementation)
+- `/create-sprint` - Plan a new sprint (no implementation)
+- `/start-sprint` - **BEGIN SPRINT EXECUTION** (ONLY command that starts coding)
 - `/show-backlog` - View prioritized backlog
 - `/xavier-help` - Show all available commands
 
@@ -186,12 +212,13 @@ Type any command to get started. Commands are implemented through the Xavier Fra
 ## Framework Rules
 
 Xavier enforces the following strict rules:
-1. **Test-First Development (TDD)**: Tests must be written before implementation
+1. **Test-First Development (TDD)**: Tests must be written before implementation (ONLY during sprint execution)
 2. **100% Test Coverage Required**: No task is complete without full coverage
 3. **Sequential Task Execution**: One task at a time, no parallel work
 4. **Clean Code Standards**: Functions ≤20 lines, classes ≤200 lines
 5. **SOLID Principles**: All code must follow SOLID design patterns
 6. **Agent Language Boundaries**: Each agent works only in their assigned language
+7. **NO PREMATURE IMPLEMENTATION**: Never implement until `/start-sprint` is called
 
 ## Available Commands
 
@@ -217,11 +244,16 @@ Xavier enforces the following strict rules:
 
 ## Workflow
 
-1. Create stories with `/create-story`
-2. Break into tasks with `/create-task`
-3. Plan sprint with `/create-sprint`
-4. Execute with `/start-sprint` (agents work sequentially)
-5. Complete with `/end-sprint`
+**PLANNING PHASE (No Implementation):**
+1. Create stories with `/create-story` - ONLY creates the story
+2. Break into tasks with `/create-task` - ONLY creates tasks
+3. Plan sprint with `/create-sprint` - ONLY plans the sprint
+
+**IMPLEMENTATION PHASE (Only After Sprint Start):**
+4. Execute with `/start-sprint` - NOW you can start implementing
+5. Complete with `/end-sprint` - Finalize the sprint
+
+**REMEMBER:** Steps 1-3 are PLANNING ONLY. No code is written until step 4.
 
 ## Active Agents
 
@@ -448,6 +480,18 @@ cat > .claude/commands/create-story.md << 'EOF'
 
 Create a user story following SCRUM methodology with acceptance criteria.
 
+## ⚠️ IMPORTANT: NO IMPLEMENTATION
+
+**This command ONLY creates a story. It does NOT start any implementation.**
+
+When this command is executed:
+- ✅ Create the story in the backlog
+- ✅ Show the story ID
+- ❌ DO NOT write any code
+- ❌ DO NOT create any files
+- ❌ DO NOT offer to implement
+- ❌ DO NOT start working on it
+
 ## Usage
 
 Type `/create-story` to create a new user story.
@@ -479,9 +523,12 @@ Type `/create-story` to create a new user story.
 }
 ```
 
-## Implementation
+## Response
 
-This command uses the Xavier Framework to create a user story with automatic story point estimation by the Project Manager agent.
+After creating a story, simply confirm:
+"✅ Story STORY-XXX created successfully. Use /create-task to add tasks or /show-backlog to view."
+
+**DO NOT OFFER TO IMPLEMENT OR START WORKING ON THE STORY.**
 EOF
 
 # create-task command
@@ -489,6 +536,18 @@ cat > .claude/commands/create-task.md << 'EOF'
 # create-task
 
 Create a task under an existing user story.
+
+## ⚠️ IMPORTANT: NO IMPLEMENTATION
+
+**This command ONLY creates a task. It does NOT start any implementation.**
+
+When this command is executed:
+- ✅ Create the task under the story
+- ✅ Show the task ID
+- ❌ DO NOT write any tests
+- ❌ DO NOT write any code
+- ❌ DO NOT create any files
+- ❌ DO NOT start implementing
 
 ## Usage
 
@@ -505,9 +564,12 @@ Type `/create-task` to create a new task.
 - **priority**: Priority level - Critical/High/Medium/Low (optional, default: Medium)
 - **dependencies**: List of dependency task IDs (optional)
 
-## Implementation
+## Response
 
-Tasks are automatically assigned to the appropriate agent based on tech stack. Test-first development is enforced.
+After creating a task, simply confirm:
+"✅ Task TASK-XXX created under STORY-XXX. Use /show-backlog to view or /create-sprint to plan."
+
+**DO NOT START IMPLEMENTING THE TASK. Implementation only begins with /start-sprint.**
 EOF
 
 # create-bug command
@@ -515,6 +577,18 @@ cat > .claude/commands/create-bug.md << 'EOF'
 # create-bug
 
 Report a bug with detailed reproduction steps.
+
+## ⚠️ IMPORTANT: NO IMMEDIATE FIX
+
+**This command ONLY creates a bug report. It does NOT fix the bug.**
+
+When this command is executed:
+- ✅ Create the bug report
+- ✅ Show the bug ID
+- ❌ DO NOT start fixing the bug
+- ❌ DO NOT write any code
+- ❌ DO NOT modify any files
+- ❌ DO NOT debug or investigate
 
 ## Usage
 
@@ -530,9 +604,12 @@ Type `/create-bug` to report a bug.
 - **severity**: Severity level - Critical/High/Medium/Low (required)
 - **priority**: Priority level - Critical/High/Medium/Low (optional, default: High)
 
-## Implementation
+## Response
 
-Bugs are automatically prioritized and assigned story points based on severity.
+After creating a bug, simply confirm:
+"✅ Bug BUG-XXX created with priority [PRIORITY]. Use /show-backlog to view."
+
+**DO NOT START FIXING THE BUG. Bug fixes only begin with /start-sprint.**
 EOF
 
 # create-sprint command
@@ -540,6 +617,19 @@ cat > .claude/commands/create-sprint.md << 'EOF'
 # create-sprint
 
 Plan a new sprint with automatic work item selection.
+
+## ⚠️ IMPORTANT: PLANNING ONLY
+
+**This command ONLY plans a sprint. It does NOT start implementation.**
+
+When this command is executed:
+- ✅ Create the sprint
+- ✅ Select stories/tasks for the sprint
+- ✅ Calculate velocity and capacity
+- ✅ Show sprint summary
+- ❌ DO NOT start implementing
+- ❌ DO NOT write any code
+- ❌ DO NOT create any files
 
 ## Usage
 
@@ -552,9 +642,12 @@ Type `/create-sprint` to create a new sprint.
 - **duration_days**: Sprint length in days (optional, default: 14)
 - **auto_plan**: Automatically select items by priority (optional, default: true)
 
-## Implementation
+## Response
 
-Xavier automatically calculates velocity, selects items, and prepares the sprint.
+After creating a sprint, simply confirm:
+"✅ Sprint SPRINT-XXX created with X story points. Use /start-sprint to begin implementation."
+
+**Sprint planning is SEPARATE from sprint execution. Use /start-sprint to actually begin work.**
 EOF
 
 # start-sprint command
@@ -562,6 +655,19 @@ cat > .claude/commands/start-sprint.md << 'EOF'
 # start-sprint
 
 Begin sprint execution with strict sequential task processing.
+
+## 🚀 THIS COMMAND STARTS IMPLEMENTATION
+
+**This is THE ONLY command that begins actual coding work.**
+
+When this command is executed, YOU SHOULD:
+- ✅ Start implementing stories and tasks
+- ✅ Write tests first (TDD)
+- ✅ Write implementation code
+- ✅ Create and modify files
+- ✅ Follow Clean Code principles
+- ✅ Work sequentially through tasks
+- ✅ Ensure 100% test coverage
 
 ## Usage
 
@@ -572,9 +678,20 @@ Type `/start-sprint` to begin sprint execution.
 - **sprint_id**: Sprint ID to start (optional, uses latest planned sprint if not provided)
 - **strict_mode**: Enable strict sequential execution (optional, default: true)
 
-## Implementation
+## Implementation Process
 
-Xavier enforces sequential execution, test-first development, and 100% coverage.
+1. **Select first task** from sprint backlog
+2. **Write tests first** - All tests must fail initially
+3. **Implement minimal code** to pass tests
+4. **Refactor** while keeping tests green
+5. **Verify 100% coverage** before moving to next task
+6. **Repeat** for each task sequentially
+
+## IMPORTANT
+
+This is the ONLY command that should trigger any implementation work. All other commands are for planning and organization only.
+
+**NOW YOU CAN START CODING!**
 EOF
 
 # show-backlog command
@@ -612,6 +729,19 @@ cat > .claude/commands/create-project.md << 'EOF'
 # create-project
 
 Intelligently initialize a new Xavier project with automatic analysis and setup.
+
+## ⚠️ IMPORTANT: INITIALIZATION ONLY
+
+**This command ONLY initializes project structure. It does NOT implement features.**
+
+When this command is executed:
+- ✅ Analyze project requirements
+- ✅ Suggest tech stack
+- ✅ Create initial stories
+- ✅ Set up directory structure
+- ❌ DO NOT start implementing features
+- ❌ DO NOT write application code
+- ❌ DO NOT create feature files
 
 ## Usage
 
