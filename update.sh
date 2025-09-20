@@ -56,10 +56,24 @@ echo "• Bug fixes and performance improvements"
 echo
 
 # Ask for confirmation
-read -p "Do you want to update Xavier to version $LATEST_VERSION? (y/n): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo -e "${YELLOW}Update cancelled${NC}"
+if [ -t 0 ]; then
+    # Interactive mode - ask for confirmation
+    read -p "Do you want to update Xavier to version $LATEST_VERSION? (y/n): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Update cancelled${NC}"
+        exit 0
+    fi
+else
+    # Non-interactive mode (piped) - show instructions
+    echo
+    echo -e "${GREEN}To proceed with the update, run this command directly:${NC}"
+    echo
+    echo "  cd $(pwd) && \\"
+    echo "  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh -o xavier-update.sh && \\"
+    echo "  bash xavier-update.sh && rm xavier-update.sh"
+    echo
+    echo -e "${YELLOW}Or download and run the script manually for interactive mode.${NC}"
     exit 0
 fi
 

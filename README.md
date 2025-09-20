@@ -46,7 +46,21 @@ Xavier is a comprehensive enterprise development framework that brings strict SC
 Run this command in your project directory:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/xavier-framework/xavier/main/setup.sh | bash
+curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/install.sh | bash
+```
+
+### Updating Xavier
+
+For existing installations, update to the latest version:
+
+```bash
+# Download and run update script (Recommended)
+curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh -o xavier-update.sh && \
+bash xavier-update.sh && \
+rm xavier-update.sh
+
+# Or use the Xavier command
+/xavier-update
 ```
 
 Or manually:
