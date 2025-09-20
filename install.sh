@@ -2,7 +2,7 @@
 
 # Xavier Framework Installation Script
 # Enterprise-Grade SCRUM Development for Claude Code
-# Version 1.0.1 - macOS compatible
+# Version 1.0.3 - macOS compatible
 
 set -e
 
@@ -30,7 +30,7 @@ echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╔╝ ██╗██║  █
 echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝${NC}                       ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}║${NC}              ${BOLD_WHITE}Enterprise SCRUM Framework${NC}                             ${LIGHT_CYAN}║${NC}"
-echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.0.2${NC}                                     ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.0.3${NC}                                     ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
 echo

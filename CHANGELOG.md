@@ -5,6 +5,36 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-09-19
+
+### Added
+- **Beautiful ANSI Art System**: Professional ASCII art displays throughout the framework
+  - XAVIER logo in block-style ASCII art similar to Claude Code
+  - Light cyan/white color scheme for consistent branding
+  - Welcome screens, sprint announcements, and update notifications
+  - Responsive terminal width detection
+- **Greeting Display System**: Multiple greeting types for various occasions
+  - Welcome greeting with quick start commands
+  - Sprint start/end announcements
+  - Daily tips and update notifications
+  - Mini banner for compact displays
+- **Visual Feedback**: Enhanced user experience with visual cues
+  - Installation success screen with organized command list
+  - Update completion screen with changelog highlights
+  - Sprint status displays with progress indicators
+
+### Changed
+- Installation script now features professional ANSI art banner
+- Update script displays enhanced visual feedback with version comparison
+- Commands like `/xavier-help` and `/start-sprint` now include visual elements
+- Version updated to 1.0.3 across all components
+
+### Technical
+- Added `xavier/src/utils/ansi_art.py` utility module for Python-based displays
+- Created `xavier/src/utils/greeting.sh` for flexible bash-based greetings
+- Integrated ANSI art with command system
+- Fallback support when bash is unavailable
+
 ## [1.0.2] - 2025-09-19
 
 ### Added
