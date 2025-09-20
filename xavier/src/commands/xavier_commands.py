@@ -63,6 +63,7 @@ class XavierCommands:
             "/create-sprint": self.create_sprint,
             "/start-sprint": self.start_sprint,
             "/end-sprint": self.end_sprint,
+            "/set-story-points": self.set_story_points,
             "/estimate-story": self.estimate_story,
             "/assign-task": self.assign_task,
             "/review-code": self.review_code,
@@ -892,9 +893,9 @@ This project follows Xavier Framework standards:
             "status": "Completed"
         }
 
-    def estimate_story(self, args: Dict[str, Any]) -> Dict[str, Any]:
+    def set_story_points(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Estimate story points
+        Manually set story points for a story
         Args:
             story_id: Story ID
             points: Story points (must be Fibonacci: 1,2,3,5,8,13,21)
@@ -909,6 +910,88 @@ This project follows Xavier Framework standards:
             "title": story.title,
             "story_points": story.story_points,
             "priority": story.priority
+        }
+
+    def estimate_story(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Use PM agent to automatically estimate story points for backlog stories
+        Args:
+            story_id: Optional specific story to estimate
+            all: Optional flag to re-estimate all stories (default: False)
+        """
+        from agents.base_agent import AgentTask
+
+        story_id = args.get("story_id", None)
+        estimate_all = args.get("all", False)
+
+        # Get stories to estimate
+        stories_to_estimate = []
+
+        if story_id:
+            # Estimate specific story
+            if story_id not in self.scrum.stories:
+                return {
+                    "success": False,
+                    "error": f"Story {story_id} not found"
+                }
+            stories_to_estimate = [self.scrum.stories[story_id]]
+        else:
+            # Estimate all unestimated backlog stories
+            stories_to_estimate = [
+                s for s in self.scrum.stories.values()
+                if s.status == "Backlog" and (s.story_points == 0 or estimate_all)
+            ]
+
+        if not stories_to_estimate:
+            return {
+                "success": True,
+                "message": "No stories need estimation",
+                "stories_estimated": 0
+            }
+
+        # Show PM agent starting
+        print(f"\n📊 Project Manager starting story estimation...")
+        print(f"Stories to estimate: {len(stories_to_estimate)}\n")
+
+        # Delegate to PM agent for each story
+        results = []
+        for story in stories_to_estimate:
+            # Create estimation task for PM agent
+            task = AgentTask(
+                task_id=f"ESTIMATE-{story.id}",
+                task_type="estimate_story",
+                description=f"{story.title}. {story.description}",
+                requirements=story.acceptance_criteria,
+                test_requirements={},
+                acceptance_criteria=["Provide story point estimate"],
+                tech_constraints=[]
+            )
+
+            # Delegate to orchestrator for colored agent display
+            result = self.orchestrator.delegate_task(task)
+
+            if result.success:
+                points = result.validation_results.get("story_points", 5)
+                self.scrum.estimate_story(story.id, points)
+                story.story_points = points
+
+                results.append({
+                    "story_id": story.id,
+                    "title": story.title,
+                    "points": points
+                })
+
+        # Calculate sprint planning metrics
+        total_points = sum(r["points"] for r in results)
+        velocity = self.scrum._calculate_velocity() if hasattr(self.scrum, '_calculate_velocity') else 20
+
+        return {
+            "success": True,
+            "stories_estimated": len(results),
+            "total_points": total_points,
+            "estimated_sprints": total_points / velocity if velocity > 0 else 0,
+            "estimates": results,
+            "message": f"Estimated {len(results)} stories with total {total_points} points"
         }
 
     def assign_task(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -1211,6 +1294,36 @@ Creates a new project with AI-powered analysis of requirements and automatic tec
 ## Reporting & Analysis
 
 ### /show-backlog - Show backlog overview
+
+### /estimate-story - Automatically estimate story points using PM agent
+Triggers the Project Manager agent to analyze and estimate story points for backlog stories.
+
+**Usage:**
+```
+/estimate-story              # Estimate all unestimated backlog stories
+/estimate-story STORY-001    # Estimate specific story
+/estimate-story --all        # Re-estimate all stories
+```
+
+The PM agent analyzes:
+- Technical complexity (API, database, authentication, etc.)
+- Number and complexity of acceptance criteria
+- UI/UX requirements
+- Testing requirements
+- Integration points
+
+**Example:**
+```
+/estimate-story
+
+📊 [PM] ProjectManager
+Taking over task: Estimating backlog stories
+Analyzing: Complexity score 12 → 5 points
+
+Stories estimated: 3
+Total points: 13
+Estimated sprints: 0.7
+```
 ### /show-sprint - Show sprint details
 ### /tech-stack-analyze - Analyze project tech stack
 ### /learn-project - Learn existing project structure
@@ -1219,7 +1332,8 @@ Creates a new project with AI-powered analysis of requirements and automatic tec
 ## Other Commands
 
 ### /create-roadmap - Create product roadmap
-### /estimate-story - Estimate story points
+### /estimate-story - Use PM agent to automatically estimate backlog stories
+### /set-story-points - Manually set story points for a specific story
 ### /assign-task - Assign task to agent
 ### /review-code - Trigger code review
 ### /create-agent - Create custom agent

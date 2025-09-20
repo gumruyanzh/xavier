@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-09-19
 
 ### Added
+- **Automatic Story Estimation**: New `/estimate-story` command uses PM agent to analyze and estimate story points
+  - Analyzes technical complexity, acceptance criteria, UI/UX, and testing requirements
+  - PM agent uses comprehensive scoring algorithm mapping to Fibonacci points
+  - Batch estimation for entire backlog or specific stories
+  - Visual feedback with colored PM agent display
 - **Colored Agent System**: Professional visual feedback showing which agent is working
   - Each agent type has unique color, emoji, and short label (e.g., [PY] 🐍 PythonEngineer)
   - Agent takeover displays with colored boxes when agents start tasks
@@ -25,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Agent handoff notifications with reasons
 
 ### Changed
+- **Renamed Command**: `/estimate-story` renamed to `/set-story-points` for manual point setting
+- `/estimate-story` now triggers automatic PM agent estimation
 - `base_agent.py` enhanced with colored output methods
 - `orchestrator.py` updated with visual feedback and handoff tracking
 - All agents now announce themselves when taking over tasks

@@ -158,32 +158,102 @@ class ProjectManagerAgent(BaseAgent):
         return True, []
 
     def _estimate_story_points(self, task: AgentTask) -> AgentResult:
-        """Estimate story points based on complexity analysis"""
-        complexity_factors = {
-            "lines_of_code": 0,
-            "dependencies": 0,
-            "integration_points": 0,
-            "test_complexity": 0,
-            "ui_complexity": 0
+        """Estimate story points based on comprehensive complexity analysis"""
+        # Initialize complexity score
+        complexity_score = 0
+        analysis_details = []
+
+        # Combine description and requirements for analysis
+        full_context = f"{task.description} {' '.join(task.requirements)}".lower()
+
+        # 1. Analyze technical complexity keywords
+        technical_keywords = {
+            "api": 2, "database": 2, "authentication": 3, "authorization": 3,
+            "integration": 3, "microservice": 4, "distributed": 4,
+            "real-time": 3, "websocket": 3, "encryption": 3,
+            "payment": 4, "third-party": 2, "migration": 3,
+            "refactor": 2, "optimization": 3, "performance": 3,
+            "security": 3, "compliance": 4, "audit": 3
         }
 
-        # Analyze requirements for complexity
-        description = task.description.lower()
-        if "simple" in description or "basic" in description:
-            estimated_points = self.story_points_model["simple"]
-        elif "complex" in description or "advanced" in description:
-            estimated_points = self.story_points_model["complex"]
+        for keyword, weight in technical_keywords.items():
+            if keyword in full_context:
+                complexity_score += weight
+                analysis_details.append(f"Contains {keyword} (+{weight})")
+
+        # 2. Analyze CRUD operations
+        crud_operations = ["create", "read", "update", "delete", "list", "search"]
+        crud_count = sum(1 for op in crud_operations if op in full_context)
+        if crud_count > 0:
+            complexity_score += crud_count
+            analysis_details.append(f"CRUD operations: {crud_count} (+{crud_count})")
+
+        # 3. Analyze acceptance criteria count
+        criteria_count = len(task.requirements)
+        if criteria_count > 5:
+            complexity_score += 3
+            analysis_details.append(f"Many acceptance criteria: {criteria_count} (+3)")
+        elif criteria_count > 3:
+            complexity_score += 2
+            analysis_details.append(f"Multiple criteria: {criteria_count} (+2)")
         else:
-            estimated_points = self.story_points_model["moderate"]
+            complexity_score += 1
+            analysis_details.append(f"Few criteria: {criteria_count} (+1)")
+
+        # 4. Analyze UI/UX complexity
+        ui_keywords = ["ui", "ux", "design", "responsive", "mobile", "accessibility",
+                      "animation", "dashboard", "visualization", "chart", "graph"]
+        ui_complexity = sum(1 for kw in ui_keywords if kw in full_context)
+        if ui_complexity > 0:
+            complexity_score += ui_complexity * 2
+            analysis_details.append(f"UI complexity (+{ui_complexity * 2})")
+
+        # 5. Analyze testing requirements
+        test_keywords = ["test", "coverage", "unit", "integration", "e2e", "tdd"]
+        test_complexity = sum(1 for kw in test_keywords if kw in full_context)
+        if test_complexity > 0:
+            complexity_score += test_complexity
+            analysis_details.append(f"Testing requirements (+{test_complexity})")
+
+        # 6. Check for simple/complex indicators
+        if any(word in full_context for word in ["simple", "basic", "straightforward"]):
+            complexity_score = max(1, complexity_score - 2)
+            analysis_details.append("Simple indicator (-2)")
+        elif any(word in full_context for word in ["complex", "advanced", "sophisticated"]):
+            complexity_score += 3
+            analysis_details.append("Complex indicator (+3)")
+
+        # Map complexity score to story points (Fibonacci)
+        if complexity_score <= 3:
+            estimated_points = 1
+        elif complexity_score <= 5:
+            estimated_points = 2
+        elif complexity_score <= 8:
+            estimated_points = 3
+        elif complexity_score <= 12:
+            estimated_points = 5
+        elif complexity_score <= 18:
+            estimated_points = 8
+        elif complexity_score <= 26:
+            estimated_points = 13
+        else:
+            estimated_points = 21
+
+        # Update status with analysis
+        self.update_status("Analyzing", f"Complexity score: {complexity_score} → {estimated_points} points")
 
         return AgentResult(
             success=True,
             task_id=task.task_id,
-            output=f"Estimated story points: {estimated_points}",
+            output=f"Estimated {estimated_points} story points (complexity: {complexity_score})",
             test_results=None,
             files_created=[],
             files_modified=[],
-            validation_results={"story_points": estimated_points},
+            validation_results={
+                "story_points": estimated_points,
+                "complexity_score": complexity_score,
+                "analysis": analysis_details
+            },
             errors=[]
         )
 

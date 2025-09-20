@@ -598,16 +598,25 @@ class SCRUMManager:
         self._save_data()
         return sprint
 
+    def get_unestimated_stories(self) -> List[UserStory]:
+        """Get all backlog stories that haven't been estimated"""
+        return [
+            s for s in self.stories.values()
+            if s.status == "Backlog" and s.story_points == 0
+        ]
+
     def get_backlog_report(self) -> Dict[str, Any]:
         """Generate backlog report with metrics"""
         total_stories = len([s for s in self.stories.values() if s.status == "Backlog"])
         total_bugs = len([b for b in self.bugs.values() if b.status == "Open"])
         total_points = sum(s.story_points for s in self.stories.values() if s.status == "Backlog")
+        unestimated_count = len(self.get_unestimated_stories())
 
         return {
             "total_stories": total_stories,
             "total_bugs": total_bugs,
             "total_points": total_points,
+            "unestimated_stories": unestimated_count,
             "estimated_sprints": total_points / self._calculate_velocity() if total_points > 0 else 0,
             "critical_bugs": len([b for b in self.bugs.values()
                                 if b.status == "Open" and b.severity == "Critical"])
