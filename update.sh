@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
@@ -43,7 +44,7 @@ if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
 fi
 
 echo -e "${GREEN}📦 New version available: ${YELLOW}$LATEST_VERSION${NC}"
-echo ""
+echo
 
 # Show what's new
 echo -e "${BLUE}What's new in version $LATEST_VERSION:${NC}"
@@ -52,11 +53,11 @@ echo "• Strict command boundaries (no auto-implementation)"
 echo "• Enhanced project templates and tech stack detection"
 echo "• Improved command documentation and examples"
 echo "• Bug fixes and performance improvements"
-echo ""
+echo
 
 # Ask for confirmation
 read -p "Do you want to update Xavier to version $LATEST_VERSION? (y/n): " -n 1 -r
-echo ""
+echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo -e "${YELLOW}Update cancelled${NC}"
     exit 0
@@ -187,12 +188,12 @@ rm -rf "$TEMP_DIR"
 
 # Show migration notes if needed
 if [ "$CURRENT_VERSION" = "1.0.0" ] || [ "$CURRENT_VERSION" = "1.0.1" ]; then
-    echo ""
+    echo
     echo -e "${YELLOW}Migration Notes:${NC}"
     echo "• New /create-project command available for intelligent project initialization"
     echo "• Commands now have strict boundaries - implementation only starts with /start-sprint"
     echo "• Use /xavier-update to check for future updates"
-    echo ""
+    echo
 fi
 
 # Verify update
@@ -205,17 +206,17 @@ if [ "$NEW_VERSION" = "$LATEST_VERSION" ]; then
     echo "║          ✅ XAVIER FRAMEWORK UPDATED SUCCESSFULLY!        ║"
     echo "╔══════════════════════════════════════════════════════════╗"
     echo -e "${NC}"
-    echo ""
+    echo
     echo -e "${GREEN}Updated from version $CURRENT_VERSION to $LATEST_VERSION${NC}"
-    echo ""
+    echo
     echo "Your data has been preserved and backed up at:"
     echo "  $BACKUP_DIR"
-    echo ""
+    echo
     echo "What's next:"
     echo "• Use /xavier-help to see all available commands"
     echo "• Try /create-project for intelligent project setup"
     echo "• Your existing stories, tasks, and sprints are intact"
-    echo ""
+    echo
     echo -e "${BLUE}Thank you for using Xavier Framework!${NC}"
 else
     echo -e "${RED}❌ Update verification failed${NC}"
