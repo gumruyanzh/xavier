@@ -1,11 +1,11 @@
 #!/bin/bash
-set -o pipefail
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
 # Version 1.0.2
 
 set -e
+set -o pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -29,8 +29,15 @@ if [ ! -d ".xavier" ] || [ ! -f ".xavier/config.json" ]; then
     exit 1
 fi
 
+# Check if Python3 is available
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}Error: Python3 is required but not found${NC}"
+    echo "Please install Python 3.8 or higher"
+    exit 1
+fi
+
 # Get current version
-CURRENT_VERSION=$(python3 -c "import json; print(json.load(open('.xavier/config.json'))['xavier_version'])" 2>/dev/null || echo "1.0.0")
+CURRENT_VERSION=$(python3 -c "import json; config=json.load(open('.xavier/config.json')); print(config.get('xavier_version', '1.0.0'))" 2>/dev/null || echo "1.0.0")
 echo -e "${BLUE}Current Xavier version: ${YELLOW}$CURRENT_VERSION${NC}"
 
 # Fetch latest version from GitHub
@@ -177,12 +184,24 @@ echo "• Updating version information..."
 python3 << EOF
 import json
 config_path = '.xavier/config.json'
-with open(config_path, 'r') as f:
-    config = json.load(f)
+try:
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+except:
+    config = {}
+
+# Update version
 config['xavier_version'] = '$LATEST_VERSION'
+
+# Ensure settings exists before adding to it
+if 'settings' not in config:
+    config['settings'] = {}
+
 # Add any new config options from latest version
-if 'auto_update_check' not in config.get('settings', {}):
+if 'auto_update_check' not in config['settings']:
     config['settings']['auto_update_check'] = True
+
+# Write updated config
 with open(config_path, 'w') as f:
     json.dump(config, f, indent=2)
 EOF
