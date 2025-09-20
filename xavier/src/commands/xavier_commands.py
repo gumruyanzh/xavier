@@ -14,6 +14,14 @@ from ..core.xavier_engine import XavierEngine, ItemType, Priority
 from ..scrum.scrum_manager import SCRUMManager
 from ..agents.orchestrator import AgentOrchestrator, AgentTask
 
+# Try to import ANSI art module
+try:
+    from ..utils.ansi_art import display_welcome, display_sprint_start, display_mini_banner
+except ImportError:
+    display_welcome = None
+    display_sprint_start = None
+    display_mini_banner = None
+
 
 class XavierCommands:
     """Command handlers for Xavier Framework integration with Claude Code"""
@@ -795,6 +803,12 @@ This project follows Xavier Framework standards:
         self.scrum.start_sprint(sprint_id)
         sprint = self.scrum.sprints[sprint_id]
 
+        # Display sprint start banner
+        import subprocess
+        greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
+        if os.path.exists(greeting_script):
+            subprocess.run([greeting_script, "sprint-start"], check=False)
+
         # Prepare tasks for agents
         agent_tasks = []
 
@@ -1108,6 +1122,12 @@ This project follows Xavier Framework standards:
 
     def show_help(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Show Xavier help and commands"""
+        # Display ANSI art greeting
+        import subprocess
+        greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
+        if os.path.exists(greeting_script):
+            subprocess.run([greeting_script, "welcome", "1.0.2"], check=False)
+
         help_text = """# Xavier Framework Commands
 
 ## Project Management

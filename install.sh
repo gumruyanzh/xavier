@@ -11,15 +11,29 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD_CYAN='\033[1;36m'
+BOLD_WHITE='\033[1;37m'
+LIGHT_WHITE='\033[0;97m'
+LIGHT_CYAN='\033[0;96m'
 NC='\033[0m' # No Color
 
-# Xavier banner
-echo -e "${BLUE}"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo "║                  XAVIER FRAMEWORK                         ║"
-echo "║     Enterprise SCRUM Development for Claude Code          ║"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo -e "${NC}"
+# Xavier ANSI Art Banner
+echo
+echo -e "${LIGHT_CYAN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╗  ██╗ █████╗ ██╗   ██╗██╗███████╗██████╗${NC}                        ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚██╗██╔╝██╔══██╗██║   ██║██║██╔════╝██╔══██╗${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}   ${BOLD_CYAN}╚███╔╝ ███████║╚██╗ ██╔╝██║█████╗  ██████╔╝${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}   ${BOLD_CYAN}██╔██╗ ██╔══██║ ╚████╔╝ ██║██╔══╝  ██╔══██╗${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╔╝ ██╗██║  ██║  ╚██╔╝  ██║███████╗██║  ██║${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}              ${BOLD_WHITE}Enterprise SCRUM Framework${NC}                             ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.0.2${NC}                                     ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+echo
 
 # Check Python version
 PYTHON_VERSION=$(python3 --version 2>&1 | sed 's/Python //' | cut -d. -f1,2)
@@ -1069,30 +1083,35 @@ if [ "$MODE" == "new" ]; then
     fi
 fi
 
-# Success message
-echo -e "${GREEN}"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo "║           XAVIER FRAMEWORK INSTALLED!                     ║"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo -e "${NC}"
-echo ""
-echo "Next steps:"
-echo "1. Open this project in Claude Code"
-echo "2. Use Xavier commands:"
-echo "   - /create-project  (Initialize new project)"
-echo "   - /create-story    (Create user story)"
-echo "   - /create-sprint   (Create sprint)"
-echo "   - /start-sprint    (Begin development)"
-echo "   - /xavier-help     (Show all commands)"
-echo ""
-echo "Or use the CLI:"
-echo "   ./xavier help"
-echo ""
-echo -e "${BLUE}Xavier enforces:${NC}"
-echo "  ✓ Test-first development (TDD)"
-echo "  ✓ 100% test coverage"
-echo "  ✓ Clean Code principles"
-echo "  ✓ SOLID design patterns"
-echo "  ✓ Sequential execution"
-echo ""
+# Success message with ANSI art
+echo
+echo -e "${LIGHT_CYAN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}        ${BOLD_GREEN}✅ XAVIER FRAMEWORK INSTALLED SUCCESSFULLY!${NC}                   ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}╠═══════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_WHITE}Quick Start Commands:${NC}                                              ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/create-project${NC}   AI-powered project initialization              ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/create-story${NC}     Create user stories with estimation            ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/create-task${NC}      Break stories into technical tasks             ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/create-sprint${NC}    Plan your next iteration                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/start-sprint${NC}     Begin sequential task execution                ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${CYAN}/xavier-help${NC}      View all available commands                    ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}╠═══════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${LIGHT_WHITE}Xavier Enforces:${NC}                                                  ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} Test-first development (TDD)                                   ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} 100% test coverage requirement                                 ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} Clean Code principles                                          ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} SOLID design patterns                                          ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} Sequential task execution                                      ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  📖 ${LIGHT_WHITE}Documentation:${NC} ${LIGHT_CYAN}gumruyan.com/xavier${NC}                             ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  💻 ${LIGHT_WHITE}GitHub:${NC}        ${LIGHT_CYAN}github.com/gumruyanzh/xavier${NC}                   ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+echo
 echo -e "${GREEN}Happy coding with Xavier! 🚀${NC}"

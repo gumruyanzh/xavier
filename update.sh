@@ -12,15 +12,28 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD_CYAN='\033[1;36m'
+BOLD_WHITE='\033[1;37m'
+LIGHT_WHITE='\033[0;97m'
+LIGHT_CYAN='\033[0;96m'
 NC='\033[0m' # No Color
 
-# Xavier banner
-echo -e "${BLUE}"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo "║                  XAVIER FRAMEWORK UPDATER                 ║"
-echo "║            Updating to the Latest Version                 ║"
-echo "╔══════════════════════════════════════════════════════════╗"
-echo -e "${NC}"
+# Xavier ANSI Art Banner
+echo
+echo -e "${LIGHT_CYAN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╗  ██╗ █████╗ ██╗   ██╗██╗███████╗██████╗${NC}                        ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚██╗██╔╝██╔══██╗██║   ██║██║██╔════╝██╔══██╗${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}   ${BOLD_CYAN}╚███╔╝ ███████║╚██╗ ██╔╝██║█████╗  ██████╔╝${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}   ${BOLD_CYAN}██╔██╗ ██╔══██║ ╚████╔╝ ██║██╔══╝  ██╔══██╗${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╔╝ ██╗██║  ██║  ╚██╔╝  ██║███████╗██║  ██║${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝${NC}                       ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}              ${BOLD_WHITE}Framework Update Manager${NC}                               ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+echo
 
 # Check if Xavier is installed
 if [ ! -d ".xavier" ] || [ ! -f ".xavier/config.json" ]; then
@@ -269,23 +282,36 @@ echo -e "${BLUE}Verifying update...${NC}"
 NEW_VERSION=$(python3 -c "import json; print(json.load(open('.xavier/config.json'))['xavier_version'])" 2>/dev/null)
 
 if [ "$NEW_VERSION" = "$LATEST_VERSION" ]; then
-    echo -e "${GREEN}"
-    echo "╔══════════════════════════════════════════════════════════╗"
-    echo "║          ✅ XAVIER FRAMEWORK UPDATED SUCCESSFULLY!        ║"
-    echo "╔══════════════════════════════════════════════════════════╗"
-    echo -e "${NC}"
     echo
-    echo -e "${GREEN}Updated from version $CURRENT_VERSION to $LATEST_VERSION${NC}"
+    echo -e "${LIGHT_CYAN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}        ${BOLD_GREEN}✅ XAVIER FRAMEWORK UPDATED SUCCESSFULLY!${NC}                    ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+    echo -e "${LIGHT_CYAN}╠═══════════════════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_WHITE}Update Summary:${NC}                                                    ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    Previous version: ${YELLOW}v$CURRENT_VERSION${NC}                                              ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    Current version:  ${GREEN}v$LATEST_VERSION${NC}                                              ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_WHITE}What's New:${NC}                                                        ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}◆${NC} Intelligent project creation with AI analysis                  ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}◆${NC} Automatic update system with backup                           ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}◆${NC} Strict command boundaries (no auto-implementation)            ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}◆${NC} Enhanced ANSI art and visual feedback                        ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_WHITE}Your Data:${NC}                                                         ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} All stories, tasks, and sprints preserved                     ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    ${GREEN}✓${NC} Backup created at:                                            ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}      ${LIGHT_WHITE}$BACKUP_DIR${NC}     ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}                                                                       ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_WHITE}Next Steps:${NC}                                                        ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    • Try ${CYAN}/create-project${NC} for AI-powered project setup              ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    • Run ${CYAN}/xavier-help${NC} to see all commands                          ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║${NC}    • Check changelog at ${LIGHT_CYAN}gumruyan.com/xavier/changelog${NC}              ${LIGHT_CYAN}║${NC}"
+    echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
+    echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
     echo
-    echo "Your data has been preserved and backed up at:"
-    echo "  $BACKUP_DIR"
-    echo
-    echo "What's next:"
-    echo "• Use /xavier-help to see all available commands"
-    echo "• Try /create-project for intelligent project setup"
-    echo "• Your existing stories, tasks, and sprints are intact"
-    echo
-    echo -e "${BLUE}Thank you for using Xavier Framework!${NC}"
+    echo -e "${GREEN}Thank you for using Xavier Framework! 🚀${NC}"
 else
     echo -e "${RED}❌ Update verification failed${NC}"
     echo "Please check the installation manually or restore from backup:"
