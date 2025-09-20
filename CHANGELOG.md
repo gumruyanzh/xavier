@@ -5,6 +5,25 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-09-19
+
+### Added
+- **Claude Code Integration**: Complete integration of new story estimation commands
+  - `/estimate-story` command now properly registered in Claude Code
+  - `/set-story-points` command available as slash command
+  - Both commands added to xavier_bridge.py command mapping
+  - Commands automatically available after Xavier update
+
+### Fixed
+- Claude Code command registration for new estimation features
+- Update script now properly installs new commands
+- Xavier bridge command mapping includes all new commands
+
+### Documentation
+- Updated all command documentation files
+- Added examples for both estimate-story and set-story-points
+- Clear distinction between automatic and manual estimation
+
 ## [1.1.1] - 2025-09-19
 
 ### Added
