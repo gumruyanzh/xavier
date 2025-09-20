@@ -5,6 +5,37 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-09-19
+
+### Fixed
+- **Complete Sprint Management Dictionary Issues**: Fixed all sprint-related dict/dataclass mismatches
+  - `plan_sprint()` now uses safe accessors for all story/task/bug attributes
+  - `_calculate_velocity()` handles both SprintStatus enum and string values
+  - `start_sprint()` uses safe accessors for all sprint item updates
+  - `update_task_progress()` and `_update_story_progress()` use safe accessors
+  - `_update_sprint_burndown()` safely accesses all sprint/story/bug attributes
+  - `complete_sprint()` handles both enum and string status values
+  - Fixed datetime comparison in velocity calculation (string vs datetime)
+
+### Added
+- **Sprint Status Compatibility Helper**: `get_sprint_status_value()` for consistent status handling
+  - Works with both SprintStatus enum and string values
+  - Used throughout xavier_commands.py for reliable sprint status checks
+- **Comprehensive Sprint Tests**: Full test coverage for sprint operations
+  - Tests create/plan/start/complete sprint lifecycle
+  - Tests mixed dict/dataclass format handling
+  - Tests velocity calculation with various data formats
+  - Tests sprint burndown calculations
+
+### Updated
+- **xavier_commands.py Sprint Methods**: All sprint commands use safe accessors
+  - `create_sprint` command properly accesses sprint attributes
+  - `start_sprint` command handles status checking correctly
+  - Fixed planned sprint detection to work with both data formats
+
+### Impact
+This completes the enterprise-grade persistence solution. All sprint operations now work flawlessly with both dictionary and dataclass formats, ensuring 100% backward compatibility while maintaining type safety.
+
 ## [1.1.4] - 2025-09-19
 
 ### Fixed

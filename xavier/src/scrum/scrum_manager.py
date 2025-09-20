@@ -197,6 +197,19 @@ def safe_set_attr(obj: Any, attr: str, value: Any) -> None:
         setattr(obj, attr, value)
 
 
+def get_sprint_status_value(sprint: Any) -> str:
+    """
+    Get sprint status value handling both SprintStatus enum and string.
+    Returns a string value that can be compared consistently.
+    """
+    status = safe_get_attr(sprint, 'status')
+    if isinstance(status, SprintStatus):
+        return status.value
+    elif isinstance(status, str):
+        return status
+    return "Planning"  # Default
+
+
 class SCRUMManager:
     """Manages SCRUM workflow with strict process enforcement"""
 
@@ -483,18 +496,31 @@ class SCRUMManager:
 
     def _calculate_velocity(self) -> int:
         """Calculate team velocity based on past sprints"""
-        completed_sprints = [s for s in self.sprints.values()
-                           if s.status == SprintStatus.COMPLETED]
+        completed_sprints = []
+        for s in self.sprints.values():
+            sprint_status = safe_get_attr(s, 'status')
+            # Handle both SprintStatus enum and string values
+            if isinstance(sprint_status, SprintStatus):
+                if sprint_status == SprintStatus.COMPLETED:
+                    completed_sprints.append(s)
+            elif sprint_status == "Completed":
+                completed_sprints.append(s)
 
         if not completed_sprints:
             return 20  # Default velocity
 
         # Average of last 3 sprints
+        def get_end_date(sprint):
+            end_date = safe_get_attr(sprint, 'end_date', datetime.now())
+            if isinstance(end_date, str):
+                return str_to_datetime(end_date) or datetime.now()
+            return end_date
+
         recent_sprints = sorted(completed_sprints,
-                              key=lambda s: s.end_date,
+                              key=get_end_date,
                               reverse=True)[:3]
 
-        total_points = sum(s.completed_points for s in recent_sprints)
+        total_points = sum(safe_get_attr(s, 'completed_points', 0) for s in recent_sprints)
         return int(total_points / len(recent_sprints))
 
     def plan_sprint(self, sprint_id: str) -> Tuple[List[str], List[str], List[str]]:
@@ -506,53 +532,72 @@ class SCRUMManager:
 
         # Get all available items
         available_stories = [s for s in self.stories.values()
-                           if s.status == "Backlog"]
+                           if safe_get_attr(s, 'status') == "Backlog"]
         available_tasks = [t for t in self.tasks.values()
-                         if t.status == "Backlog" and t.story_id not in sprint.stories]
+                         if safe_get_attr(t, 'status') == "Backlog" and
+                         safe_get_attr(t, 'story_id') not in safe_get_attr(sprint, 'stories', [])]
         available_bugs = [b for b in self.bugs.values()
-                        if b.status == "Open"]
+                        if safe_get_attr(b, 'status') == "Open"]
 
         # Sort by priority
         priority_order = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3}
 
-        available_stories.sort(key=lambda s: (priority_order.get(s.priority, 3), -s.story_points))
-        available_bugs.sort(key=lambda b: (priority_order.get(b.priority, 3), b.severity))
-        available_tasks.sort(key=lambda t: priority_order.get(t.priority, 3))
+        available_stories.sort(key=lambda s: (
+            priority_order.get(safe_get_attr(s, 'priority', 'Medium'), 3),
+            -safe_get_attr(s, 'story_points', 0)
+        ))
+        available_bugs.sort(key=lambda b: (
+            priority_order.get(safe_get_attr(b, 'priority', 'Medium'), 3),
+            safe_get_attr(b, 'severity', 'Low')
+        ))
+        available_tasks.sort(key=lambda t: priority_order.get(safe_get_attr(t, 'priority', 'Medium'), 3))
 
         # Add items to sprint up to velocity
         total_points = 0
         selected_stories = []
         selected_tasks = []
         selected_bugs = []
+        sprint_velocity = safe_get_attr(sprint, 'velocity', 20)
 
         # First add critical bugs
         for bug in available_bugs:
-            if bug.severity == "Critical" and total_points + bug.story_points <= sprint.velocity:
-                selected_bugs.append(bug.id)
-                total_points += bug.story_points
+            bug_severity = safe_get_attr(bug, 'severity', 'Low')
+            bug_points = safe_get_attr(bug, 'story_points', 0)
+            bug_id = safe_get_attr(bug, 'id')
+
+            if bug_severity == "Critical" and total_points + bug_points <= sprint_velocity:
+                selected_bugs.append(bug_id)
+                total_points += bug_points
 
         # Then add stories
         for story in available_stories:
-            if story.story_points > 0 and total_points + story.story_points <= sprint.velocity:
-                selected_stories.append(story.id)
-                total_points += story.story_points
+            story_points = safe_get_attr(story, 'story_points', 0)
+            story_id = safe_get_attr(story, 'id')
+
+            if story_points > 0 and total_points + story_points <= sprint_velocity:
+                selected_stories.append(story_id)
+                total_points += story_points
 
                 # Add related tasks
-                for task_id in story.tasks:
+                story_tasks = safe_get_attr(story, 'tasks', [])
+                for task_id in story_tasks:
                     if task_id in self.tasks:
                         selected_tasks.append(task_id)
 
         # Add remaining bugs if capacity allows
         for bug in available_bugs:
-            if bug.id not in selected_bugs and total_points + bug.story_points <= sprint.velocity:
-                selected_bugs.append(bug.id)
-                total_points += bug.story_points
+            bug_id = safe_get_attr(bug, 'id')
+            bug_points = safe_get_attr(bug, 'story_points', 0)
+
+            if bug_id not in selected_bugs and total_points + bug_points <= sprint_velocity:
+                selected_bugs.append(bug_id)
+                total_points += bug_points
 
         # Update sprint
-        sprint.stories = selected_stories
-        sprint.tasks = selected_tasks
-        sprint.bugs = selected_bugs
-        sprint.committed_points = total_points
+        safe_set_attr(sprint, 'stories', selected_stories)
+        safe_set_attr(sprint, 'tasks', selected_tasks)
+        safe_set_attr(sprint, 'bugs', selected_bugs)
+        safe_set_attr(sprint, 'committed_points', total_points)
 
         self._save_data()
         return selected_stories, selected_tasks, selected_bugs
@@ -567,25 +612,28 @@ class SCRUMManager:
 
         sprint = self.sprints[sprint_id]
 
-        if sprint.committed_points == 0:
+        if safe_get_attr(sprint, 'committed_points', 0) == 0:
             raise ValueError("Sprint has no committed work")
 
-        sprint.status = SprintStatus.ACTIVE
-        sprint.start_date = datetime.now()
+        safe_set_attr(sprint, 'status', SprintStatus.ACTIVE)
+        safe_set_attr(sprint, 'start_date', datetime.now())
         self.current_sprint = sprint_id
 
         # Update status of sprint items
-        for story_id in sprint.stories:
+        sprint_stories = safe_get_attr(sprint, 'stories', [])
+        for story_id in sprint_stories:
             if story_id in self.stories:
-                self.stories[story_id].status = "In Progress"
+                safe_set_attr(self.stories[story_id], 'status', "In Progress")
 
-        for task_id in sprint.tasks:
+        sprint_tasks = safe_get_attr(sprint, 'tasks', [])
+        for task_id in sprint_tasks:
             if task_id in self.tasks:
-                self.tasks[task_id].status = "In Progress"
+                safe_set_attr(self.tasks[task_id], 'status', "In Progress")
 
-        for bug_id in sprint.bugs:
+        sprint_bugs = safe_get_attr(sprint, 'bugs', [])
+        for bug_id in sprint_bugs:
             if bug_id in self.bugs:
-                self.bugs[bug_id].status = "In Progress"
+                safe_set_attr(self.bugs[bug_id], 'status', "In Progress")
 
         self._save_data()
         return True
@@ -605,14 +653,16 @@ class SCRUMManager:
         if completion_percentage == 100 and test_coverage < 100:
             raise ValueError("Test coverage must be 100% for completed tasks")
 
-        task.completion_percentage = completion_percentage
-        task.test_coverage = test_coverage
+        safe_set_attr(task, 'completion_percentage', completion_percentage)
+        safe_set_attr(task, 'test_coverage', test_coverage)
 
         if completion_percentage == 100:
-            task.status = "Done"
-            self._update_story_progress(task.story_id)
+            safe_set_attr(task, 'status', "Done")
+            story_id = safe_get_attr(task, 'story_id')
+            if story_id:
+                self._update_story_progress(story_id)
 
-        task.updated_at = datetime.now()
+        safe_set_attr(task, 'updated_at', datetime.now())
         self._save_data()
         return task
 
@@ -622,15 +672,16 @@ class SCRUMManager:
             return
 
         story = self.stories[story_id]
+        story_tasks = safe_get_attr(story, 'tasks', [])
         all_tasks_done = all(
-            self.tasks[task_id].status == "Done"
-            for task_id in story.tasks
+            safe_get_attr(self.tasks[task_id], 'status') == "Done"
+            for task_id in story_tasks
             if task_id in self.tasks
         )
 
         if all_tasks_done:
-            story.status = "Done"
-            story.updated_at = datetime.now()
+            safe_set_attr(story, 'status', "Done")
+            safe_set_attr(story, 'updated_at', datetime.now())
 
             # Update sprint progress
             if self.current_sprint:
@@ -646,18 +697,28 @@ class SCRUMManager:
         # Calculate remaining points
         remaining_points = 0
 
-        for story_id in sprint.stories:
-            if story_id in self.stories and self.stories[story_id].status != "Done":
-                remaining_points += self.stories[story_id].story_points
+        sprint_stories = safe_get_attr(sprint, 'stories', [])
+        for story_id in sprint_stories:
+            if story_id in self.stories:
+                story = self.stories[story_id]
+                if safe_get_attr(story, 'status') != "Done":
+                    remaining_points += safe_get_attr(story, 'story_points', 0)
 
-        for bug_id in sprint.bugs:
-            if bug_id in self.bugs and self.bugs[bug_id].status != "Resolved":
-                remaining_points += self.bugs[bug_id].story_points
+        sprint_bugs = safe_get_attr(sprint, 'bugs', [])
+        for bug_id in sprint_bugs:
+            if bug_id in self.bugs:
+                bug = self.bugs[bug_id]
+                if safe_get_attr(bug, 'status') != "Resolved":
+                    remaining_points += safe_get_attr(bug, 'story_points', 0)
 
         # Update daily burndown
         today = datetime.now().date().isoformat()
-        sprint.daily_burndown[today] = remaining_points
-        sprint.completed_points = sprint.committed_points - remaining_points
+        burndown = safe_get_attr(sprint, 'daily_burndown', {})
+        burndown[today] = remaining_points
+        safe_set_attr(sprint, 'daily_burndown', burndown)
+
+        committed = safe_get_attr(sprint, 'committed_points', 0)
+        safe_set_attr(sprint, 'completed_points', committed - remaining_points)
 
     def complete_sprint(self, sprint_id: str, retrospective_notes: str) -> Sprint:
         """Complete a sprint with retrospective"""
@@ -666,25 +727,42 @@ class SCRUMManager:
 
         sprint = self.sprints[sprint_id]
 
-        if sprint.status != SprintStatus.ACTIVE:
+        # Check sprint status - handle both enum and string
+        sprint_status = safe_get_attr(sprint, 'status')
+        is_active = False
+        if isinstance(sprint_status, SprintStatus):
+            is_active = sprint_status == SprintStatus.ACTIVE
+        else:
+            is_active = sprint_status == "Active"
+
+        if not is_active:
             raise ValueError("Can only complete active sprints")
 
-        sprint.status = SprintStatus.COMPLETED
-        sprint.end_date = datetime.now()
-        sprint.retrospective_notes = retrospective_notes
+        safe_set_attr(sprint, 'status', SprintStatus.COMPLETED)
+        safe_set_attr(sprint, 'end_date', datetime.now())
+        safe_set_attr(sprint, 'retrospective_notes', retrospective_notes)
 
         # Move incomplete items back to backlog
-        for story_id in sprint.stories:
-            if story_id in self.stories and self.stories[story_id].status != "Done":
-                self.stories[story_id].status = "Backlog"
+        sprint_stories = safe_get_attr(sprint, 'stories', [])
+        for story_id in sprint_stories:
+            if story_id in self.stories:
+                story = self.stories[story_id]
+                if safe_get_attr(story, 'status') != "Done":
+                    safe_set_attr(story, 'status', "Backlog")
 
-        for task_id in sprint.tasks:
-            if task_id in self.tasks and self.tasks[task_id].status != "Done":
-                self.tasks[task_id].status = "Backlog"
+        sprint_tasks = safe_get_attr(sprint, 'tasks', [])
+        for task_id in sprint_tasks:
+            if task_id in self.tasks:
+                task = self.tasks[task_id]
+                if safe_get_attr(task, 'status') != "Done":
+                    safe_set_attr(task, 'status', "Backlog")
 
-        for bug_id in sprint.bugs:
-            if bug_id in self.bugs and self.bugs[bug_id].status != "Resolved":
-                self.bugs[bug_id].status = "Open"
+        sprint_bugs = safe_get_attr(sprint, 'bugs', [])
+        for bug_id in sprint_bugs:
+            if bug_id in self.bugs:
+                bug = self.bugs[bug_id]
+                if safe_get_attr(bug, 'status') != "Resolved":
+                    safe_set_attr(bug, 'status', "Open")
 
         self.current_sprint = None
         self._save_data()

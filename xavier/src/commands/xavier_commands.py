@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from ..core.xavier_engine import XavierEngine, ItemType, Priority
-from ..scrum.scrum_manager import SCRUMManager, safe_get_attr, safe_set_attr
+from ..scrum.scrum_manager import SCRUMManager, safe_get_attr, safe_set_attr, get_sprint_status_value
 from ..agents.orchestrator import AgentOrchestrator, AgentTask
 
 # Try to import ANSI art module
@@ -345,7 +345,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.1.4"
+            "xavier_version": "1.1.5"
         }
 
         # Save project configuration
@@ -761,13 +761,14 @@ This project follows Xavier Framework standards:
 
         # Auto-plan if requested
         if args.get("auto_plan", True):
-            stories, tasks, bugs = self.scrum.plan_sprint(sprint.id)
+            sprint_id = safe_get_attr(sprint, 'id')
+            stories, tasks, bugs = self.scrum.plan_sprint(sprint_id)
             return {
-                "sprint_id": sprint.id,
-                "name": sprint.name,
-                "goal": sprint.goal,
-                "velocity": sprint.velocity,
-                "committed_points": sprint.committed_points,
+                "sprint_id": sprint_id,
+                "name": safe_get_attr(sprint, 'name'),
+                "goal": safe_get_attr(sprint, 'goal'),
+                "velocity": safe_get_attr(sprint, 'velocity'),
+                "committed_points": safe_get_attr(sprint, 'committed_points', 0),
                 "stories": len(stories),
                 "tasks": len(tasks),
                 "bugs": len(bugs),
@@ -775,10 +776,10 @@ This project follows Xavier Framework standards:
             }
 
         return {
-            "sprint_id": sprint.id,
-            "name": sprint.name,
-            "goal": sprint.goal,
-            "velocity": sprint.velocity,
+            "sprint_id": safe_get_attr(sprint, 'id'),
+            "name": safe_get_attr(sprint, 'name'),
+            "goal": safe_get_attr(sprint, 'goal'),
+            "velocity": safe_get_attr(sprint, 'velocity'),
             "status": "Created - Ready for planning"
         }
 
@@ -794,11 +795,15 @@ This project follows Xavier Framework standards:
         # Find sprint
         if not sprint_id:
             # Find latest planned sprint
-            planned_sprints = [s for s in self.scrum.sprints.values()
-                             if s.status.value == "Planning"]
+            planned_sprints = []
+            for s in self.scrum.sprints.values():
+                status_value = get_sprint_status_value(s)
+                if status_value == "Planning":
+                    planned_sprints.append(s)
+
             if not planned_sprints:
                 raise ValueError("No planned sprint found")
-            sprint_id = planned_sprints[0].id
+            sprint_id = safe_get_attr(planned_sprints[0], 'id')
 
         # Start sprint in SCRUM manager
         self.scrum.start_sprint(sprint_id)
@@ -1217,7 +1222,7 @@ This project follows Xavier Framework standards:
         import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
-            subprocess.run([greeting_script, "welcome", "1.1.4"], check=False)
+            subprocess.run([greeting_script, "welcome", "1.1.5"], check=False)
 
         help_text = """# Xavier Framework Commands
 
@@ -1361,7 +1366,7 @@ Estimated sprints: 0.7
         return {
             "help": help_text,
             "commands_count": 22,
-            "framework_version": "1.1.4"
+            "framework_version": "1.1.5"
         }
 
     def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:
