@@ -358,6 +358,56 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/create-project</h3>
+                        <span class="command-badge">NEW</span>
+                    </div>
+                    <p class="command-description">
+                        Intelligently analyze project requirements and generate comprehensive stories, tasks, and technical architecture.
+                    </p>
+                    <div class="command-syntax">
+                        /create-project "project_name" "detailed_description" [tech_stack]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">project_name</span>
+                            <span class="param-required">required</span>
+                            <span>Name of the project (e.g., "E-commerce Platform")</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">description</span>
+                            <span class="param-required">required</span>
+                            <span>Detailed description of features and requirements</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-name">tech_stack</span>
+                            <span class="param-optional">optional</span>
+                            <span>Preferred technology stack (auto-detected if not specified)</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-project "Task Manager" "A web app for managing tasks with user auth, projects, and team collaboration"
+                            </div>
+                            <div class="example-description">
+                                Creates full project plan with AI-generated stories and tasks
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /create-project "Blog API" "RESTful API for blog with CRUD, auth, comments" "Python/FastAPI"
+                            </div>
+                            <div class="example-description">
+                                Creates project with specified tech stack
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="command-category">
@@ -626,6 +676,46 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="command-item">
+                    <div class="command-header">
+                        <h3 class="command-title">/xavier-update</h3>
+                        <span class="command-badge">SYSTEM</span>
+                    </div>
+                    <p class="command-description">
+                        Check for Xavier Framework updates and install the latest version with automatic backup.
+                    </p>
+                    <div class="command-syntax">
+                        /xavier-update [--check-only]
+                    </div>
+                    <div class="command-params">
+                        <h4>Parameters:</h4>
+                        <div class="param-item">
+                            <span class="param-name">--check-only</span>
+                            <span class="param-optional">optional</span>
+                            <span>Only check for updates without installing</span>
+                        </div>
+                    </div>
+                    <div class="command-examples">
+                        <h4>Examples:</h4>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-update
+                            </div>
+                            <div class="example-description">
+                                Checks for updates and installs if available
+                            </div>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-code">
+                                /xavier-update --check-only
+                            </div>
+                            <div class="example-description">
+                                Shows current version and available updates
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="command-category">
@@ -726,6 +816,8 @@
                     <li>Bug severity automatically determines sprint priority</li>
                     <li>Use <code>/show-backlog</code> frequently to track progress</li>
                     <li>Configure settings with <code>/xavier-config</code> to match your team's standards</li>
+                    <li>Use <code>/create-project</code> for AI-powered project initialization with automatic story generation</li>
+                    <li>Run <code>/xavier-update</code> regularly to get the latest features and improvements</li>
                 </ul>
             </div>
 

@@ -170,6 +170,52 @@
             </section>
 
             <section>
+                <h2>Updating Xavier</h2>
+                <p>Keep Xavier up to date with the latest features and improvements:</p>
+
+                <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 30px;">
+                    <div class="step-number">1</div>
+                    <div style="flex: 1;">
+                        <h3>Check for Updates</h3>
+                        <p>Use the Xavier command to check if updates are available:</p>
+                        <div class="code-example">
+                            <pre><code>/xavier-update</code></pre>
+                        </div>
+                        <p style="margin-top: 15px;">This will show your current version and any available updates.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 30px;">
+                    <div class="step-number">2</div>
+                    <div style="flex: 1;">
+                        <h3>Install Updates</h3>
+                        <p>Run the update script to get the latest version:</p>
+                        <div class="code-example">
+                            <pre><code>curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh -o xavier-update.sh && \
+bash xavier-update.sh && \
+rm xavier-update.sh</code></pre>
+                        </div>
+                        <p style="margin-top: 15px;">The update process will:</p>
+                        <ul>
+                            <li>Backup your existing data</li>
+                            <li>Update framework files</li>
+                            <li>Preserve your stories, tasks, and sprints</li>
+                            <li>Update all Claude Code commands</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Current Version:</strong> 1.0.2<br><br>
+                    <strong>Latest Features:</strong><br>
+                    • Intelligent /create-project command with AI analysis<br>
+                    • Strict command boundaries (no auto-implementation)<br>
+                    • Automatic update system with backups<br>
+                    • Enhanced project templates
+                </div>
+            </section>
+
+            <section>
                 <h2>Your First Sprint</h2>
                 <p>Let's create a simple TODO application using Xavier's workflow:</p>
 

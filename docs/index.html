@@ -21,6 +21,7 @@
                 <li><a href="documentation.html">Documentation</a></li>
                 <li><a href="quick-start.html">Quick Start</a></li>
                 <li><a href="commands.html">Commands</a></li>
+                <li><a href="changelog.html">Changelog</a></li>
                 <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">GitHub</a></li>
             </ul>
         </div>
@@ -30,7 +31,7 @@
     <section class="hero">
         <div class="hero-container">
             <h1>Enterprise SCRUM Framework</h1>
-            <p class="hero-subtitle">For Claude Code</p>
+            <p class="hero-subtitle">For Claude Code <span style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 14px; margin-left: 10px;">v1.0.2</span></p>
             <p class="hero-description">
                 Test-first development. 100% test coverage. Clean Code principles.
                 Build production-ready software with strict sequential execution.
@@ -131,6 +132,64 @@
                     <div class="command-name">/xavier-help</div>
                     <div class="command-description">Get help with any command</div>
                 </div>
+                <div class="command-card">
+                    <div class="command-name">/create-project</div>
+                    <div class="command-description">AI-powered project setup</div>
+                </div>
+                <div class="command-card">
+                    <div class="command-name">/xavier-update</div>
+                    <div class="command-description">Update to latest version</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What's New -->
+    <section class="whats-new" style="background: #f5f5f7; padding: 60px 20px;">
+        <div class="container">
+            <div class="section-header">
+                <h2>What's New in v1.0.2</h2>
+                <p>Latest features and improvements</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 900px; margin: 40px auto;">
+                <div style="background: white; padding: 30px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px;">🤖 Intelligent Project Creation</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 10px 0;">✓ AI-powered tech stack analysis</li>
+                        <li style="margin: 10px 0;">✓ Automatic story generation</li>
+                        <li style="margin: 10px 0;">✓ Project template detection</li>
+                        <li style="margin: 10px 0;">✓ Smart dependency suggestions</li>
+                    </ul>
+                </div>
+
+                <div style="background: white; padding: 30px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px;">🚀 Easy Updates</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 10px 0;">✓ One-command updates</li>
+                        <li style="margin: 10px 0;">✓ Automatic backup system</li>
+                        <li style="margin: 10px 0;">✓ Version checking</li>
+                        <li style="margin: 10px 0;">✓ Changelog tracking</li>
+                    </ul>
+                </div>
+
+                <div style="background: white; padding: 30px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px;">🛡️ Strict Boundaries</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 10px 0;">✓ No auto-implementation</li>
+                        <li style="margin: 10px 0;">✓ Clear command separation</li>
+                        <li style="margin: 10px 0;">✓ Planning vs execution</li>
+                        <li style="margin: 10px 0;">✓ Controlled workflow</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <h3>Update to the Latest Version</h3>
+                <div class="code-block" style="max-width: 700px; margin: 20px auto; background: #1d1d1f; color: white; padding: 20px; border-radius: 8px;">
+                    <code style="color: #0A84FF;">curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh -o xavier-update.sh && bash xavier-update.sh && rm xavier-update.sh</code>
+                </div>
+                <p style="margin-top: 15px;">Or use <code>/xavier-update</code> command in Claude Code</p>
             </div>
         </div>
     </section>

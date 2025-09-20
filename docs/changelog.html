@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog - Xavier Framework</title>
+    <base href="/xavier/">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/docs.css">
+    <script src="assets/js/main.js" defer></script>
+    <style>
+        .changelog-header {
+            background: var(--gradient);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .changelog-header h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .version-section {
+            margin-bottom: 60px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .version-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        .version-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+        .version-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .version-date {
+            color: #64748B;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        .change-category {
+            margin: 30px 0;
+        }
+        .change-category h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .change-list {
+            list-style: none;
+            padding: 0;
+        }
+        .change-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--light-bg);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-light);
+        }
+        .change-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .change-description {
+            flex: 1;
+            line-height: 1.6;
+        }
+        .change-description code {
+            background: #1E293B;
+            color: #10B981;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .migration-notes {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .migration-notes h4 {
+            color: #92400E;
+            margin-bottom: 12px;
+        }
+        .migration-notes ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .breaking-changes {
+            background: #FEE2E2;
+            border: 1px solid #FCA5A5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .breaking-changes h4 {
+            color: #991B1B;
+            margin-bottom: 12px;
+        }
+        .feature-new { color: #10B981; }
+        .feature-improved { color: #3B82F6; }
+        .feature-fixed { color: #F59E0B; }
+        .feature-breaking { color: #EF4444; }
+        .feature-deprecated { color: #64748B; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/xavier/" class="logo">
+                <div class="logo-icon">X</div>
+                <span class="logo-text">Xavier Framework</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="commands.html">Commands</a></li>
+                <li><a href="changelog.html">Changelog</a></li>
+                <li><a href="https://github.com/gumruyanzh/xavier" class="github-link">
+                    ⭐ GitHub
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="changelog-header">
+        <h1>Changelog</h1>
+        <p>Track all changes, improvements, and updates to Xavier Framework</p>
+    </div>
+
+    <div class="docs-container">
+        <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
+
+            <!-- Version 1.0.2 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.0.2</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">January 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> New Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Intelligent Project Creation</strong> - New <code>/create-project</code> command with AI-powered analysis that automatically generates user stories, tasks, and technical architecture based on project requirements.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Automatic Update System</strong> - New <code>/xavier-update</code> command for seamless framework updates with automatic backup of user data.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Strict Command Boundaries</strong> - Clear separation between planning and implementation phases. Commands like <code>/create-story</code> now only create items without auto-implementation.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">🔧</span> Improvements</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Enhanced project template detection with automatic tech stack analysis
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Improved agent instructions with clearer boundaries and responsibilities
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Better error handling in configuration management
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Optimized installation script for faster setup
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Bug Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                Fixed update script error when run through piped execution
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                Resolved KeyError in configuration update for older installations
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                Fixed automatic story implementation issue in Claude Code
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="migration-notes">
+                    <h4>📦 Migration Notes</h4>
+                    <ul>
+                        <li>Run <code>/xavier-update</code> to upgrade from v1.0.0 or v1.0.1</li>
+                        <li>Your existing stories, tasks, and sprints will be preserved</li>
+                        <li>Backup is automatically created before update</li>
+                        <li>New commands will be added to your Claude Code installation</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Version 1.0.1 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.0.1</span>
+                    <span class="version-date">January 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">🔧</span> Improvements</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Enhanced agent communication protocols
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Better sprint planning algorithms
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                Improved test coverage validation
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Bug Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                Fixed sprint velocity calculation error
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                Resolved task dependency resolution issues
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Version 1.0.0 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.0.0</span>
+                    <span class="version-badge">INITIAL RELEASE</span>
+                    <span class="version-date">January 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> Initial Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>SCRUM Management</strong> - Complete implementation of user stories, tasks, bugs, and sprint planning
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Test-First Development</strong> - Enforced TDD with 100% test coverage requirement
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Clean Code Standards</strong> - Automatic validation of Clean Code principles and SOLID design patterns
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Sequential Execution</strong> - Strict one-task-at-a-time execution with dependency management
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Specialized Agents</strong> - Language-specific engineers (Python, Go, Frontend) with strict boundaries
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Claude Code Integration</strong> - Seamless integration with custom commands and agents
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Velocity Tracking</strong> - Automatic sprint velocity calculation and burndown charts
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="info-box">
+                <h3>📋 Update Instructions</h3>
+                <p style="margin: 16px 0;">To update Xavier to the latest version:</p>
+                <div class="code-example">
+                    <pre><code># Using Xavier command (recommended)
+/xavier-update
+
+# Or using curl
+curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh -o xavier-update.sh && \
+bash xavier-update.sh && \
+rm xavier-update.sh</code></pre>
+                </div>
+                <p style="margin-top: 16px;">All your data will be automatically backed up before updating.</p>
+            </div>
+
+            <div class="next-steps">
+                <h2>Stay Updated</h2>
+                <div class="steps-grid">
+                    <a href="https://github.com/gumruyanzh/xavier/releases" class="step-card">
+                        <h3>📦 GitHub Releases</h3>
+                        <p>View all releases on GitHub</p>
+                    </a>
+                    <a href="quick-start.html" class="step-card">
+                        <h3>🚀 Quick Start</h3>
+                        <p>Get started with Xavier</p>
+                    </a>
+                    <a href="https://github.com/gumruyanzh/xavier/issues" class="step-card">
+                        <h3>🐛 Report Issues</h3>
+                        <p>Help us improve Xavier</p>
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2025 Xavier Framework. Built with enterprise-grade standards.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/gumruyanzh/xavier">GitHub</a>
+                <a href="https://github.com/gumruyanzh/xavier/issues">Issues</a>
+                <a href="https://github.com/gumruyanzh/xavier/blob/main/LICENSE">License</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
