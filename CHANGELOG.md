@@ -5,6 +5,37 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] - 2025-09-21
+
+### Fixed
+- **Story ID Uniqueness**: Resolved duplicate story ID generation issue
+  - Added `_generate_unique_story_id()` with collision detection and retry logic
+  - Implements fallback mechanism for extremely rare UUID collisions
+  - Ensures no two stories can have the same ID, preventing user confusion
+
+### Added
+- **Automatic Data Structure Initialization**:
+  - Creates all required JSON files on SCRUM manager startup
+  - Initializes: stories.json, tasks.json, bugs.json, sprints.json, epics.json, roadmaps.json
+  - Preserves existing data when files already exist
+  - Provides consistent data directory structure for all users
+
+- **Automatic Roadmap Generation**:
+  - Roadmap automatically created when creating new project via `/create-project`
+  - Includes 4 default milestone templates (MVP Foundation, Core Features Complete, Beta Release, Production Launch)
+  - Timeline spans 16 weeks with realistic development phases
+  - Vision derived from project description
+  - Saves to roadmaps.json immediately with proper persistence
+
+### Improved
+- **Data Persistence**: Enhanced data directory management with automatic file creation
+- **User Experience**: Streamlined project setup process with automatic roadmap
+- **Test Coverage**: Added comprehensive tests for unique ID generation, data initialization, and roadmap creation
+- **Documentation**: Updated user guides to reflect automatic roadmap feature
+
+### Impact
+These updates address key user feedback about duplicate story IDs and missing roadmap files. The framework now provides a more robust and user-friendly experience with automatic setup and guaranteed unique identifiers.
+
 ## [1.1.5] - 2025-09-19
 
 ### Fixed

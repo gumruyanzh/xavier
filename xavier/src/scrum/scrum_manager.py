@@ -231,8 +231,25 @@ class SCRUMManager:
         # Story point scale (Fibonacci)
         self.story_point_scale = [1, 2, 3, 5, 8, 13, 21]
 
+        # Initialize data structure
+        self._initialize_data_structure()
+
         # Load existing data
         self._load_data()
+
+    def _initialize_data_structure(self):
+        """Initialize data directory structure with empty JSON files if they don't exist"""
+        data_files = ["stories", "tasks", "bugs", "sprints", "epics", "roadmaps"]
+
+        for data_type in data_files:
+            file_path = os.path.join(self.data_dir, f"{data_type}.json")
+            if not os.path.exists(file_path):
+                try:
+                    with open(file_path, 'w') as f:
+                        json.dump({}, f, indent=2)
+                    print(f"Initialized {data_type}.json")
+                except Exception as e:
+                    print(f"Warning: Could not initialize {data_type}.json: {e}")
 
     def _load_data(self):
         """Load existing SCRUM data from disk with proper deserialization"""
@@ -291,11 +308,29 @@ class SCRUMManager:
             except Exception as e:
                 print(f"Error saving {data_type}: {e}")
 
+    def _generate_unique_story_id(self) -> str:
+        """Generate a unique story ID, regenerating if it already exists"""
+        max_attempts = 100  # Prevent infinite loop
+        attempts = 0
+
+        while attempts < max_attempts:
+            story_id = f"US-{uuid.uuid4().hex[:8].upper()}"
+            if story_id not in self.stories:
+                return story_id
+            attempts += 1
+
+        # Fallback if UUID collision persists (extremely unlikely)
+        counter = 1
+        while f"US-FALLBACK-{counter:03d}" in self.stories:
+            counter += 1
+        return f"US-FALLBACK-{counter:03d}"
+
     def create_story(self, title: str, as_a: str, i_want: str, so_that: str,
                     acceptance_criteria: List[str], priority: str = "Medium",
                     epic_id: Optional[str] = None) -> UserStory:
         """Create a user story following standard format"""
-        story_id = f"US-{uuid.uuid4().hex[:8].upper()}"
+        # Generate unique story ID
+        story_id = self._generate_unique_story_id()
 
         story = UserStory(
             id=story_id,

@@ -154,11 +154,66 @@
     <div class="docs-container">
         <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
 
+            <!-- Version 1.1.6 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.6</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">September 21, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🐛</span> Critical Fixes</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Story ID Uniqueness</strong>
+                                <p>Resolved duplicate story ID generation issue. Added collision detection with retry logic and fallback mechanism for extremely rare UUID collisions. Ensures no two stories can have the same ID.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-new">✨</span> New Features</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Automatic Data Structure Initialization</strong>
+                                <p>Creates all required JSON files on SCRUM manager startup. Initializes stories.json, tasks.json, bugs.json, sprints.json, epics.json, and roadmaps.json while preserving existing data.</p>
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-new">◆</span>
+                            <div class="change-description">
+                                <strong>Automatic Roadmap Generation</strong>
+                                <p>Roadmap automatically created when creating new project. Includes 4 default milestone templates spanning 16 weeks with realistic development phases. Vision derived from project description and saves to roadmaps.json immediately.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">⚡</span> Improvements</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                <strong>Enhanced User Experience</strong>
+                                <p>Streamlined project setup process with automatic roadmap generation. Added comprehensive tests for all new features. Updated documentation to reflect automatic roadmap feature.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
             <!-- Version 1.1.5 -->
             <section class="version-section">
                 <div class="version-header">
                     <span class="version-number">v1.1.5</span>
-                    <span class="version-badge">LATEST</span>
+                    <span class="version-badge">PREVIOUS</span>
                     <span class="version-date">January 19, 2025</span>
                 </div>
 

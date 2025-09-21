@@ -345,7 +345,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.1.5"
+            "xavier_version": "1.1.6"
         }
 
         # Save project configuration
@@ -445,6 +445,9 @@ class XavierCommands:
                     "points": story_data.get("story_points", 0)
                 })
 
+        # Auto-generate roadmap for the project
+        roadmap_created = self._generate_default_roadmap(project_config, analysis)
+
         # Create README.md with project information
         readme_content = self._generate_readme(project_config, analysis)
         with open(os.path.join(self.project_path, "README.md"), 'w') as f:
@@ -461,9 +464,11 @@ class XavierCommands:
             "agents_configured": agents_created,
             "epics_created": len(epics_created),
             "stories_created": len(stories_created),
+            "roadmap_created": roadmap_created,
             "total_story_points": sum(s["points"] for s in stories_created),
             "next_steps": [
                 f"Review generated stories with /show-backlog",
+                f"Review generated roadmap with /xavier-help roadmap",
                 f"Create first sprint with /create-sprint",
                 f"Start development with /start-sprint",
                 f"View project details in README.md"
@@ -592,6 +597,91 @@ class XavierCommands:
             json.dump(config, f, indent=2)
 
         return agents
+
+    def _generate_default_roadmap(self, project_config: Dict[str, Any], analysis: Any) -> Dict[str, Any]:
+        """Generate a default roadmap for the project"""
+        # Create roadmap using SCRUM manager
+        roadmap_name = f"{project_config['name']} Product Roadmap"
+        vision = project_config.get('description', f"Building {project_config['name']} with modern technologies")
+
+        roadmap = self.scrum.create_roadmap(
+            name=roadmap_name,
+            vision=vision
+        )
+
+        # Generate default milestones based on project type and complexity
+        milestones = self._generate_default_milestones(project_config, analysis)
+
+        # Add milestones to roadmap
+        for milestone in milestones:
+            self.scrum.add_milestone_to_roadmap(
+                roadmap_id=roadmap.id,
+                milestone_name=milestone["name"],
+                target_date=milestone["target_date"],
+                epics=milestone.get("epics", []),
+                success_criteria=milestone["success_criteria"]
+            )
+
+        return {
+            "id": roadmap.id,
+            "name": roadmap.name,
+            "vision": roadmap.vision,
+            "milestones_count": len(milestones)
+        }
+
+    def _generate_default_milestones(self, project_config: Dict[str, Any], analysis: Any) -> List[Dict[str, Any]]:
+        """Generate default milestones based on project type"""
+        from datetime import datetime, timedelta
+
+        milestones = []
+        start_date = datetime.now()
+
+        # Basic milestones that apply to most projects
+        milestones.append({
+            "name": "MVP Foundation",
+            "target_date": start_date + timedelta(weeks=4),
+            "success_criteria": [
+                "Core architecture established",
+                "Basic authentication system",
+                "Initial database schema",
+                "Development environment setup"
+            ]
+        })
+
+        milestones.append({
+            "name": "Core Features Complete",
+            "target_date": start_date + timedelta(weeks=8),
+            "success_criteria": [
+                "Primary user workflows implemented",
+                "API endpoints functional",
+                "Basic UI/UX complete",
+                "Unit tests coverage > 70%"
+            ]
+        })
+
+        milestones.append({
+            "name": "Beta Release",
+            "target_date": start_date + timedelta(weeks=12),
+            "success_criteria": [
+                "Feature complete",
+                "Performance testing complete",
+                "Security audit passed",
+                "Documentation complete"
+            ]
+        })
+
+        milestones.append({
+            "name": "Production Launch",
+            "target_date": start_date + timedelta(weeks=16),
+            "success_criteria": [
+                "Deployment pipeline established",
+                "Monitoring and logging active",
+                "User acceptance testing passed",
+                "Go-live checklist complete"
+            ]
+        })
+
+        return milestones
 
     def _generate_readme(self, project_config: Dict[str, Any],
                         analysis: Any) -> str:
@@ -1222,7 +1312,7 @@ This project follows Xavier Framework standards:
         import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
-            subprocess.run([greeting_script, "welcome", "1.1.5"], check=False)
+            subprocess.run([greeting_script, "welcome", "1.1.6"], check=False)
 
         help_text = """# Xavier Framework Commands
 
@@ -1366,7 +1456,7 @@ Estimated sprints: 0.7
         return {
             "help": help_text,
             "commands_count": 22,
-            "framework_version": "1.1.5"
+            "framework_version": "1.1.6"
         }
 
     def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:
