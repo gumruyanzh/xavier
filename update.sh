@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.1.3
+# Version 1.1.6
 
 set -e
 set -o pipefail
@@ -49,17 +49,49 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Get current version
-CURRENT_VERSION=$(python3 -c "import json; config=json.load(open('.xavier/config.json')); print(config.get('xavier_version', '1.0.0'))" 2>/dev/null || echo "1.0.0")
+# Get current version from multiple sources (priority order)
+CURRENT_VERSION="1.0.0"  # Default fallback
+
+# 1. Try VERSION file first (most reliable)
+if [ -f "VERSION" ]; then
+    CURRENT_VERSION=$(cat VERSION 2>/dev/null | tr -d '\n' || echo "1.0.0")
+# 2. Try .xavier/config.json as secondary
+elif [ -f ".xavier/config.json" ]; then
+    CURRENT_VERSION=$(python3 -c "import json; config=json.load(open('.xavier/config.json')); print(config.get('xavier_version', '1.0.0'))" 2>/dev/null || echo "1.0.0")
+fi
 echo -e "${BLUE}Current Xavier version: ${YELLOW}$CURRENT_VERSION${NC}"
 
 # Fetch latest version from GitHub
 echo -e "${BLUE}Checking for updates...${NC}"
-LATEST_VERSION=$(curl -s https://raw.githubusercontent.com/gumruyanzh/xavier/main/VERSION || echo "1.0.2")
+LATEST_VERSION=$(curl -s https://raw.githubusercontent.com/gumruyanzh/xavier/main/VERSION || echo "$CURRENT_VERSION")
 
-# Compare versions
+# Compare versions (with downgrade protection)
 if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
     echo -e "${GREEN}✅ Xavier is already up to date (version $LATEST_VERSION)${NC}"
+    exit 0
+fi
+
+# Check if this would be a downgrade
+CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+CURRENT_PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+
+LATEST_MAJOR=$(echo $LATEST_VERSION | cut -d. -f1)
+LATEST_MINOR=$(echo $LATEST_VERSION | cut -d. -f2)
+LATEST_PATCH=$(echo $LATEST_VERSION | cut -d. -f3)
+
+# Simple version comparison (major.minor.patch)
+if [ "$LATEST_MAJOR" -lt "$CURRENT_MAJOR" ] || \
+   [ "$LATEST_MAJOR" -eq "$CURRENT_MAJOR" -a "$LATEST_MINOR" -lt "$CURRENT_MINOR" ] || \
+   [ "$LATEST_MAJOR" -eq "$CURRENT_MAJOR" -a "$LATEST_MINOR" -eq "$CURRENT_MINOR" -a "$LATEST_PATCH" -lt "$CURRENT_PATCH" ]; then
+    echo -e "${RED}❌ Cannot downgrade from version $CURRENT_VERSION to $LATEST_VERSION${NC}"
+    echo -e "${YELLOW}Your version is newer than the remote version.${NC}"
+    echo "This usually means:"
+    echo "  • You're using a development version"
+    echo "  • The remote repository has an older version"
+    echo "  • There's a caching issue"
+    echo
+    echo -e "${GREEN}No action needed - you're already on a newer version!${NC}"
     exit 0
 fi
 

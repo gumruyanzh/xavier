@@ -1464,14 +1464,26 @@ Estimated sprints: 0.7
         import subprocess
         import requests
 
-        # Get current version
-        current_version = "1.0.2"  # Will be read from VERSION file
-        try:
-            with open(os.path.join(self.project_path, ".xavier", "config.json"), 'r') as f:
-                config = json.load(f)
-                current_version = config.get("xavier_version", "1.0.0")
-        except:
-            pass
+        # Get current version from multiple sources (priority order)
+        current_version = "1.1.6"  # Embedded fallback version
+
+        # 1. Try VERSION file first (most reliable)
+        version_file = os.path.join(self.project_path, "VERSION")
+        if os.path.exists(version_file):
+            try:
+                with open(version_file, 'r') as f:
+                    current_version = f.read().strip()
+            except:
+                pass
+
+        # 2. Try .xavier/config.json as secondary source
+        elif os.path.exists(self.config_path):
+            try:
+                with open(self.config_path, 'r') as f:
+                    config = json.load(f)
+                    current_version = config.get("xavier_version", current_version)
+            except:
+                pass
 
         # Check for latest version
         try:
@@ -1488,7 +1500,32 @@ Estimated sprints: 0.7
         def version_tuple(v):
             return tuple(map(int, (v.split("."))))
 
-        if version_tuple(latest_version) > version_tuple(current_version):
+        # Prevent downgrades
+        try:
+            current_tuple = version_tuple(current_version)
+            latest_tuple = version_tuple(latest_version)
+        except ValueError as e:
+            return {
+                "success": False,
+                "error": f"Invalid version format: {e}",
+                "current_version": current_version
+            }
+
+        if latest_tuple < current_tuple:
+            return {
+                "success": False,
+                "error": f"Cannot downgrade from {current_version} to {latest_version}",
+                "current_version": current_version,
+                "latest_version": latest_version,
+                "message": f"❌ Your version ({current_version}) is newer than the remote version ({latest_version})\n\n" +
+                          "This usually means:\n" +
+                          "• You're using a development version\n" +
+                          "• The remote repository has an older version\n" +
+                          "• There's a caching issue\n\n" +
+                          "No action needed - you're already on a newer version!"
+            }
+
+        if latest_tuple > current_tuple:
             # New version available
             changelog = self._get_update_changelog(current_version, latest_version)
 
