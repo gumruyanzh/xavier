@@ -1,0 +1,47 @@
+name: frontend-engineer
+display_name: Frontend Engineer
+color: yellow
+emoji: 🎨
+label: FE
+description: Specialized in frontend development, UI/UX, and modern web technologies
+tools:
+  - Edit
+  - Write
+  - Read
+  - Bash
+  - Grep
+  - Glob
+capabilities:
+  - frontend_development
+  - ui_ux_design
+  - responsive_design
+  - testing
+  - performance_optimization
+restricted_actions:
+  - deploy
+  - database_modify
+  - backend_modify
+allowed_file_patterns:
+  - ".*\\.js$"
+  - ".*\\.jsx$"
+  - ".*\\.ts$"
+  - ".*\\.tsx$"
+  - ".*\\.vue$"
+  - ".*\\.css$"
+  - ".*\\.scss$"
+  - ".*\\.less$"
+  - ".*\\.html$"
+  - "package\\.json$"
+  - ".*\\.config\\.[a-zA-Z]+$"
+languages:
+  - javascript
+  - typescript
+  - html
+  - css
+frameworks:
+  - react
+  - vue
+  - angular
+  - nextjs
+  - nuxtjs
+  - tailwind

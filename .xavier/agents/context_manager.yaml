@@ -1,0 +1,27 @@
+name: context-manager
+display_name: Context Manager
+color: blue
+emoji: 🔍
+label: CTX
+description: Gathers and analyzes project context, understands codebase structure
+tools:
+  - Read
+  - Grep
+  - Glob
+  - WebFetch
+capabilities:
+  - codebase_analysis
+  - dependency_mapping
+  - context_gathering
+  - documentation_parsing
+restricted_actions:
+  - code_write
+  - code_execute
+  - deploy
+  - file_delete
+allowed_file_patterns:
+  - ".*\\.[a-zA-Z]+$"
+languages:
+  - any
+frameworks:
+  - any

@@ -16,7 +16,8 @@ import os
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.ansi_art import AgentColors, ANSIColors, display_agent_takeover, display_agent_status, display_agent_result
+from utils.ansi_art import AgentColors, ANSIColors, display_agent_takeover, display_agent_status, display_agent_result, display_agent_handoff, AgentBoxDrawing
+from agents.agent_metadata import get_agent_metadata, get_agent_display_name
 
 
 @dataclass
@@ -60,7 +61,11 @@ class BaseAgent(ABC):
     def __init__(self, name: str, capabilities: AgentCapability):
         self.name = name
         self.capabilities = capabilities
-        self.logger = logging.getLogger(f"Xavier.Agent.{name}")
+
+        # Get display name from metadata or fallback to formatted name
+        self.display_name = get_agent_display_name(name)
+
+        self.logger = logging.getLogger(f"Xavier.Agent.{self.display_name}")
         self.current_task: Optional[AgentTask] = None
 
     @abstractmethod
@@ -94,6 +99,15 @@ class BaseAgent(ABC):
         """Update agent status with colored output"""
         display_agent_status(self.name, status, details)
 
+    def show_thinking(self, message: str = "Processing...") -> None:
+        """Display thinking indicator"""
+        thinking_line = AgentBoxDrawing.create_thinking_indicator(self.name, message)
+        print(thinking_line)
+
+    def handoff_to(self, target_agent: str, reason: str) -> None:
+        """Display handoff to another agent"""
+        display_agent_handoff(self.name, target_agent, reason)
+
     def complete_task(self, success: bool, summary: str) -> None:
         """Complete current task with colored result display"""
         display_agent_result(self.name, success, summary)
@@ -111,7 +125,7 @@ class ProjectManagerAgent(BaseAgent):
             restricted_actions=["code_write", "code_execute", "deploy"],
             allowed_file_patterns=[r".*\.md$", r".*\.json$", r".*\.yaml$"]
         )
-        super().__init__("ProjectManager", capabilities)
+        super().__init__("project-manager", capabilities)
         self.story_points_model = self._initialize_estimation_model()
 
     def _initialize_estimation_model(self) -> Dict[str, int]:
@@ -297,7 +311,7 @@ class ContextManagerAgent(BaseAgent):
             restricted_actions=["code_write", "deploy"],
             allowed_file_patterns=[r".*"]  # Can read all files
         )
-        super().__init__("ContextManager", capabilities)
+        super().__init__("context-manager", capabilities)
         self.codebase_map: Dict[str, Any] = {}
 
     def execute_task(self, task: AgentTask) -> AgentResult:
@@ -386,7 +400,7 @@ class PythonEngineerAgent(BaseAgent):
             restricted_actions=["frontend_development", "golang_code", "javascript_code"],
             allowed_file_patterns=[r".*\.py$", r".*requirements.*\.txt$", r".*\.toml$"]
         )
-        super().__init__("PythonEngineer", capabilities)
+        super().__init__("python-engineer", capabilities)
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Python development tasks with test-first approach"""
@@ -537,7 +551,7 @@ class GolangEngineerAgent(BaseAgent):
             restricted_actions=["python_code", "javascript_code", "frontend_development"],
             allowed_file_patterns=[r".*\.go$", r"go\.mod$", r"go\.sum$"]
         )
-        super().__init__("GolangEngineer", capabilities)
+        super().__init__("golang-engineer", capabilities)
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Go development tasks with test-first approach"""
@@ -685,7 +699,7 @@ class FrontendEngineerAgent(BaseAgent):
             restricted_actions=["backend_development", "database_operations"],
             allowed_file_patterns=[r".*\.[tj]sx?$", r".*\.vue$", r".*\.css$", r".*\.scss$"]
         )
-        super().__init__("FrontendEngineer", capabilities)
+        super().__init__("frontend-engineer", capabilities)
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute frontend tasks with test-first approach"""

@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.1.6
+# Version 1.1.7
 
 set -e
 set -o pipefail

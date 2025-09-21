@@ -15,7 +15,8 @@ import inspect
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.ansi_art import display_agent_handoff, display_agent_status, ANSIColors
+from utils.ansi_art import display_agent_handoff, display_agent_status, ANSIColors, AgentBoxDrawing, display_agent_takeover
+from agents.agent_metadata import get_agent_display_name
 
 from .base_agent import (
     BaseAgent, AgentTask, AgentResult, AgentCapability,
@@ -65,13 +66,13 @@ class AgentOrchestrator:
 
     def _initialize_default_agents(self):
         """Initialize default sub-agents"""
-        # Register agent classes
+        # Register agent classes (using metadata naming convention)
         self.agent_registry = {
-            "project_manager": ProjectManagerAgent,
-            "context_manager": ContextManagerAgent,
-            "python_engineer": PythonEngineerAgent,
-            "golang_engineer": GolangEngineerAgent,
-            "frontend_engineer": FrontendEngineerAgent
+            "project-manager": ProjectManagerAgent,
+            "context-manager": ContextManagerAgent,
+            "python-engineer": PythonEngineerAgent,
+            "golang-engineer": GolangEngineerAgent,
+            "frontend-engineer": FrontendEngineerAgent
         }
 
         # Instantiate enabled agents
@@ -205,10 +206,10 @@ class AgentOrchestrator:
         }
 
         for language in self.tech_stack.languages:
-            if language in language_agent_generators and f"{language}_engineer" not in self.agents:
+            if language in language_agent_generators and f"{language}-engineer" not in self.agents:
                 agent = language_agent_generators[language]()
                 if agent:
-                    self.agents[f"{language}_engineer"] = agent
+                    self.agents[f"{language}-engineer"] = agent
                     self.logger.info(f"Generated {language} engineer agent")
 
     def _generate_ruby_agent(self) -> Optional[BaseAgent]:
@@ -222,7 +223,7 @@ class AgentOrchestrator:
                     restricted_actions=["python_code", "golang_code", "javascript_code"],
                     allowed_file_patterns=[r".*\.rb$", r"Gemfile", r".*\.erb$"]
                 )
-                super().__init__("RubyEngineer", capabilities)
+                super().__init__("ruby-engineer", capabilities)
 
             def execute_task(self, task: AgentTask) -> AgentResult:
                 # Ruby-specific implementation
@@ -253,7 +254,7 @@ class AgentOrchestrator:
                     restricted_actions=["python_code", "golang_code", "javascript_code"],
                     allowed_file_patterns=[r".*\.java$", r"pom\.xml$", r"build\.gradle$"]
                 )
-                super().__init__("JavaEngineer", capabilities)
+                super().__init__("java-engineer", capabilities)
 
             def execute_task(self, task: AgentTask) -> AgentResult:
                 # Java-specific implementation
@@ -285,11 +286,21 @@ class AgentOrchestrator:
 
     def delegate_task(self, task: AgentTask) -> AgentResult:
         """Delegate task to appropriate agent with strict validation"""
+        # Show orchestrator thinking
+        thinking_line = AgentBoxDrawing.create_thinking_indicator("orchestrator", "Selecting appropriate agent...")
+        print(thinking_line)
+
         # Find appropriate agent based on task requirements
         selected_agent = self._select_agent_for_task(task)
 
         if not selected_agent:
-            print(f"\n{ANSIColors.RED}❌ No suitable agent found for task: {task.task_id}{ANSIColors.RESET}")
+            error_box = AgentBoxDrawing.create_agent_box(
+                "orchestrator",
+                [f"{ANSIColors.RED}❌ No suitable agent found for task: {task.task_id}{ANSIColors.RESET}"],
+                status="Error"
+            )
+            for line in error_box:
+                print(line)
             return AgentResult(
                 success=False,
                 task_id=task.task_id,
@@ -304,7 +315,14 @@ class AgentOrchestrator:
         # Validate agent can handle task
         can_handle, validation_errors = selected_agent.validate_task(task)
         if not can_handle:
-            print(f"\n{ANSIColors.YELLOW}⚠️ {selected_agent.name} cannot handle task{ANSIColors.RESET}")
+            validation_box = AgentBoxDrawing.create_agent_box(
+                "orchestrator",
+                [f"{ANSIColors.YELLOW}⚠️ {get_agent_display_name(selected_agent.name)} cannot handle task{ANSIColors.RESET}"] +
+                [f"  - {error}" for error in validation_errors],
+                status="Validation Failed"
+            )
+            for line in validation_box:
+                print(line)
             return AgentResult(
                 success=False,
                 task_id=task.task_id,
@@ -319,6 +337,16 @@ class AgentOrchestrator:
         # Show agent handoff if there was a previous agent
         if hasattr(self, '_last_agent') and self._last_agent and self._last_agent != selected_agent.name:
             display_agent_handoff(self._last_agent, selected_agent.name, f"Task: {task.task_type}")
+        elif not hasattr(self, '_last_agent') or not self._last_agent:
+            # First agent assignment
+            assignment_box = AgentBoxDrawing.create_agent_box(
+                "orchestrator",
+                [f"🎯 Assigning task to {get_agent_display_name(selected_agent.name)}",
+                 f"Task: {task.task_id} - {task.task_type}"],
+                status="Task Assignment"
+            )
+            for line in assignment_box:
+                print(line)
 
         # Execute task with selected agent
         self.logger.info(f"Delegating task {task.task_id} to {selected_agent.name}")
@@ -330,6 +358,16 @@ class AgentOrchestrator:
             result.success = False
             result.errors.append("Result does not meet acceptance criteria")
 
+            # Show validation failure
+            validation_fail_box = AgentBoxDrawing.create_agent_box(
+                "orchestrator",
+                [f"{ANSIColors.RED}❌ Result validation failed{ANSIColors.RESET}",
+                 "Result does not meet acceptance criteria"],
+                status="Validation Failed"
+            )
+            for line in validation_fail_box:
+                print(line)
+
         return result
 
     def _select_agent_for_task(self, task: AgentTask) -> Optional[BaseAgent]:
@@ -338,24 +376,24 @@ class AgentOrchestrator:
         task_keywords = task.description.lower() + " ".join(task.requirements).lower()
 
         if "sprint" in task_keywords or "story" in task_keywords or "estimate" in task_keywords:
-            return self.agents.get("project_manager")
+            return self.agents.get("project-manager")
 
         if "analyze" in task_keywords or "context" in task_keywords or "find" in task_keywords:
-            return self.agents.get("context_manager")
+            return self.agents.get("context-manager")
 
         # Check tech constraints for language-specific agents
         for constraint in task.tech_constraints:
             constraint_lower = constraint.lower()
             if "python" in constraint_lower:
-                return self.agents.get("python_engineer")
+                return self.agents.get("python-engineer")
             if "go" in constraint_lower or "golang" in constraint_lower:
-                return self.agents.get("golang_engineer")
+                return self.agents.get("golang-engineer")
             if "typescript" in constraint_lower or "react" in constraint_lower:
-                return self.agents.get("frontend_engineer")
+                return self.agents.get("frontend-engineer")
             if "ruby" in constraint_lower:
-                return self.agents.get("ruby_engineer")
+                return self.agents.get("ruby-engineer")
             if "java" in constraint_lower:
-                return self.agents.get("java_engineer")
+                return self.agents.get("java-engineer")
 
         return None
 

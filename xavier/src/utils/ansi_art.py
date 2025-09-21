@@ -7,6 +7,14 @@ Provides beautiful terminal displays with ASCII art and colors
 import os
 import sys
 from typing import Optional, List, Dict
+from datetime import datetime
+
+# Try to import agent metadata, fallback if not available
+try:
+    from ..agents.agent_metadata import get_agent_color, get_agent_emoji, get_agent_label, get_agent_display_name
+    METADATA_AVAILABLE = True
+except ImportError:
+    METADATA_AVAILABLE = False
 
 
 class ANSIColors:
@@ -46,7 +54,9 @@ class ANSIColors:
 
 
 class AgentColors:
-    """Color assignments for different agent types"""
+    """Color assignments for different agent types with metadata system integration"""
+
+    # Legacy fallback colors
     AGENT_COLORS = {
         'ProjectManager': {
             'color': ANSIColors.BOLD_MAGENTA,
@@ -65,7 +75,7 @@ class AgentColors:
         },
         'GolangEngineer': {
             'color': ANSIColors.BOLD_CYAN,
-            'emoji': '🐹',
+            'emoji': '🔷',
             'label': 'GO'
         },
         'FrontendEngineer': {
@@ -73,42 +83,40 @@ class AgentColors:
             'emoji': '🎨',
             'label': 'FE'
         },
-        'RubyEngineer': {
+        'TestRunner': {
             'color': ANSIColors.BOLD_RED,
-            'emoji': '💎',
-            'label': 'RB'
-        },
-        'JavaEngineer': {
-            'color': ANSIColors.LIGHT_RED,
-            'emoji': '☕',
-            'label': 'JV'
-        },
-        'DevOpsEngineer': {
-            'color': ANSIColors.LIGHT_MAGENTA,
-            'emoji': '🚀',
-            'label': 'OPS'
-        },
-        'DatabaseEngineer': {
-            'color': ANSIColors.LIGHT_BLUE,
-            'emoji': '🗄️',
-            'label': 'DB'
+            'emoji': '🧪',
+            'label': 'TEST'
         }
     }
 
     @classmethod
     def get_agent_color(cls, agent_name: str) -> str:
-        """Get color for an agent"""
+        """Get color for an agent using metadata system with fallback"""
+        if METADATA_AVAILABLE:
+            return get_agent_color(agent_name)
         return cls.AGENT_COLORS.get(agent_name, {}).get('color', ANSIColors.WHITE)
 
     @classmethod
     def get_agent_emoji(cls, agent_name: str) -> str:
-        """Get emoji for an agent"""
+        """Get emoji for an agent using metadata system with fallback"""
+        if METADATA_AVAILABLE:
+            return get_agent_emoji(agent_name)
         return cls.AGENT_COLORS.get(agent_name, {}).get('emoji', '🤖')
 
     @classmethod
     def get_agent_label(cls, agent_name: str) -> str:
-        """Get short label for an agent"""
+        """Get short label for an agent using metadata system with fallback"""
+        if METADATA_AVAILABLE:
+            return get_agent_label(agent_name)
         return cls.AGENT_COLORS.get(agent_name, {}).get('label', 'AGT')
+
+    @classmethod
+    def get_agent_display_name(cls, agent_name: str) -> str:
+        """Get display name for an agent using metadata system with fallback"""
+        if METADATA_AVAILABLE:
+            return get_agent_display_name(agent_name)
+        return agent_name.replace('_', ' ').replace('-', ' ').title()
 
 
 class XavierArt:
@@ -182,7 +190,104 @@ class XavierArt:
         return f"{color}{'═' * width}{ANSIColors.RESET}"
 
 
-def display_welcome(version: str = "1.1.6") -> None:
+class AgentBoxDrawing:
+    """Enhanced box drawing utilities for agent displays"""
+
+    @staticmethod
+    def create_agent_box(agent_name: str, content: List[str], width: int = 70,
+                        status: Optional[str] = None, timestamp: bool = True) -> List[str]:
+        """Create a bordered box for agent output"""
+        # Get agent styling
+        color = AgentColors.get_agent_color(agent_name)
+        emoji = AgentColors.get_agent_emoji(agent_name)
+        label = AgentColors.get_agent_label(agent_name)
+        display_name = AgentColors.get_agent_display_name(agent_name)
+
+        box = []
+
+        # Top border with agent info
+        header_content = f" {emoji} [{label}] {display_name}"
+        if status:
+            header_content += f" - {status}"
+        if timestamp:
+            time_str = datetime.now().strftime("%H:%M:%S")
+            header_content += f" ({time_str})"
+
+        # Ensure header fits in box
+        if len(header_content) > width - 4:
+            header_content = header_content[:width - 7] + "..."
+
+        padding = max(0, width - len(header_content) - 2)
+        top_line = f"{color}╔{header_content}{'═' * padding}╗{ANSIColors.RESET}"
+        box.append(top_line)
+
+        # Content lines
+        for line in content:
+            # Strip ANSI codes to calculate real length
+            clean_line = line
+            import re
+            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+            clean_text = ansi_escape.sub('', clean_line)
+
+            if len(clean_text) > width - 4:
+                # Wrap long lines
+                wrapped_lines = []
+                while len(clean_text) > width - 4:
+                    cut_point = width - 4
+                    wrapped_lines.append(line[:cut_point])
+                    line = line[cut_point:]
+                    clean_text = clean_text[cut_point:]
+                wrapped_lines.append(line)
+
+                for wrapped_line in wrapped_lines:
+                    clean_wrapped = ansi_escape.sub('', wrapped_line)
+                    padding = max(0, width - len(clean_wrapped) - 4)
+                    box_line = f"{color}║{ANSIColors.RESET} {wrapped_line}{' ' * padding} {color}║{ANSIColors.RESET}"
+                    box.append(box_line)
+            else:
+                padding = max(0, width - len(clean_text) - 4)
+                box_line = f"{color}║{ANSIColors.RESET} {line}{' ' * padding} {color}║{ANSIColors.RESET}"
+                box.append(box_line)
+
+        # Bottom border
+        bottom_line = f"{color}╚{'═' * (width - 2)}╝{ANSIColors.RESET}"
+        box.append(bottom_line)
+
+        return box
+
+    @staticmethod
+    def create_handoff_separator(from_agent: str, to_agent: str, reason: str, width: int = 70) -> List[str]:
+        """Create a visual separator for agent handoffs"""
+        from_color = AgentColors.get_agent_color(from_agent)
+        from_emoji = AgentColors.get_agent_emoji(from_agent)
+        from_label = AgentColors.get_agent_label(from_agent)
+
+        to_color = AgentColors.get_agent_color(to_agent)
+        to_emoji = AgentColors.get_agent_emoji(to_agent)
+        to_label = AgentColors.get_agent_label(to_agent)
+
+        separator = []
+
+        # Handoff line
+        handoff_text = f"{from_color}[{from_label}]{ANSIColors.RESET} {from_emoji} → {to_color}[{to_label}]{ANSIColors.RESET} {to_emoji}"
+        separator.append(f"{ANSIColors.LIGHT_CYAN}{'─' * width}{ANSIColors.RESET}")
+        separator.append(f"{ANSIColors.LIGHT_WHITE}🔄 HANDOFF: {handoff_text}{ANSIColors.RESET}")
+        separator.append(f"{ANSIColors.LIGHT_WHITE}Reason: {reason}{ANSIColors.RESET}")
+        separator.append(f"{ANSIColors.LIGHT_CYAN}{'─' * width}{ANSIColors.RESET}")
+
+        return separator
+
+    @staticmethod
+    def create_thinking_indicator(agent_name: str, message: str = "Processing...") -> str:
+        """Create a thinking indicator for an agent"""
+        color = AgentColors.get_agent_color(agent_name)
+        emoji = AgentColors.get_agent_emoji(agent_name)
+        label = AgentColors.get_agent_label(agent_name)
+
+        return f"{color}[{label}]{ANSIColors.RESET} {emoji} {ANSIColors.LIGHT_WHITE}⚙️ {message}{ANSIColors.RESET}"
+
+
+def display_welcome(version: str = "1.1.7") -> None:
     """Display welcome screen for Xavier Framework"""
     width = XavierArt.get_terminal_width()
 
@@ -305,22 +410,14 @@ def display_agent_takeover(agent_name: str, task_description: str) -> None:
     """Display when an agent takes over a task"""
     width = min(XavierArt.get_terminal_width(), 80)
 
-    # Get agent styling
-    color = AgentColors.get_agent_color(agent_name)
-    emoji = AgentColors.get_agent_emoji(agent_name)
-    label = AgentColors.get_agent_label(agent_name)
-
-    # Create agent header
-    header = f"{emoji} [{label}] {agent_name}"
-
     # Create content
-    content = []
-    content.append(f"{color}{header}{ANSIColors.RESET}")
-    content.append(f"{ANSIColors.LIGHT_WHITE}Taking over task:{ANSIColors.RESET}")
-    content.append(f"  {task_description[:70]}...")
+    content = [
+        f"{ANSIColors.BOLD_WHITE}🎯 Taking over task:{ANSIColors.RESET}",
+        f"  {task_description[:width-6] if len(task_description) > width-6 else task_description}"
+    ]
 
-    # Create box
-    box = XavierArt.create_box(content, width=width, color=color)
+    # Create enhanced agent box
+    box = AgentBoxDrawing.create_agent_box(agent_name, content, width, status="Active", timestamp=True)
 
     # Display
     print()
@@ -348,8 +445,8 @@ def display_agent_status(agent_name: str, status: str, details: Optional[str] = 
 
     status_icon = status_icons.get(status.lower(), '•')
 
-    # Create status line
-    status_line = f"{color}[{label}]{ANSIColors.RESET} {emoji} {agent_name} {status_icon} {status}"
+    # For simple status updates, use a compact format
+    status_line = f"{color}[{label}]{ANSIColors.RESET} {emoji} {AgentColors.get_agent_display_name(agent_name)} {status_icon} {status}"
 
     if details:
         status_line += f" - {ANSIColors.LIGHT_WHITE}{details}{ANSIColors.RESET}"
@@ -359,33 +456,39 @@ def display_agent_status(agent_name: str, status: str, details: Optional[str] = 
 
 def display_agent_handoff(from_agent: str, to_agent: str, reason: str) -> None:
     """Display handoff between agents"""
-    from_color = AgentColors.get_agent_color(from_agent)
-    from_emoji = AgentColors.get_agent_emoji(from_agent)
-    from_label = AgentColors.get_agent_label(from_agent)
+    width = min(XavierArt.get_terminal_width(), 80)
 
-    to_color = AgentColors.get_agent_color(to_agent)
-    to_emoji = AgentColors.get_agent_emoji(to_agent)
-    to_label = AgentColors.get_agent_label(to_agent)
+    # Use enhanced handoff separator
+    handoff_box = AgentBoxDrawing.create_handoff_separator(from_agent, to_agent, reason, width)
 
-    print(f"\n{ANSIColors.LIGHT_CYAN}{'─' * 50}{ANSIColors.RESET}")
-    print(f"{from_color}[{from_label}]{ANSIColors.RESET} {from_emoji} {from_agent} → " +
-          f"{to_color}[{to_label}]{ANSIColors.RESET} {to_emoji} {to_agent}")
-    print(f"{ANSIColors.LIGHT_WHITE}Handoff: {reason}{ANSIColors.RESET}")
-    print(f"{ANSIColors.LIGHT_CYAN}{'─' * 50}{ANSIColors.RESET}\n")
+    # Display
+    print()
+    for line in handoff_box:
+        print(line)
+    print()
 
 
 def display_agent_result(agent_name: str, success: bool, summary: str) -> None:
     """Display agent task result"""
-    color = AgentColors.get_agent_color(agent_name)
-    emoji = AgentColors.get_agent_emoji(agent_name)
-    label = AgentColors.get_agent_label(agent_name)
+    width = min(XavierArt.get_terminal_width(), 70)
 
     result_icon = '✅' if success else '❌'
-    result_color = ANSIColors.GREEN if success else ANSIColors.RED
+    result_status = f"{result_icon} {'Completed' if success else 'Failed'}"
 
-    print(f"{color}[{label}]{ANSIColors.RESET} {emoji} {agent_name} - " +
-          f"{result_color}{result_icon} Task {'Completed' if success else 'Failed'}{ANSIColors.RESET}")
-    print(f"  {ANSIColors.LIGHT_WHITE}{summary}{ANSIColors.RESET}")
+    # Create content
+    content = [
+        f"{ANSIColors.BOLD_WHITE}Task Result:{ANSIColors.RESET}",
+        f"  {summary[:width-6] if len(summary) > width-6 else summary}"
+    ]
+
+    # Create enhanced agent box
+    box = AgentBoxDrawing.create_agent_box(agent_name, content, width, status=result_status, timestamp=True)
+
+    # Display
+    print()
+    for line in box:
+        print(line)
+    print()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,29 @@
+name: project-manager
+display_name: Project Manager
+color: magenta
+emoji: 📊
+label: PM
+description: Handles sprint planning, task assignment, and story point estimation
+tools:
+  - TodoWrite
+  - Read
+  - Grep
+capabilities:
+  - story_estimation
+  - sprint_planning
+  - task_assignment
+  - backlog_management
+restricted_actions:
+  - code_write
+  - code_execute
+  - deploy
+allowed_file_patterns:
+  - ".*\\.md$"
+  - ".*\\.json$"
+  - ".*\\.yaml$"
+  - ".*\\.yml$"
+languages: []
+frameworks:
+  - scrum
+  - agile
+  - kanban

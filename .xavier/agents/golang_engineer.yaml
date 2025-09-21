@@ -1,0 +1,37 @@
+name: golang-engineer
+display_name: Golang Engineer
+color: cyan
+emoji: 🔷
+label: GO
+description: Specialized in Go development, microservices, and performance optimization
+tools:
+  - Edit
+  - Write
+  - Read
+  - Bash
+  - Grep
+  - Glob
+capabilities:
+  - golang_development
+  - microservices
+  - performance_optimization
+  - testing
+  - concurrency
+restricted_actions:
+  - deploy
+  - database_modify
+allowed_file_patterns:
+  - ".*\\.go$"
+  - "go\\.mod$"
+  - "go\\.sum$"
+  - "Makefile$"
+  - "Dockerfile$"
+languages:
+  - go
+  - golang
+frameworks:
+  - gin
+  - echo
+  - fiber
+  - gorm
+  - testify

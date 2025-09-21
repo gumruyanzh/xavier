@@ -1,0 +1,26 @@
+name: orchestrator
+display_name: Orchestrator
+color: white
+emoji: 🎯
+label: ORCH
+description: Coordinates and manages all sub-agents, handles task delegation and validation
+tools:
+  - AgentRegistry
+  - TaskDelegation
+  - ValidationEngine
+capabilities:
+  - task_delegation
+  - agent_coordination
+  - validation
+  - handoff_management
+  - status_tracking
+restricted_actions:
+  - code_write
+  - deploy
+allowed_file_patterns:
+  - "xavier\\.config\\.json$"
+  - ".*\\.yaml$"
+languages:
+  - any
+frameworks:
+  - xavier

@@ -5,6 +5,31 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.7] - 2025-09-21
+
+### Added
+- **Enhanced Agent Visualization System**:
+  - Visual agent identification with distinct colors, emojis, and labels for each agent type
+  - Bordered output boxes with timestamps and real-time status indicators
+  - Clear handoff transitions between agents showing delegation flow
+  - Thinking indicators displaying agent processing states
+  - Professional terminal display with improved readability
+
+### Improved
+- **Developer Experience**: Clearer visibility of agent operations during development
+- **Agent Communication**: Enhanced visual feedback for multi-agent coordination
+- **Terminal Output**: Professional, structured display of agent activities
+- **Status Tracking**: Real-time updates on agent progress and task completion
+
+### Technical
+- YAML-based agent metadata system for consistent styling and information
+- AgentBoxDrawing class for enhanced terminal visualization
+- Metadata-driven color schemes and emojis for agent identification
+- Standardized display functions across all agent types
+
+### Impact
+These enhancements significantly improve the developer experience by providing clear visual feedback about which agents are working on what tasks, making multi-agent development workflows much more transparent and easier to follow.
+
 ## [1.1.6] - 2025-09-21
 
 ### Fixed
