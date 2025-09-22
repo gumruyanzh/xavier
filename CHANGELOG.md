@@ -5,6 +5,39 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.8] - 2025-09-22
+
+### Added
+- **Native Claude Code Sub-Agent Integration**:
+  - Implemented proper `.claude/agents/` directory structure for native sub-agent support
+  - Created specialized agent definitions for project management, development, and testing
+  - Each agent runs in isolated context with dedicated expertise and tool access
+  - Automatic agent selection and delegation based on task requirements
+
+### Enhanced
+- **Professional Agent Specializations**:
+  - Project Manager: Sprint planning, story estimation, roadmap management
+  - Context Manager: Codebase analysis, dependency tracking, architecture insights
+  - Python Engineer: TDD, Clean Code, Django/FastAPI development
+  - Golang Engineer: Microservices, concurrency, performance optimization
+  - Frontend Engineer: React/TypeScript, accessibility, responsive design
+  - Test Runner: Quality assurance, 100% coverage enforcement
+
+### Improved
+- **Developer Experience**: Native Claude Code agent visualization and identification
+- **Task Delegation**: Intelligent agent selection based on task complexity and requirements
+- **Context Management**: Isolated agent contexts prevent cross-contamination
+- **Quality Standards**: Each agent enforces framework-specific best practices
+
+### Technical
+- Markdown-based agent definitions with YAML front matter
+- Tool access control and permission management per agent
+- Model selection optimization (Haiku/Sonnet/Opus) based on task complexity
+- Seamless integration with Claude Code's native orchestration system
+
+### Impact
+This release transforms Xavier Framework into a true multi-agent development environment, providing specialized expertise for each aspect of software development while maintaining the framework's commitment to quality and test-first development.
+
 ## [1.1.7] - 2025-09-21
 
 ### Added
