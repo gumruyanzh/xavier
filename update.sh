@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.1.9
+# Version 1.1.10
 
 set -e
 set -o pipefail
@@ -187,6 +187,21 @@ elif [ -d "$TEMP_DIR/xavier/src" ]; then
     cp -r "$TEMP_DIR/xavier/src" .xavier/
 fi
 
+# Copy new Claude Code agent definitions from repository
+echo "• Updating Claude Code agent definitions..."
+mkdir -p .claude/agents
+
+# Handle both git clone and archive download structures
+if [ -d "$TEMP_DIR/xavier/.claude/agents" ]; then
+    cp -r "$TEMP_DIR/xavier/.claude/agents/"*.md .claude/agents/ 2>/dev/null || true
+    echo "  - Updated native Claude Code sub-agents"
+elif [ -d "$TEMP_DIR/xavier-main/.claude/agents" ]; then
+    cp -r "$TEMP_DIR/xavier-main/.claude/agents/"*.md .claude/agents/ 2>/dev/null || true
+    echo "  - Updated native Claude Code sub-agents"
+else
+    echo "  - Warning: Could not find agent files in repository"
+fi
+
 # Update Claude commands
 if [ -d ".claude/commands" ]; then
     echo "• Updating Claude Code commands..."
@@ -234,30 +249,7 @@ if [ -f ".claude/instructions.md" ]; then
     fi
 fi
 
-# Update agents
-if [ -d ".claude/agents" ]; then
-    echo "• Updating agent definitions..."
-    # Extract agent files directly from install.sh without running it
-    mkdir -p /tmp/xavier_agents_extract
-
-    # Extract each agent file from install.sh
-    agents=(
-        "project_manager" "python_engineer" "golang_engineer"
-        "frontend_engineer" "context_manager"
-    )
-
-    for agent in "${agents[@]}"; do
-        # Extract the agent content from install.sh
-        if [ -n "$INSTALL_SCRIPT" ]; then
-            sed -n "/^cat > .claude\/agents\/${agent}.md << 'EOF'$/,/^EOF$/p" "$INSTALL_SCRIPT" | sed '1d;$d' > "/tmp/xavier_agents_extract/${agent}.md" 2>/dev/null || true
-        fi
-        if [ -s "/tmp/xavier_agents_extract/${agent}.md" ]; then
-            cp "/tmp/xavier_agents_extract/${agent}.md" ".claude/agents/${agent}.md" 2>/dev/null || true
-        fi
-    done
-
-    rm -rf /tmp/xavier_agents_extract
-fi
+# Note: Agent files are now updated directly from repository above
 
 # Update version in config
 echo "• Updating version information..."

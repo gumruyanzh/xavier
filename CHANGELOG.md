@@ -5,6 +5,34 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.10] - 2025-09-22
+
+### Fixed
+- **Critical Sub-Agent Distribution Issue**: Fixed issue where users were not receiving native Claude Code sub-agents
+  - Root cause: update.sh and install.sh were not copying new agent files from repository
+  - Users updating to v1.1.9 were not getting the promised native Claude Code sub-agents
+  - Install script was creating outdated agent definitions instead of native ones
+  - Enhanced update.sh to copy agent files directly from downloaded repository
+  - Enhanced install.sh to copy native agent files during installation
+
+### Added
+- **Native Claude Code Sub-Agent Distribution**: Both new installations and updates now properly distribute:
+  - project-manager.md with YAML front matter and comprehensive prompts
+  - python-engineer.md with TDD expertise and detailed constraints
+  - golang-engineer.md with microservices and performance focus
+  - frontend-engineer.md with React/TypeScript and accessibility standards
+  - context-manager.md with codebase analysis capabilities
+  - test-runner.md with 100% coverage enforcement
+
+### Technical
+- Fixed repository file copying in both installation and update workflows
+- Removed outdated agent creation logic that was overriding native agents
+- Ensured proper YAML front matter and tool specifications are distributed
+- Verified both git clone and archive download structures work correctly
+
+### Impact
+This critical fix ensures that ALL users (both new and updating) receive the complete native Claude Code sub-agent functionality introduced in v1.1.8, providing the specialized development teams as intended.
+
 ## [1.1.9] - 2025-09-22
 
 ### Fixed

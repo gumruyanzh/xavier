@@ -135,6 +135,20 @@ else
     find "$TEMP_DIR" -name "xavier.config.json" -type f | head -1 | xargs -I {} cp {} .xavier/config.json
 fi
 
+# Copy native Claude Code agent definitions
+echo -e "${BLUE}Setting up native Claude Code agents...${NC}"
+if [ -d "$TEMP_DIR/xavier/.claude/agents" ]; then
+    # Cloned structure: xavier/.claude/agents
+    cp -r "$TEMP_DIR/xavier/.claude/agents/"*.md .claude/agents/ 2>/dev/null || true
+    echo "  ✓ Copied native Claude Code sub-agents"
+elif [ -d "$TEMP_DIR/xavier-main/.claude/agents" ]; then
+    # Archive structure: xavier-main/.claude/agents
+    cp -r "$TEMP_DIR/xavier-main/.claude/agents/"*.md .claude/agents/ 2>/dev/null || true
+    echo "  ✓ Copied native Claude Code sub-agents"
+else
+    echo "  ! Warning: Agent files not found, will use basic definitions"
+fi
+
 # Clean up
 rm -rf "$TEMP_DIR"
 
@@ -160,7 +174,7 @@ print("Initializing Xavier Framework...")
 config = {
     "name": Path.cwd().name,
     "version": "1.0.0",
-    "xavier_version": "1.1.9",
+    "xavier_version": "1.1.10",
     "settings": {
         "strict_mode": True,
         "test_first": True,
@@ -193,7 +207,7 @@ rm .xavier/setup_temp.py
 
 # Create VERSION file for future updates
 echo -e "${BLUE}Creating VERSION file...${NC}"
-echo "1.1.9" > VERSION
+echo "1.1.10" > VERSION
 
 # Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"
