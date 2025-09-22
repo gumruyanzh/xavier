@@ -154,11 +154,81 @@
     <div class="docs-container">
         <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
 
+            <!-- Version 1.1.10 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.10</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">September 22, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🔧</span> Critical Sub-Agent Distribution Fix</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Native Sub-Agent Distribution</strong> - Fixed critical issue where users were not receiving native Claude Code sub-agents. Enhanced both update.sh and install.sh to properly copy agent files from repository ensuring ALL users get the complete sub-agent functionality.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Repository File Copying</strong> - Fixed update and installation workflows to properly distribute .claude/agents/ files with YAML front matter and comprehensive agent definitions.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Complete Coverage</strong> - Both new installations and updates now properly distribute all 6 specialized agents: project-manager, python-engineer, golang-engineer, frontend-engineer, context-manager, and test-runner.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-improved">⚡</span> Impact</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-improved">◆</span>
+                            <div class="change-description">
+                                This critical fix ensures that ALL users (both new and updating) receive the complete native Claude Code sub-agent functionality introduced in v1.1.8, providing the specialized development teams as intended.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Version 1.1.9 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.9</span>
+                    <span class="version-date">September 22, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🔧</span> Critical Version Detection Fix</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Version Detection Bug</strong> - Fixed issue where <code>xavier-update</code> command showed outdated version information. Users running updates were seeing "version 1.1.5" despite newer versions being available due to missing VERSION file.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>VERSION File Creation</strong> - Enhanced both update.sh and install.sh to create VERSION file ensuring accurate version detection for future updates and preventing incorrect "up to date" messages.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
             <!-- Version 1.1.8 -->
             <section class="version-section">
                 <div class="version-header">
                     <span class="version-number">v1.1.8</span>
-                    <span class="version-badge">LATEST</span>
                     <span class="version-date">September 22, 2025</span>
                 </div>
 
