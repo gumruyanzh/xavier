@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.1.8
+# Version 1.1.9
 
 set -e
 set -o pipefail
@@ -332,6 +332,10 @@ echo -e "${BLUE}Verifying update...${NC}"
 NEW_VERSION=$(python3 -c "import json; print(json.load(open('.xavier/config.json'))['xavier_version'])" 2>/dev/null)
 
 if [ "$NEW_VERSION" = "$LATEST_VERSION" ]; then
+    # Create VERSION file for future updates
+    echo -e "${BLUE}Creating VERSION file...${NC}"
+    echo "$LATEST_VERSION" > VERSION
+
     echo
     echo -e "${LIGHT_CYAN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"

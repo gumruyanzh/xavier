@@ -5,6 +5,25 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.9] - 2025-09-22
+
+### Fixed
+- **Critical Version Detection Bug**: Fixed issue where `xavier-update` command showed outdated version information
+  - Users running `xavier-update` were seeing "version 1.1.5" despite version 1.1.8+ being available
+  - Root cause: Missing VERSION file in user project directories
+  - Update script now creates VERSION file after successful updates
+  - Install script now creates VERSION file during initial installation
+  - Ensures accurate version detection for future updates
+
+### Technical
+- Enhanced update.sh to create VERSION file after successful framework updates
+- Enhanced install.sh to create VERSION file during initial installation
+- Fixed version detection priority to work correctly with newly created VERSION files
+- Prevents users from seeing incorrect "up to date" messages when newer versions are available
+
+### Impact
+This critical fix ensures that the xavier-update command works correctly for all users, providing accurate version information and enabling proper framework updates.
+
 ## [1.1.8] - 2025-09-22
 
 ### Added
