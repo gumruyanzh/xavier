@@ -1059,6 +1059,203 @@ Manually set story points for a specific story (formerly /estimate-story).
 Use this when you want to manually override story points instead of using the PM agent's automatic estimation.
 EOF
 
+# create-epic command
+cat > .claude/commands/create-epic.md << 'EOF'
+# create-epic
+
+Create an epic to group related user stories together.
+
+## Usage
+
+```
+/create-epic "Epic name" description [business_value]
+```
+
+## Arguments
+
+- **name** (required): Epic name
+- **description** (required): Epic description
+- **business_value** (optional): Business value justification (auto-generated if not provided)
+
+## Examples
+
+### Create epic with auto-generated business value
+```json
+{
+  "command": "/create-epic",
+  "args": {
+    "name": "User Authentication System",
+    "description": "Comprehensive authentication system with registration, login, and password reset"
+  }
+}
+```
+
+### Create epic with custom business value
+```json
+{
+  "command": "/create-epic",
+  "args": {
+    "name": "User Authentication System",
+    "description": "Comprehensive authentication system with registration, login, and password reset",
+    "business_value": "Enables user account management and secure access control"
+  }
+}
+```
+
+## Purpose
+
+Organize related stories under a common theme or feature area for better project planning and tracking.
+EOF
+
+# add-to-epic command
+cat > .claude/commands/add-to-epic.md << 'EOF'
+# add-to-epic
+
+Add existing user stories to an epic.
+
+## Usage
+
+```
+/add-to-epic EPIC-001 STORY-001 [STORY-002 ...]
+```
+
+## Arguments
+
+- **epic_id** (required): Epic ID (e.g., EPIC-001)
+- **story_ids** (required): One or more story IDs to add to the epic
+
+## Examples
+
+### Add single story to epic
+```json
+{
+  "command": "/add-to-epic",
+  "args": {
+    "epic_id": "EPIC-001",
+    "story_ids": ["STORY-001"]
+  }
+}
+```
+
+### Add multiple stories to epic
+```json
+{
+  "command": "/add-to-epic",
+  "args": {
+    "epic_id": "EPIC-001",
+    "story_ids": ["STORY-001", "STORY-002", "STORY-003"]
+  }
+}
+```
+
+## Purpose
+
+Group related stories under an epic for better organization and tracking of feature development.
+EOF
+
+# list-epics command
+cat > .claude/commands/list-epics.md << 'EOF'
+# list-epics
+
+List all epics with optional filtering.
+
+## Usage
+
+```
+/list-epics [--status STATUS] [--format FORMAT]
+```
+
+## Arguments
+
+- **status** (optional): Filter by status (active, completed, all) - defaults to active
+- **format** (optional): Output format (summary, detailed) - defaults to summary
+
+## Examples
+
+### List all active epics (default)
+```json
+{
+  "command": "/list-epics"
+}
+```
+
+### List all epics including completed
+```json
+{
+  "command": "/list-epics",
+  "args": {
+    "status": "all"
+  }
+}
+```
+
+### List with detailed information
+```json
+{
+  "command": "/list-epics",
+  "args": {
+    "status": "active",
+    "format": "detailed"
+  }
+}
+```
+
+## Purpose
+
+View and manage epics to understand feature groupings and epic progress.
+EOF
+
+# add-to-roadmap command
+cat > .claude/commands/add-to-roadmap.md << 'EOF'
+# add-to-roadmap
+
+Add milestones to an existing roadmap.
+
+## Usage
+
+```
+/add-to-roadmap ROADMAP-001 "Milestone Name" "Milestone Description" [target_date]
+```
+
+## Arguments
+
+- **roadmap_id** (required): Roadmap ID
+- **name** (required): Milestone name
+- **description** (required): Milestone description
+- **target_date** (optional): Target completion date
+
+## Examples
+
+### Add milestone without target date
+```json
+{
+  "command": "/add-to-roadmap",
+  "args": {
+    "roadmap_id": "ROADMAP-001",
+    "name": "Beta Release",
+    "description": "Feature-complete beta version for testing"
+  }
+}
+```
+
+### Add milestone with target date
+```json
+{
+  "command": "/add-to-roadmap",
+  "args": {
+    "roadmap_id": "ROADMAP-001",
+    "name": "Beta Release",
+    "description": "Feature-complete beta version for testing",
+    "target_date": "2024-03-15"
+  }
+}
+```
+
+## Purpose
+
+Extend existing roadmaps with additional milestones as project scope evolves.
+EOF
+
 # Create Xavier bridge for Claude commands
 cat > .xavier/xavier_bridge.py << 'EOF'
 #!/usr/bin/env python3
@@ -1103,7 +1300,11 @@ def main():
         'xavier-help': '/xavier-help',
         'xavier-update': '/xavier-update',
         'estimate-story': '/estimate-story',
-        'set-story-points': '/set-story-points'
+        'set-story-points': '/set-story-points',
+        'create-epic': '/create-epic',
+        'add-to-epic': '/add-to-epic',
+        'list-epics': '/list-epics',
+        'add-to-roadmap': '/add-to-roadmap'
     }
 
     xavier_command = command_map.get(command.replace('/', ''), f"/{command}")
