@@ -189,7 +189,7 @@ print("Initializing Xavier Framework...")
 config = {
     "name": Path.cwd().name,
     "version": "1.0.0",
-    "xavier_version": "1.1.11",
+    "xavier_version": "1.1.12",
     "settings": {
         "strict_mode": True,
         "test_first": True,
@@ -222,7 +222,7 @@ rm .xavier/setup_temp.py
 
 # Create VERSION file for future updates
 echo -e "${BLUE}Creating VERSION file...${NC}"
-echo "1.1.11" > VERSION
+echo "1.1.12" > VERSION
 
 # Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"

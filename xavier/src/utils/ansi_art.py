@@ -287,7 +287,7 @@ class AgentBoxDrawing:
         return f"{color}[{label}]{ANSIColors.RESET} {emoji} {ANSIColors.LIGHT_WHITE}⚙️ {message}{ANSIColors.RESET}"
 
 
-def display_welcome(version: str = "1.1.11") -> None:
+def display_welcome(version: str = "1.1.12") -> None:
     """Display welcome screen for Xavier Framework"""
     width = XavierArt.get_terminal_width()
 

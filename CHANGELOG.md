@@ -5,6 +5,32 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.12] - 2025-09-22
+
+### Fixed
+- **Critical Installation Bug**: Fixed path issues in install.sh preventing source code from being copied
+  - Corrected path from xavier/xavier/src to xavier/src for git clone structure
+  - Added support for xavier-main/xavier/src archive extraction structure
+  - Added robust fallback detection to find source directory regardless of download method
+  - Enhanced error handling with clear progress messages
+
+- **Critical Update Bug**: Fixed path issues in update.sh preventing users from receiving new commands
+  - Corrected source directory detection in update process
+  - Updated What's New section to show actual v1.1.11 features (epic management, roadmaps)
+  - Ensured users running /xavier-update receive all new functionality
+
+- **Version Display Issues**: Updated all hardcoded version references throughout framework
+  - Fixed greeting display showing incorrect version 1.1.10
+  - Fixed framework version in help command return value
+  - Synchronized version numbers across all components
+
+### Impact
+These critical fixes ensure that:
+- **New installations** properly receive all v1.1.11 features (epic management, enhanced roadmaps)
+- **Updates** correctly deliver the new commands to existing users
+- **Version numbers** are accurately displayed throughout the framework
+- **All users** can now access /create-epic, /add-to-epic, /list-epics, /add-to-roadmap commands
+
 ## [1.1.11] - 2025-09-22
 
 ### Added
