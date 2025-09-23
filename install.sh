@@ -120,19 +120,34 @@ fi
 cd - > /dev/null
 
 # Handle both cloned and extracted archive structures
-if [ -d "$TEMP_DIR/xavier/xavier/src" ]; then
-    # Cloned structure: xavier/xavier/src
-    cp -r "$TEMP_DIR/xavier/xavier/src" .xavier/
-    cp "$TEMP_DIR/xavier/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || true
-elif [ -d "$TEMP_DIR/xavier/src" ]; then
-    # Archive structure: xavier/src
+echo -e "${BLUE}Copying Xavier source code...${NC}"
+if [ -d "$TEMP_DIR/xavier/src" ]; then
+    # Git clone structure: xavier/src
+    echo "  • Found source in xavier/src (git clone structure)"
     cp -r "$TEMP_DIR/xavier/src" .xavier/
     cp "$TEMP_DIR/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || true
+elif [ -d "$TEMP_DIR/xavier-main/xavier/src" ]; then
+    # Archive structure: xavier-main/xavier/src
+    echo "  • Found source in xavier-main/xavier/src (archive structure)"
+    cp -r "$TEMP_DIR/xavier-main/xavier/src" .xavier/
+    cp "$TEMP_DIR/xavier-main/xavier/xavier.config.json" .xavier/config.json 2>/dev/null || true
 else
     echo -e "${YELLOW}Warning: Xavier source files not found in expected location${NC}"
-    # Try to find src directory
-    find "$TEMP_DIR" -name "src" -type d | head -1 | xargs -I {} cp -r {} .xavier/
-    find "$TEMP_DIR" -name "xavier.config.json" -type f | head -1 | xargs -I {} cp {} .xavier/config.json
+    echo "  • Searching for source files..."
+    # Try to find src directory with commands subfolder as verification
+    SRC_DIR=$(find "$TEMP_DIR" -type d -name "src" -exec test -d "{}/commands" \; -print | head -1)
+    if [ -n "$SRC_DIR" ]; then
+        echo "  • Found source at: $SRC_DIR"
+        cp -r "$SRC_DIR" .xavier/
+        # Also try to find xavier.config.json near the src directory
+        CONFIG_FILE=$(find "$(dirname "$SRC_DIR")" -name "xavier.config.json" -type f | head -1)
+        if [ -n "$CONFIG_FILE" ]; then
+            cp "$CONFIG_FILE" .xavier/config.json
+        fi
+    else
+        echo -e "${RED}ERROR: Could not find Xavier source files!${NC}"
+        exit 1
+    fi
 fi
 
 # Copy native Claude Code agent definitions
