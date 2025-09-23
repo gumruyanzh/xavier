@@ -100,10 +100,10 @@ echo
 
 # Show what's new
 echo -e "${BLUE}What's new in version $LATEST_VERSION:${NC}"
-echo "• Intelligent /create-project command with AI-powered analysis"
-echo "• Strict command boundaries (no auto-implementation)"
-echo "• Enhanced project templates and tech stack detection"
-echo "• Improved command documentation and examples"
+echo "• Epic Management: /create-epic, /add-to-epic, /list-epics commands"
+echo "• Enhanced Roadmaps: Auto-generation and /add-to-roadmap command"
+echo "• JSON-only storage clarification in .xavier/data/"
+echo "• Native Claude Code sub-agent integration"
 echo "• Bug fixes and performance improvements"
 echo
 
@@ -177,14 +177,12 @@ fi
 echo -e "${BLUE}Updating Xavier Framework files...${NC}"
 
 # Update source code
-if [ -d "$TEMP_DIR/xavier/xavier/src" ]; then
-    echo "• Updating framework source code..."
-    rm -rf .xavier/src
-    cp -r "$TEMP_DIR/xavier/xavier/src" .xavier/
-elif [ -d "$TEMP_DIR/xavier/src" ]; then
+if [ -d "$TEMP_DIR/xavier/src" ]; then
     echo "• Updating framework source code..."
     rm -rf .xavier/src
     cp -r "$TEMP_DIR/xavier/src" .xavier/
+else
+    echo -e "${YELLOW}Warning: Source code directory not found in update package${NC}"
 fi
 
 # Copy new Claude Code agent definitions from repository
