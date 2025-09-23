@@ -5,6 +5,32 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.13] - 2025-09-23
+
+### Fixed
+- **CRITICAL: Epic Commands Now Visible**: Fixed missing command MD file generation in install.sh
+  - Added create-epic.md, add-to-epic.md, list-epics.md, add-to-roadmap.md to installation scripts
+  - Epic and roadmap commands were implemented in Python but missing from Claude Code interface
+  - Users can now see and execute all epic management commands: /create-epic, /add-to-epic, /list-epics
+  - Roadmap enhancement command /add-to-roadmap now accessible to users
+
+- **Command Bridge Mapping**: Updated xavier_bridge.py command mapping in install.sh
+  - Added all new epic and roadmap commands to command_map dictionary
+  - Ensures proper routing from Claude Code slash commands to Python backend
+  - Commands now work end-to-end from user interface to execution
+
+- **Update Process Enhanced**: Fixed update.sh to extract new command files
+  - Added new commands to extraction list in update.sh
+  - Users running /xavier-update or update script now receive all command files
+  - Maintains command visibility during framework updates
+
+### Impact
+**RESOLVES CRITICAL USER ISSUE**: All epic and roadmap commands are now fully accessible to users.
+- Users can finally see and use the epic management features added in v1.1.11
+- No more "commands not found" or invisible commands in Claude Code
+- Complete epic workflow now available: create epics, add stories to epics, list/filter epics
+- Roadmap enhancement with /add-to-roadmap command fully functional
+
 ## [1.1.12] - 2025-09-22
 
 ### Fixed

@@ -154,11 +154,54 @@
     <div class="docs-container">
         <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
 
+            <!-- Version 1.1.13 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.13</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">September 23, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-fixed">🔧</span> Critical Command Visibility Fix</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Epic Commands Now Visible</strong> - Fixed critical issue where /create-epic, /add-to-epic, and /list-epics commands were missing from Claude Code installation scripts, making them invisible to users despite being implemented in Python code.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Roadmap Commands Fixed</strong> - Added /add-to-roadmap command MD file generation to install.sh and update.sh, resolving command visibility issues.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Command Bridge Updated</strong> - Fixed xavier_bridge.py command mapping to include all new epic and roadmap commands, ensuring proper command routing.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Update Process Fixed</strong> - Enhanced update.sh to extract and deploy new command files, ensuring users get all commands when updating.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="changelog-note">
+                    <strong>🎯 Impact:</strong> All epic and roadmap commands are now fully accessible to users. Run <code>/xavier-update</code> or the update script to get v1.1.13 and see all commands in Claude Code.
+                </div>
+            </section>
+
             <!-- Version 1.1.12 -->
             <section class="version-section">
                 <div class="version-header">
                     <span class="version-number">v1.1.12</span>
-                    <span class="version-badge">LATEST</span>
+                    <span class="version-badge">PREVIOUS</span>
                     <span class="version-date">September 22, 2025</span>
                 </div>
 
