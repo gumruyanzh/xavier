@@ -1458,22 +1458,91 @@ This project follows Xavier Framework standards:
 
     def create_agent(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Create a custom agent
+        Create a custom agent with skills, experience, and visual styling
         Args:
-            name: Agent name
-            language: Primary language
-            frameworks: List of frameworks
-            responsibilities: Agent responsibilities
+            name: Agent name (required)
+            display_name: Display name (optional, defaults to name)
+            skills: List of skills/capabilities (required)
+            experience: Experience description (optional)
+            color: Color for agent display (optional, defaults to white)
+            emoji: Emoji for agent (optional, defaults to 🤖)
+            tools: List of allowed tools (optional)
+            languages: List of programming languages (optional)
+            frameworks: List of frameworks (optional)
         """
-        # This would dynamically create a new agent
-        return {
-            "agent_name": args["name"],
-            "status": "Created",
-            "capabilities": {
-                "language": args["language"],
-                "frameworks": args.get("frameworks", [])
+        import os
+        import yaml
+
+        # Validate required fields
+        if not args.get("name"):
+            return {
+                "success": False,
+                "error": "Agent name is required"
             }
+
+        if not args.get("skills"):
+            return {
+                "success": False,
+                "error": "Agent skills are required"
+            }
+
+        agent_name = args["name"]
+        display_name = args.get("display_name", agent_name.replace("-", " ").replace("_", " ").title())
+
+        # Convert name to agent format
+        agent_key = agent_name.lower().replace(" ", "-").replace("_", "-")
+
+        # Agent configuration
+        agent_config = {
+            "name": agent_key,
+            "display_name": display_name,
+            "color": args.get("color", "white"),
+            "emoji": args.get("emoji", "🤖"),
+            "label": agent_key[:3].upper(),
+            "description": f"Custom agent with skills: {', '.join(args['skills'])}",
+            "tools": args.get("tools", ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]),
+            "capabilities": args["skills"],
+            "restricted_actions": [],
+            "allowed_file_patterns": [".*"],
+            "languages": args.get("languages", []),
+            "frameworks": args.get("frameworks", [])
         }
+
+        # Add experience to description if provided
+        if args.get("experience"):
+            agent_config["description"] += f". Experience: {args['experience']}"
+
+        # Ensure .xavier/agents directory exists
+        agents_dir = ".xavier/agents"
+        os.makedirs(agents_dir, exist_ok=True)
+
+        # Write agent YAML file
+        agent_file = os.path.join(agents_dir, f"{agent_key}.yaml")
+
+        try:
+            with open(agent_file, 'w') as f:
+                yaml.dump(agent_config, f, default_flow_style=False, sort_keys=False)
+
+            # Reload agent metadata to include new agent
+            from agents.agent_metadata import get_metadata_manager
+            get_metadata_manager().reload_metadata()
+
+            return {
+                "success": True,
+                "agent_id": agent_key,
+                "agent_name": display_name,
+                "agent_file": agent_file,
+                "color": agent_config["color"],
+                "emoji": agent_config["emoji"],
+                "skills": agent_config["capabilities"],
+                "message": f"Agent '{display_name}' created successfully with {len(agent_config['capabilities'])} skills"
+            }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Failed to create agent: {str(e)}"
+            }
 
     def list_stories(self, args: Dict[str, Any]) -> List[Dict[str, Any]]:
         """List all stories with optional filtering"""

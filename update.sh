@@ -205,7 +205,7 @@ if [ -d ".claude/commands" ]; then
     echo "• Updating Claude Code commands..."
 
     # Create new commands that don't exist
-    for cmd in create-project xavier-update estimate-story set-story-points create-epic add-to-epic list-epics add-to-roadmap; do
+    for cmd in create-project xavier-update estimate-story set-story-points create-epic add-to-epic list-epics add-to-roadmap create-agent; do
         if [ ! -f ".claude/commands/$cmd.md" ]; then
             echo "  - Adding new command: $cmd"
         fi
@@ -221,6 +221,7 @@ if [ -d ".claude/commands" ]; then
         "start-sprint" "show-backlog" "xavier-help" "xavier-update"
         "create-project" "estimate-story" "set-story-points"
         "create-epic" "add-to-epic" "list-epics" "add-to-roadmap"
+        "create-agent"
     )
 
     if [ -n "$INSTALL_SCRIPT" ]; then

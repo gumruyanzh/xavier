@@ -1256,6 +1256,96 @@ Add milestones to an existing roadmap.
 Extend existing roadmaps with additional milestones as project scope evolves.
 EOF
 
+# create-agent command
+cat > .claude/commands/create-agent.md << 'EOF'
+# create-agent
+
+Create custom agents with specialized skills, experience, and visual styling.
+
+## Usage
+
+```
+/create-agent "Agent Name" --skills skill1,skill2 [options]
+```
+
+## Arguments
+
+- **name** (required): Agent name (will be converted to agent-key format)
+- **skills** (required): Comma-separated list of skills/capabilities
+- **display_name** (optional): Human-readable display name
+- **experience** (optional): Description of agent's experience
+- **color** (optional): Agent color (red, green, blue, yellow, cyan, magenta, white)
+- **emoji** (optional): Agent emoji for visual identification
+- **tools** (optional): Comma-separated list of allowed tools
+- **languages** (optional): Programming languages the agent specializes in
+- **frameworks** (optional): Frameworks the agent knows
+
+## Examples
+
+### Create a DevOps specialist
+```json
+{
+  "command": "/create-agent",
+  "args": {
+    "name": "devops-specialist",
+    "skills": ["deployment", "docker", "kubernetes", "ci_cd"],
+    "experience": "5 years in container orchestration and cloud infrastructure",
+    "color": "cyan",
+    "emoji": "🚀",
+    "tools": ["Bash", "Read", "Write", "Edit"],
+    "frameworks": ["docker", "kubernetes", "terraform"]
+  }
+}
+```
+
+### Create a Database expert
+```json
+{
+  "command": "/create-agent",
+  "args": {
+    "name": "database-expert",
+    "display_name": "Database Expert",
+    "skills": ["sql_optimization", "schema_design", "database_migration"],
+    "experience": "Expert in PostgreSQL, MySQL, and MongoDB",
+    "color": "blue",
+    "emoji": "🗄️",
+    "languages": ["sql", "plpgsql"],
+    "frameworks": ["postgresql", "mysql", "mongodb"]
+  }
+}
+```
+
+### Create a Security specialist
+```json
+{
+  "command": "/create-agent",
+  "args": {
+    "name": "security-specialist",
+    "skills": ["vulnerability_assessment", "penetration_testing", "secure_coding"],
+    "color": "red",
+    "emoji": "🔒"
+  }
+}
+```
+
+## Purpose
+
+Custom agents allow you to extend Xavier's capabilities with specialized expertise tailored to your project needs. Each agent gets:
+
+- **Unique visual identity** with color coding and emoji
+- **Skill-based task assignment** during sprint execution
+- **Persistent configuration** stored in `.xavier/agents/`
+- **Integration with existing workflow** and colored agent system
+
+## Agent Integration
+
+Created agents automatically:
+- Appear in agent selection during task delegation
+- Display with configured colors during sprint execution
+- Follow Xavier's TDD and Clean Code enforcement
+- Integrate with the existing colored agent visualization system
+EOF
+
 # Create Xavier bridge for Claude commands
 cat > .xavier/xavier_bridge.py << 'EOF'
 #!/usr/bin/env python3
@@ -1304,7 +1394,8 @@ def main():
         'create-epic': '/create-epic',
         'add-to-epic': '/add-to-epic',
         'list-epics': '/list-epics',
-        'add-to-roadmap': '/add-to-roadmap'
+        'add-to-roadmap': '/add-to-roadmap',
+        'create-agent': '/create-agent'
     }
 
     xavier_command = command_map.get(command.replace('/', ''), f"/{command}")

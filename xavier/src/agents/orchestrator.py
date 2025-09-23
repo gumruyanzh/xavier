@@ -22,7 +22,8 @@ from .base_agent import (
     BaseAgent, AgentTask, AgentResult, AgentCapability,
     ProjectManagerAgent, ContextManagerAgent,
     PythonEngineerAgent, GolangEngineerAgent,
-    FrontendEngineerAgent
+    FrontendEngineerAgent, TestRunnerAgent,
+    RubyEngineerAgent, JavaEngineerAgent
 )
 
 
@@ -72,7 +73,10 @@ class AgentOrchestrator:
             "context-manager": ContextManagerAgent,
             "python-engineer": PythonEngineerAgent,
             "golang-engineer": GolangEngineerAgent,
-            "frontend-engineer": FrontendEngineerAgent
+            "frontend-engineer": FrontendEngineerAgent,
+            "test-runner": TestRunnerAgent,
+            "ruby-engineer": RubyEngineerAgent,
+            "java-engineer": JavaEngineerAgent
         }
 
         # Instantiate enabled agents
@@ -370,32 +374,98 @@ class AgentOrchestrator:
 
         return result
 
-    def _select_agent_for_task(self, task: AgentTask) -> Optional[BaseAgent]:
-        """Select the most appropriate agent for a task"""
+    def _select_agent_for_task(self, task: AgentTask) -> BaseAgent:
+        """Select the most appropriate agent for a task - ALWAYS returns an agent"""
         # Analyze task requirements to select agent
         task_keywords = task.description.lower() + " ".join(task.requirements).lower()
+        task_type = task.task_type.lower()
 
-        if "sprint" in task_keywords or "story" in task_keywords or "estimate" in task_keywords:
-            return self.agents.get("project-manager")
+        # 1. Project Management tasks
+        if any(keyword in task_keywords for keyword in ["sprint", "story", "estimate", "plan", "backlog"]):
+            agent = self.agents.get("project-manager")
+            if agent:
+                return agent
 
-        if "analyze" in task_keywords or "context" in task_keywords or "find" in task_keywords:
-            return self.agents.get("context-manager")
+        # 2. Analysis and context tasks
+        if any(keyword in task_keywords for keyword in ["analyze", "context", "find", "search", "review"]):
+            agent = self.agents.get("context-manager")
+            if agent:
+                return agent
 
-        # Check tech constraints for language-specific agents
+        # 3. Testing tasks
+        if any(keyword in task_keywords for keyword in ["test", "coverage", "spec", "unit", "integration"]) or \
+           task_type in ["run_tests", "create_tests", "validate_coverage"]:
+            agent = self.agents.get("test-runner")
+            if agent:
+                return agent
+
+        # 4. Language-specific tasks from tech_constraints
         for constraint in task.tech_constraints:
             constraint_lower = constraint.lower()
-            if "python" in constraint_lower:
-                return self.agents.get("python-engineer")
-            if "go" in constraint_lower or "golang" in constraint_lower:
-                return self.agents.get("golang-engineer")
-            if "typescript" in constraint_lower or "react" in constraint_lower:
-                return self.agents.get("frontend-engineer")
-            if "ruby" in constraint_lower:
-                return self.agents.get("ruby-engineer")
-            if "java" in constraint_lower:
-                return self.agents.get("java-engineer")
 
-        return None
+            if "python" in constraint_lower:
+                agent = self.agents.get("python-engineer")
+                if agent:
+                    return agent
+
+            if "go" in constraint_lower or "golang" in constraint_lower:
+                agent = self.agents.get("golang-engineer")
+                if agent:
+                    return agent
+
+            if any(tech in constraint_lower for tech in ["typescript", "react", "vue", "angular", "javascript", "frontend"]):
+                agent = self.agents.get("frontend-engineer")
+                if agent:
+                    return agent
+
+            if "ruby" in constraint_lower or "rails" in constraint_lower:
+                agent = self.agents.get("ruby-engineer")
+                if agent:
+                    return agent
+
+            if "java" in constraint_lower or "spring" in constraint_lower:
+                agent = self.agents.get("java-engineer")
+                if agent:
+                    return agent
+
+        # 5. Task type based routing
+        if task_type == "implement_feature":
+            # For feature implementation, try to detect language from project structure
+            if self.tech_stack:
+                for lang in self.tech_stack.languages:
+                    if lang == "python":
+                        agent = self.agents.get("python-engineer")
+                        if agent:
+                            return agent
+                    elif lang == "go":
+                        agent = self.agents.get("golang-engineer")
+                        if agent:
+                            return agent
+                    elif lang in ["typescript", "javascript"]:
+                        agent = self.agents.get("frontend-engineer")
+                        if agent:
+                            return agent
+                    elif lang == "ruby":
+                        agent = self.agents.get("ruby-engineer")
+                        if agent:
+                            return agent
+                    elif lang == "java":
+                        agent = self.agents.get("java-engineer")
+                        if agent:
+                            return agent
+
+        # 6. Default fallback - prefer Python engineer for general development tasks
+        python_agent = self.agents.get("python-engineer")
+        if python_agent:
+            return python_agent
+
+        # 7. Last resort - return any available agent (should never happen)
+        for agent in self.agents.values():
+            if agent:
+                return agent
+
+        # 8. Emergency fallback - create a basic agent if none exist
+        return ProjectManagerAgent()
 
     def _validate_result(self, result: AgentResult, task: AgentTask) -> bool:
         """Validate that result meets task acceptance criteria"""
