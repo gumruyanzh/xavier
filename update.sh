@@ -2,7 +2,7 @@
 
 # Xavier Framework Update Script
 # Updates existing Xavier installations to the latest version
-# Version 1.1.12
+# Version 1.1.14
 
 set -e
 set -o pipefail
@@ -100,11 +100,12 @@ echo
 
 # Show what's new
 echo -e "${BLUE}What's new in version $LATEST_VERSION:${NC}"
-echo "• Epic Management: /create-epic, /add-to-epic, /list-epics commands"
-echo "• Enhanced Roadmaps: Auto-generation and /add-to-roadmap command"
-echo "• JSON-only storage clarification in .xavier/data/"
-echo "• Native Claude Code sub-agent integration"
-echo "• Bug fixes and performance improvements"
+echo "• /create-agent command: Create custom agents with skills, colors, and emojis"
+echo "• Complete agent system overhaul: ALL tasks now show colored agent displays"
+echo "• New agent classes: TestRunner, Ruby, Java engineers with specialized skills"
+echo "• Enhanced sprint delegation: Tasks intelligently routed to appropriate agents"
+echo "• Fixed agent selection: No more missing colored displays during sprint execution"
+echo "• Epic & Roadmap commands: /create-epic, /add-to-epic, /list-epics, /add-to-roadmap"
 echo
 
 # Ask for confirmation

@@ -154,11 +154,54 @@
     <div class="docs-container">
         <main class="docs-content" style="max-width: 900px; margin: 0 auto;">
 
+            <!-- Version 1.1.14 -->
+            <section class="version-section">
+                <div class="version-header">
+                    <span class="version-number">v1.1.14</span>
+                    <span class="version-badge">LATEST</span>
+                    <span class="version-date">September 23, 2025</span>
+                </div>
+
+                <div class="change-category">
+                    <h3><span class="feature-added">🤖</span> Complete Agent System Overhaul</h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            <span class="change-icon feature-added">◆</span>
+                            <div class="change-description">
+                                <strong>/create-agent Command Added</strong> - Create custom agents with specialized skills, experience, colors, and emojis. Auto-generates YAML files in .xavier/agents/ with full integration into the colored agent system.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-added">◆</span>
+                            <div class="change-description">
+                                <strong>Missing Agent Classes Created</strong> - Added TestRunnerAgent, RubyEngineerAgent, and JavaEngineerAgent with specialized capabilities and TDD enforcement.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-fixed">◆</span>
+                            <div class="change-description">
+                                <strong>Fixed Agent Selection System</strong> - orchestrator._select_agent_for_task() now ALWAYS returns an agent, ensuring ALL tasks get colored agent displays during sprint execution.
+                            </div>
+                        </li>
+                        <li class="change-item">
+                            <span class="change-icon feature-enhanced">◆</span>
+                            <div class="change-description">
+                                <strong>Enhanced Sprint Task Delegation</strong> - Smart routing system assigns tasks to appropriate specialists based on type and tech constraints with full visual feedback.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="changelog-note">
+                    <strong>🎯 Impact:</strong> ALL tasks during sprint execution now show colored agent takeover displays (not just PM). Create unlimited custom agents with /create-agent command. Complete visual agent system with handoffs and status updates.
+                </div>
+            </section>
+
             <!-- Version 1.1.13 -->
             <section class="version-section">
                 <div class="version-header">
                     <span class="version-number">v1.1.13</span>
-                    <span class="version-badge">LATEST</span>
+                    <span class="version-badge">PREVIOUS</span>
                     <span class="version-date">September 23, 2025</span>
                 </div>
 

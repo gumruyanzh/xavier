@@ -222,7 +222,7 @@ rm .xavier/setup_temp.py
 
 # Create VERSION file for future updates
 echo -e "${BLUE}Creating VERSION file...${NC}"
-echo "1.1.12" > VERSION
+echo "1.1.14" > VERSION
 
 # Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"

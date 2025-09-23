@@ -5,6 +5,56 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.14] - 2025-09-23
+
+### Added
+- **MAJOR: Complete Agent System Overhaul**: Revolutionary multi-agent development with custom agent creation
+  - `/create-agent` command to create custom agents with specialized skills, colors, and emojis
+  - ALL tasks now show colored agent displays during sprint execution (not just PM agent)
+  - Added TestRunnerAgent, RubyEngineerAgent, JavaEngineerAgent to specialized development teams
+  - Smart task delegation ensures EVERY task has a dedicated agent with visual feedback
+  - Agent metadata system using YAML files in `.xavier/agents/` directory
+  - Colored agent visualization with unique emojis and professional display formatting
+
+- **Enhanced Agent Delegation System**: Fixed critical issue where only PM agent showed colors
+  - Fixed orchestrator._select_agent_for_task() to ALWAYS return an agent (was returning None)
+  - Emergency fallback ensures tasks always get assigned to appropriate agents
+  - All agents now properly announce themselves with colored displays during sprint
+  - Visual consistency across all agent types with standardized color schemes
+
+### Fixed
+- **Agent System Visibility**: Resolved issue where most tasks showed no agent coloring
+  - Root cause: orchestrator was returning None for most task types
+  - Added comprehensive agent registry with TestRunner, Ruby, Java specialists
+  - Enhanced task routing logic to match appropriate agent types
+  - Ensures user experience consistency with colored agent feedback for ALL tasks
+
+- **Command Distribution**: Fixed /create-agent command not appearing after updates
+  - Added create-agent.md command file generation in install.sh and update.sh
+  - Updated xavier_bridge.py command mapping for /create-agent routing
+  - Ensured all new agent-related commands are distributed to users
+
+### Enhanced
+- **Agent Types Available**: Complete professional development team
+  - ProjectManagerAgent: Sprint planning, estimation, roadmap management (🔴 Red)
+  - PythonEngineerAgent: TDD, Clean Code, Django/FastAPI development (🟢 Green)
+  - GolangEngineerAgent: Microservices, concurrency, performance optimization (🔵 Blue)
+  - FrontendEngineerAgent: React/TypeScript, accessibility, responsive design (🟡 Yellow)
+  - ContextManagerAgent: Codebase analysis, dependency tracking (🟣 Purple)
+  - TestRunnerAgent: Quality assurance, 100% coverage enforcement (🟠 Orange)
+  - RubyEngineerAgent: Rails development, testing, Clean Code (🔴 Magenta)
+  - JavaEngineerAgent: Spring Boot, enterprise patterns, testing (☕ Cyan)
+
+### Technical
+- Enhanced BaseAgent class with standardized color display methods
+- Improved agent metadata system with YAML configuration files
+- Fixed agent selection algorithm to prevent None returns
+- Added comprehensive agent registry for proper task routing
+- Custom agent creation with persistent YAML storage
+
+### Impact
+This release transforms Xavier into a true multi-agent development environment where EVERY task gets proper agent assignment with visual feedback. The /create-agent command allows teams to create specialized agents for their unique needs, while the enhanced delegation system ensures consistent user experience across all development activities.
+
 ## [1.1.13] - 2025-09-23
 
 ### Fixed
