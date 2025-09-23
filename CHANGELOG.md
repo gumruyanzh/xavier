@@ -5,6 +5,46 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.11] - 2025-09-22
+
+### Added
+- **Complete Epic Management System**: Full epic lifecycle management with story grouping
+  - `/create-epic` command to create epics for grouping related user stories
+  - `/add-to-epic` command to link stories to existing epics
+  - `/list-epics` command to list and filter epics by status or release
+  - Auto-generation of business value statements when not provided
+  - Story linking with automatic point aggregation
+  - Target release tracking and epic progress monitoring
+  - All epic data stored in `.xavier/data/epics.json`
+
+- **Enhanced Roadmap Management**: Complete overhaul of roadmap functionality with intelligent auto-generation
+  - `/add-to-roadmap` command to add milestones to existing roadmaps
+  - Enhanced `/create-roadmap` with auto-generation from project description
+  - Automatic milestone generation based on project complexity and type
+  - Roadmap creation without requiring manual input (uses project context)
+
+### Improved
+- **JSON-Only Data Storage Clarification**: Emphasized that all data is stored exclusively in JSON
+  - Updated all documentation to clarify JSON-only storage in `.xavier/data/`
+  - Added prominent notices that Xavier does NOT create Markdown files for data
+  - Ensures users understand MD files in their projects are from external sources
+  - Prevents confusion about data storage format
+
+### Enhanced
+- **Auto-Roadmap Generation**: Intelligent roadmap creation from minimal input
+  - Automatically generates roadmap name from project name
+  - Automatically generates vision from project description
+  - Creates default milestones (MVP, Core Features, Beta, Production)
+  - Adjusts milestone dates based on project complexity
+  - Supports both manual and automatic roadmap creation modes
+
+### Technical
+- Added comprehensive epic management methods in XavierCommands
+- Enhanced roadmap helper methods with intelligent defaults
+- Updated command documentation with epic and roadmap examples
+- Emphasized exclusive JSON data persistence throughout documentation
+- All data continues to be stored in `.xavier/data/*.json` files
+
 ## [1.1.10] - 2025-09-22
 
 ### Fixed

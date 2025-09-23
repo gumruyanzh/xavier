@@ -57,7 +57,10 @@ class XavierCommands:
             "/create-story": self.create_story,
             "/create-task": self.create_task,
             "/create-bug": self.create_bug,
+            "/create-epic": self.create_epic,
             "/create-roadmap": self.create_roadmap,
+            "/add-to-roadmap": self.add_to_roadmap,
+            "/add-to-epic": self.add_to_epic,
             "/create-project": self.create_project,
             "/learn-project": self.learn_project,
             "/create-sprint": self.create_sprint,
@@ -73,6 +76,7 @@ class XavierCommands:
             "/list-stories": self.list_stories,
             "/list-tasks": self.list_tasks,
             "/list-bugs": self.list_bugs,
+            "/list-epics": self.list_epics,
             "/show-backlog": self.show_backlog,
             "/show-sprint": self.show_sprint,
             "/xavier-help": self.show_help,
@@ -250,35 +254,310 @@ class XavierCommands:
             "status": bug.status
         }
 
+    def create_epic(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create an epic to group related user stories
+        Args:
+            title: Epic title (required)
+            description: Epic description (required)
+            business_value: Business value statement (optional - will be auto-generated)
+            target_release: Target release version (optional)
+            initial_stories: List of story IDs to link to this epic (optional)
+        """
+        # Validate required fields
+        if "title" not in args:
+            raise ValueError("Epic title is required")
+        if "description" not in args:
+            raise ValueError("Epic description is required")
+
+        # Auto-generate business value if not provided
+        business_value = args.get("business_value")
+        if not business_value:
+            # Generate business value based on title and description
+            business_value = f"Delivers {args['title'].lower()} capabilities to enhance user experience and system functionality"
+
+        # Create the epic
+        epic = self.scrum.create_epic(
+            title=args["title"],
+            description=args["description"],
+            business_value=business_value,
+            target_release=args.get("target_release")
+        )
+
+        # Link initial stories if provided
+        initial_stories = args.get("initial_stories", [])
+        linked_count = 0
+        total_points = 0
+
+        for story_id in initial_stories:
+            if story_id in self.scrum.stories:
+                story = self.scrum.stories[story_id]
+                if story_id not in epic.stories:
+                    epic.stories.append(story_id)
+                    linked_count += 1
+                    # Add story points to epic
+                    if hasattr(story, 'story_points') and story.story_points:
+                        total_points += story.story_points
+
+        # Update epic points if stories were linked
+        if linked_count > 0:
+            epic.total_points = total_points
+            self.scrum._save_data()
+
+        return {
+            "epic_id": epic.id,
+            "title": epic.title,
+            "description": epic.description,
+            "business_value": epic.business_value,
+            "target_release": epic.target_release,
+            "status": epic.status,
+            "stories_linked": linked_count,
+            "total_points": epic.total_points,
+            "message": f"Epic created successfully. Data stored in .xavier/data/epics.json"
+        }
+
     def create_roadmap(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Create a product roadmap
+        Create a product roadmap with auto-generation capability
         Args:
-            name: Roadmap name
-            vision: Product vision
-            milestones: List of milestone definitions
+            name: Roadmap name (optional - will be generated from project name)
+            vision: Product vision (optional - will be generated from project description)
+            milestones: List of milestone definitions (optional - will be auto-generated)
+            auto_generate: Auto-generate roadmap from project info (default: True)
         """
+        # Auto-generate if name or vision not provided
+        auto_generate = args.get("auto_generate", True)
+
+        if auto_generate and ("name" not in args or "vision" not in args):
+            # Try to load project config for auto-generation
+            project_config = None
+            if os.path.exists(self.config_path):
+                with open(self.config_path, 'r') as f:
+                    project_config = json.load(f)
+
+            # Auto-generate name if not provided
+            if "name" not in args:
+                if project_config:
+                    args["name"] = f"{project_config.get('name', 'Project')} Product Roadmap"
+                else:
+                    args["name"] = "Product Roadmap"
+
+            # Auto-generate vision if not provided
+            if "vision" not in args:
+                if project_config and project_config.get('description'):
+                    args["vision"] = project_config['description']
+                elif "description" in args:
+                    args["vision"] = args["description"]
+                else:
+                    args["vision"] = f"Building {args['name'].replace(' Product Roadmap', '')} with modern technologies"
+
+        # Ensure required fields are present
+        if "name" not in args:
+            raise ValueError("Roadmap name is required or project must be initialized")
+        if "vision" not in args:
+            raise ValueError("Vision is required or must be provided via description")
+
         roadmap = self.scrum.create_roadmap(
             name=args["name"],
             vision=args["vision"]
         )
 
-        # Add milestones if provided
-        for milestone in args.get("milestones", []):
-            self.scrum.add_milestone_to_roadmap(
-                roadmap_id=roadmap.id,
-                milestone_name=milestone["name"],
-                target_date=datetime.fromisoformat(milestone["target_date"]),
-                epics=milestone.get("epics", []),
-                success_criteria=milestone.get("success_criteria", [])
-            )
+        # Add milestones if provided, otherwise auto-generate
+        milestones = args.get("milestones", [])
+
+        if not milestones and auto_generate:
+            # Auto-generate milestones based on project
+            project_config = {}
+            if os.path.exists(self.config_path):
+                with open(self.config_path, 'r') as f:
+                    project_config = json.load(f)
+
+            # Use helper method to generate milestones
+            from ..analyzers.project_analyzer import ProjectAnalyzer
+            analyzer = ProjectAnalyzer()
+            # Create a simple analysis object for milestone generation
+            class SimpleAnalysis:
+                def __init__(self):
+                    self.estimated_complexity = project_config.get('estimated_complexity', 'Medium')
+                    self.project_type = project_config.get('project_type', 'web')
+
+            milestones = self._generate_default_milestones(project_config, SimpleAnalysis())
+
+        # Add milestones to roadmap
+        for milestone in milestones:
+            if isinstance(milestone, dict):
+                # Handle both auto-generated and user-provided milestones
+                target_date = milestone.get("target_date")
+                if isinstance(target_date, str):
+                    target_date = datetime.fromisoformat(target_date)
+
+                self.scrum.add_milestone_to_roadmap(
+                    roadmap_id=roadmap.id,
+                    milestone_name=milestone["name"],
+                    target_date=target_date,
+                    epics=milestone.get("epics", []),
+                    success_criteria=milestone.get("success_criteria", [])
+                )
 
         return {
             "roadmap_id": roadmap.id,
             "name": roadmap.name,
             "vision": roadmap.vision,
-            "milestones": len(roadmap.milestones)
+            "milestones": len(roadmap.milestones),
+            "message": "Roadmap created successfully. All data stored in .xavier/data/roadmaps.json"
         }
+
+    def add_to_roadmap(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Add milestones to an existing roadmap
+        Args:
+            roadmap_id: ID of the roadmap (optional - uses first roadmap if not specified)
+            milestone: Milestone definition with name, target_date, epics, success_criteria
+            milestones: List of milestones to add (alternative to single milestone)
+        """
+        from datetime import timedelta
+
+        # Get roadmap ID
+        roadmap_id = args.get("roadmap_id")
+
+        if not roadmap_id:
+            # Try to find existing roadmap
+            if not self.scrum.roadmaps:
+                return {
+                    "success": False,
+                    "error": "No roadmaps found. Create one with /create-roadmap first"
+                }
+            # Use the first (or only) roadmap
+            roadmap_id = list(self.scrum.roadmaps.keys())[0]
+
+        # Validate roadmap exists
+        if roadmap_id not in self.scrum.roadmaps:
+            return {
+                "success": False,
+                "error": f"Roadmap {roadmap_id} not found"
+            }
+
+        roadmap = self.scrum.roadmaps[roadmap_id]
+
+        # Handle single milestone or list of milestones
+        milestones = []
+        if "milestone" in args:
+            milestones = [args["milestone"]]
+        elif "milestones" in args:
+            milestones = args["milestones"]
+        else:
+            return {
+                "success": False,
+                "error": "Either 'milestone' or 'milestones' must be provided"
+            }
+
+        # Add milestones
+        added_count = 0
+        for milestone in milestones:
+            try:
+                # Parse target date
+                target_date = milestone.get("target_date")
+                if isinstance(target_date, str):
+                    target_date = datetime.fromisoformat(target_date)
+                elif not target_date:
+                    # Default to 4 weeks from now if not specified
+                    target_date = datetime.now() + timedelta(weeks=4)
+
+                self.scrum.add_milestone_to_roadmap(
+                    roadmap_id=roadmap_id,
+                    milestone_name=milestone.get("name", f"Milestone {len(roadmap.milestones) + 1}"),
+                    target_date=target_date,
+                    epics=milestone.get("epics", []),
+                    success_criteria=milestone.get("success_criteria", [])
+                )
+                added_count += 1
+            except Exception as e:
+                return {
+                    "success": False,
+                    "error": f"Failed to add milestone: {str(e)}"
+                }
+
+        return {
+            "success": True,
+            "roadmap_id": roadmap_id,
+            "roadmap_name": roadmap.name,
+            "milestones_added": added_count,
+            "total_milestones": len(roadmap.milestones),
+            "message": f"Added {added_count} milestone(s) to roadmap. Data saved in .xavier/data/roadmaps.json"
+        }
+
+    def add_to_epic(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Add stories to an existing epic
+        Args:
+            epic_id: ID of the epic (required)
+            story_ids: List of story IDs to add to the epic (required)
+        """
+        # Validate required fields
+        if "epic_id" not in args:
+            raise ValueError("Epic ID is required")
+        if "story_ids" not in args:
+            raise ValueError("Story IDs list is required")
+
+        epic_id = args["epic_id"]
+        story_ids = args["story_ids"]
+
+        # Validate epic exists
+        if epic_id not in self.scrum.epics:
+            return {
+                "success": False,
+                "error": f"Epic {epic_id} not found"
+            }
+
+        epic = self.scrum.epics[epic_id]
+
+        # Ensure story_ids is a list
+        if not isinstance(story_ids, list):
+            story_ids = [story_ids]
+
+        # Link stories to epic
+        linked_count = 0
+        already_linked = 0
+        not_found = []
+        added_points = 0
+
+        for story_id in story_ids:
+            if story_id not in self.scrum.stories:
+                not_found.append(story_id)
+                continue
+
+            if story_id in epic.stories:
+                already_linked += 1
+                continue
+
+            # Link the story
+            epic.stories.append(story_id)
+            linked_count += 1
+
+            # Update epic points
+            story = self.scrum.stories[story_id]
+            if hasattr(story, 'story_points') and story.story_points:
+                added_points += story.story_points
+
+        # Update epic total points
+        epic.total_points += added_points
+        self.scrum._save_data()
+
+        result = {
+            "success": True,
+            "epic_id": epic_id,
+            "epic_title": epic.title,
+            "stories_linked": linked_count,
+            "already_linked": already_linked,
+            "total_stories": len(epic.stories),
+            "total_points": epic.total_points,
+            "message": f"Added {linked_count} story(ies) to epic. Data saved in .xavier/data/epics.json"
+        }
+
+        if not_found:
+            result["stories_not_found"] = not_found
+
+        return result
 
     def create_project(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -345,7 +624,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.1.10"
+            "xavier_version": "1.1.11"
         }
 
         # Save project configuration
@@ -1261,6 +1540,42 @@ This project follows Xavier Framework standards:
 
         return sorted(bugs, key=lambda b: (b["severity"], b["priority"]))
 
+    def list_epics(self, args: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        List all epics with optional filtering
+        Args:
+            status: Filter by status (optional)
+            target_release: Filter by target release (optional)
+        """
+        epics = []
+        for epic in self.scrum.epics.values():
+            # Apply filters
+            if args.get("status") and epic.status != args["status"]:
+                continue
+            if args.get("target_release") and epic.target_release != args["target_release"]:
+                continue
+
+            # Calculate completion percentage
+            completion_percentage = 0
+            if epic.total_points > 0:
+                completion_percentage = int((epic.completed_points / epic.total_points) * 100)
+
+            epics.append({
+                "id": epic.id,
+                "title": epic.title,
+                "description": epic.description,
+                "business_value": epic.business_value,
+                "target_release": epic.target_release,
+                "status": epic.status,
+                "stories_count": len(epic.stories),
+                "total_points": epic.total_points,
+                "completed_points": epic.completed_points,
+                "completion_percentage": completion_percentage
+            })
+
+        # Sort by target release and status
+        return sorted(epics, key=lambda e: (e["target_release"] or "zzz", e["status"], e["title"]))
+
     def show_backlog(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Show backlog overview"""
         report = self.scrum.get_backlog_report()
@@ -1368,6 +1683,77 @@ Creates a new project with AI-powered analysis of requirements and automatic tec
 }
 ```
 
+### /create-roadmap - Create product roadmap with auto-generation
+**Example (Auto-generate from project):**
+```json
+{}
+```
+
+**Example (With custom vision):**
+```json
+{
+  "description": "Build a scalable e-commerce platform with modern architecture"
+}
+```
+
+**Example (Manual with milestones):**
+```json
+{
+  "name": "Q1-Q2 Roadmap",
+  "vision": "Deliver MVP with core features",
+  "milestones": [
+    {
+      "name": "MVP Launch",
+      "target_date": "2024-03-01",
+      "success_criteria": ["Core features", "Testing complete"]
+    }
+  ]
+}
+```
+
+### /add-to-roadmap - Add milestones to existing roadmap
+**Example:**
+```json
+{
+  "milestone": {
+    "name": "Beta Release",
+    "target_date": "2024-04-15",
+    "success_criteria": ["Performance optimized", "Security audit passed"],
+    "epics": ["EPIC-001"]
+  }
+}
+```
+
+### /create-epic - Create an epic to group related stories
+**Example:**
+```json
+{
+  "title": "User Authentication System",
+  "description": "Complete authentication and authorization functionality",
+  "business_value": "Critical for application security and user management",
+  "target_release": "v2.0",
+  "initial_stories": ["STORY-001", "STORY-002"]
+}
+```
+
+### /add-to-epic - Add stories to an existing epic
+**Example:**
+```json
+{
+  "epic_id": "E-ABC123",
+  "story_ids": ["STORY-003", "STORY-004"]
+}
+```
+
+### /list-epics - List all epics with filtering options
+**Example:**
+```json
+{
+  "status": "Planning",
+  "target_release": "v2.0"
+}
+```
+
 ### /create-bug - Report a bug with reproduction steps
 **Example:**
 ```json
@@ -1443,6 +1829,7 @@ Estimated sprints: 0.7
 ### /list-stories - List all user stories
 ### /list-tasks - List all tasks
 ### /list-bugs - List all bugs
+### /list-epics - List all epics
 ### /xavier-help - Show this help message
 
 ## Quick Tips
@@ -1644,6 +2031,9 @@ Xavier enforces the following strict rules:
 - `/create-story` - Create user story with acceptance criteria
 - `/create-task` - Create task under a story
 - `/create-bug` - Report a bug
+- `/create-epic` - Create epic to group stories
+- `/add-to-epic` - Add stories to an epic
+- `/list-epics` - List all epics
 
 ### Sprint Management
 - `/create-sprint` - Plan a new sprint
@@ -1677,6 +2067,9 @@ Xavier enforces the following strict rules:
         return """# Xavier Commands Reference
 
 All commands use JSON arguments. Examples provided for each command.
+
+**IMPORTANT**: All data is stored exclusively in JSON format in `.xavier/data/` directory.
+Xavier does NOT create Markdown files for data storage.
 
 ## /create-project
 Intelligently initialize a new Xavier project with automatic tech stack analysis.
