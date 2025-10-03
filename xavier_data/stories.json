@@ -1,0 +1,78 @@
+{
+  "US-43BF0FE5": {
+    "id": "US-43BF0FE5",
+    "title": "Improve Xavier story creation",
+    "description": "As a Xavier SCRUM system, I want better story creation capabilities, so that I can create better stories about creating stories",
+    "as_a": "Xavier SCRUM system",
+    "i_want": "better story creation capabilities",
+    "so_that": "I can create better stories about creating stories",
+    "acceptance_criteria": [
+      "Stories can be meta-stories"
+    ],
+    "story_points": 0,
+    "priority": "High",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-03T11:40:42.825444",
+    "updated_at": "2025-10-03T11:40:42.825451"
+  },
+  "US-F6353F42": {
+    "id": "US-F6353F42",
+    "title": "Improve Xavier story creation",
+    "description": "As a Xavier SCRUM system, I want better story creation capabilities, so that I can create better stories about creating stories",
+    "as_a": "Xavier SCRUM system",
+    "i_want": "better story creation capabilities",
+    "so_that": "I can create better stories about creating stories",
+    "acceptance_criteria": [
+      "Stories can be meta-stories"
+    ],
+    "story_points": 0,
+    "priority": "High",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-03T11:40:42.833198",
+    "updated_at": "2025-10-03T11:40:42.833200"
+  },
+  "US-CD0931DA": {
+    "id": "US-CD0931DA",
+    "title": "Improve Xavier story creation",
+    "description": "As a Xavier SCRUM system, I want better story creation capabilities, so that I can create better stories about creating stories",
+    "as_a": "Xavier SCRUM system",
+    "i_want": "better story creation capabilities",
+    "so_that": "I can create better stories about creating stories",
+    "acceptance_criteria": [
+      "Stories can be meta-stories"
+    ],
+    "story_points": 0,
+    "priority": "High",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-03T11:40:42.836735",
+    "updated_at": "2025-10-03T11:40:42.836736"
+  },
+  "US-2780BD4A": {
+    "id": "US-2780BD4A",
+    "title": "Improve Xavier story creation",
+    "description": "As a Xavier SCRUM system, I want better story creation capabilities, so that I can create better stories about creating stories",
+    "as_a": "Xavier SCRUM system",
+    "i_want": "better story creation capabilities",
+    "so_that": "I can create better stories about creating stories",
+    "acceptance_criteria": [
+      "Stories can be meta-stories"
+    ],
+    "story_points": 0,
+    "priority": "High",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-03T11:40:42.840132",
+    "updated_at": "2025-10-03T11:40:42.840132"
+  }
+}

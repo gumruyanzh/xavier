@@ -1,9 +1,9 @@
-# Xavier Framework v1.2.1
+# Xavier Framework v1.2.2
 ## Enterprise-Grade SCRUM Development Framework for Claude Code
 
 Xavier is a comprehensive enterprise development framework that brings strict SCRUM methodology, test-first development, and Clean Code principles to Claude Code. It ensures 100% test coverage, sequential task execution, and enterprise-grade code quality.
 
-**Latest Version:** v1.2.1 (2025-10-03) - Git Worktree & Dynamic Agent Fixes
+**Latest Version:** v1.2.2 (2025-10-03) - Enhanced Git Worktree Integration
 
 ## Key Features
 
@@ -23,6 +23,13 @@ Xavier is a comprehensive enterprise development framework that brings strict SC
 - Inversion of Control (IoC) patterns
 - Cyclomatic complexity monitoring
 - Code duplication detection
+
+### 🌳 Git Worktree Integration (NEW in v1.2.2)
+- **Parallel Development**: Each agent works in isolated git worktree
+- **Automatic Branching**: Creates `agent-name/task-id` branches
+- **PR Automation**: Automatic pull request creation on task completion
+- **Sprint Worktrees**: Worktrees created on sprint start, cleaned on sprint end
+- **Conflict-Free**: Main branch stays clean while agents work in parallel
 
 ### 👥 Specialized Sub-Agents
 - **Project Manager**: Sprint planning, story estimation, task assignment
@@ -148,6 +155,33 @@ Arguments:
 - `expected_behavior`: What should happen
 - `actual_behavior`: What actually happens
 - `severity`: Critical/High/Medium/Low
+
+### Git Worktree Management
+
+#### Sprint with Worktrees
+When you start a sprint, Xavier automatically:
+1. Creates a `trees/` directory for worktrees
+2. Creates a worktree for each agent-task combination
+3. Manages branches as `agent-name/task-id`
+
+```bash
+# Start sprint (creates worktrees automatically)
+/xavier-sprint start
+
+# Check worktree status
+/xavier-status verbose=true
+
+# End sprint (cleans up worktrees)
+/xavier-sprint end
+```
+
+The worktree workflow ensures:
+- Each agent works in isolation
+- No merge conflicts during development
+- Automatic PR creation on task completion
+- Clean main branch throughout sprint
+
+For detailed information, see [Git Worktree Workflow Documentation](docs/GIT_WORKTREE_WORKFLOW.md).
 
 ### Sprint Management
 

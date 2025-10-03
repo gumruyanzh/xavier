@@ -68,3 +68,5 @@ vendor/
 # Environment
 .env
 .env.local
+# Xavier worktrees
+/trees/

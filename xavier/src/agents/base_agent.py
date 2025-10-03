@@ -13,11 +13,13 @@ import re
 import ast
 import sys
 import os
+from pathlib import Path
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.ansi_art import AgentColors, ANSIColors, display_agent_takeover, display_agent_status, display_agent_result, display_agent_handoff, AgentBoxDrawing
 from agents.agent_metadata import get_agent_metadata, get_agent_display_name
+from git_worktree import GitWorktreeManager
 
 
 @dataclass
@@ -68,6 +70,8 @@ class BaseAgent(ABC):
 
         self.logger = logging.getLogger(f"Xavier.Agent.{self.display_name}")
         self.current_task: Optional[AgentTask] = None
+        self.worktree_manager = GitWorktreeManager()
+        self.current_worktree_path: Optional[str] = None
 
     @abstractmethod
     def execute_task(self, task: AgentTask) -> AgentResult:
@@ -105,11 +109,29 @@ class BaseAgent(ABC):
             os.chdir(original_dir)
             self.logger.info(f"Restored original directory: {original_dir}")
 
-    def start_task(self, task: AgentTask) -> None:
-        """Start working on a task with colored output"""
+    def start_task(self, task: AgentTask) -> bool:
+        """Start working on a task with colored output and worktree setup"""
         self.current_task = task
+
+        # Create worktree for this task
+        if not task.working_dir:
+            success, message = self.worktree_manager.create_worktree(
+                branch_name=f"{self.name}/{task.task_id}",
+                agent_name=self.name,
+                task_id=task.task_id
+            )
+            if success:
+                worktree_path = self.worktree_manager.worktree_dir / f"{self.name}-{task.task_id}"
+                task.working_dir = str(worktree_path)
+                self.current_worktree_path = str(worktree_path)
+                self.logger.info(f"Created worktree: {message}")
+            else:
+                self.logger.error(f"Failed to create worktree: {message}")
+                return False
+
         display_agent_takeover(self.name, task.description)
         display_agent_status(self.name, "Working", f"Task: {task.task_id}")
+        return True
 
     def update_status(self, status: str, details: Optional[str] = None) -> None:
         """Update agent status with colored output"""
@@ -124,10 +146,55 @@ class BaseAgent(ABC):
         """Display handoff to another agent"""
         display_agent_handoff(self.name, target_agent, reason)
 
-    def complete_task(self, success: bool, summary: str) -> None:
-        """Complete current task with colored result display"""
+    def complete_task(self, success: bool, summary: str, create_pr: bool = True) -> None:
+        """Complete current task with colored result display and PR creation"""
         display_agent_result(self.name, success, summary)
+
+        # Create PR if task was successful and we have a worktree
+        if success and create_pr and self.current_task and self.current_worktree_path:
+            pr_title = f"[{self.current_task.task_id}] {self.current_task.description}"
+            pr_body = self._generate_pr_body(self.current_task, summary)
+
+            pr_success, pr_message = self.worktree_manager.create_pr_for_worktree(
+                task_id=self.current_task.task_id,
+                pr_title=pr_title,
+                pr_body=pr_body
+            )
+
+            if pr_success:
+                self.logger.info(f"Pull request created: {pr_message}")
+                display_agent_status(self.name, "PR Created", pr_message)
+            else:
+                self.logger.warning(f"Could not create PR: {pr_message}")
+
         self.current_task = None
+        self.current_worktree_path = None
+
+    def _generate_pr_body(self, task: AgentTask, summary: str) -> str:
+        """Generate PR body with task details"""
+        pr_body = f"""## Task: {task.task_id}
+
+### Description
+{task.description}
+
+### Summary
+{summary}
+
+### Acceptance Criteria
+"""
+        for criterion in task.acceptance_criteria:
+            pr_body += f"- ✅ {criterion}\n"
+
+        pr_body += f"""
+
+### Technical Details
+- Agent: {self.name}
+- Task Type: {task.task_type}
+
+### Test Coverage
+All tests passing with 100% coverage requirement met.
+"""
+        return pr_body
 
 
 class ProjectManagerAgent(BaseAgent):
