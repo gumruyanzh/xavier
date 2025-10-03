@@ -1159,6 +1159,8 @@ This project follows Xavier Framework standards:
             sprint_id: Sprint ID (optional, uses current sprint if not provided)
             strict_mode: Enable strict sequential execution (default: True)
         """
+        import subprocess
+
         sprint_id = args.get("sprint_id")
 
         # Find sprint
@@ -1178,11 +1180,88 @@ This project follows Xavier Framework standards:
         self.scrum.start_sprint(sprint_id)
         sprint = self.scrum.sprints[sprint_id]
 
+        # Create .trees folder for git worktrees
+        trees_path = os.path.join(self.project_path, ".trees")
+        os.makedirs(trees_path, exist_ok=True)
+        self.logger.info(f"Created .trees folder at {trees_path}")
+
+        # Get project abbreviation from config
+        project_abbrev = "PROJ"
+        if os.path.exists(self.config_path):
+            try:
+                with open(self.config_path, 'r') as f:
+                    config = json.load(f)
+                    project_name = config.get('name', 'PROJECT')
+                    # Create abbreviation from project name (first 3-4 chars uppercase)
+                    project_abbrev = ''.join([c for c in project_name if c.isupper()])[:4] or project_name[:3].upper()
+            except Exception:
+                pass
+
+        # Create git worktree for each story and bug in the sprint
+        worktrees_created = []
+        sprint_stories = safe_get_attr(sprint, 'stories', [])
+        sprint_bugs = safe_get_attr(sprint, 'bugs', [])
+
+        # Combine stories and bugs for worktree creation
+        work_items = []
+        for story_id in sprint_stories:
+            if story_id in self.scrum.stories:
+                work_items.append(('story', story_id, self.scrum.stories[story_id]))
+
+        for bug_id in sprint_bugs:
+            if bug_id in self.scrum.bugs:
+                work_items.append(('bug', bug_id, self.scrum.bugs[bug_id]))
+
+        for idx, (item_type, item_id, item) in enumerate(work_items, 1):
+            item_title = safe_get_attr(item, 'title', 'untitled')
+
+            # Determine branch type based on item type or title keywords
+            branch_type = "feature"
+            if item_type == 'bug':
+                branch_type = "fix"
+            else:
+                title_lower = item_title.lower()
+                if any(word in title_lower for word in ['fix', 'bug', 'issue']):
+                    branch_type = "fix"
+                elif any(word in title_lower for word in ['refactor', 'improve']):
+                    branch_type = "refactor"
+
+            # Create branch name like feature/CAN-1 or fix/CAN-2
+            branch_name = f"{branch_type}/{project_abbrev}-{idx}"
+            worktree_path = os.path.join(trees_path, f"{project_abbrev.lower()}-{idx}")
+
+            try:
+                # Create git worktree
+                result = subprocess.run(
+                    ["git", "worktree", "add", worktree_path, "-b", branch_name],
+                    cwd=self.project_path,
+                    capture_output=True,
+                    text=True,
+                    check=False
+                )
+
+                if result.returncode == 0:
+                    worktrees_created.append({
+                        "item_type": item_type,
+                        "item_id": item_id,
+                        "branch": branch_name,
+                        "path": worktree_path
+                    })
+                    self.logger.info(f"Created worktree for {item_id}: {branch_name}")
+                else:
+                    self.logger.warning(f"Failed to create worktree for {item_id}: {result.stderr}")
+            except Exception as e:
+                self.logger.error(f"Error creating worktree for {item_id}: {e}")
+
         # Display sprint start banner
-        import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
             subprocess.run([greeting_script, "sprint-start"], check=False)
+
+        # Create mapping of item IDs to worktree paths
+        worktree_map = {}
+        for wt in worktrees_created:
+            worktree_map[wt['item_id']] = wt['path']
 
         # Prepare tasks for agents
         agent_tasks = []
@@ -1190,6 +1269,7 @@ This project follows Xavier Framework standards:
         # Process stories
         for story_id in sprint.stories:
             story = self.scrum.stories[story_id]
+            story_worktree = worktree_map.get(story_id)
 
             # Create agent tasks for each story task
             for task_id in story.tasks:
@@ -1201,13 +1281,15 @@ This project follows Xavier Framework standards:
                     requirements=[task.technical_details],
                     test_requirements={"criteria": task.test_criteria},
                     acceptance_criteria=task.test_criteria,
-                    tech_constraints=self._detect_task_tech_constraints(task)
+                    tech_constraints=self._detect_task_tech_constraints(task),
+                    working_dir=story_worktree  # Use story's worktree
                 )
                 agent_tasks.append(agent_task)
 
         # Process bugs
         for bug_id in sprint.bugs:
             bug = self.scrum.bugs[bug_id]
+            bug_worktree = worktree_map.get(bug_id)
             agent_task = AgentTask(
                 task_id=bug_id,
                 task_type="fix_bug",
@@ -1221,7 +1303,8 @@ This project follows Xavier Framework standards:
                     bug.expected_behavior,
                     "Add regression tests"
                 ],
-                tech_constraints=[]
+                tech_constraints=[],
+                working_dir=bug_worktree  # Use bug's worktree
             )
             agent_tasks.append(agent_task)
 
@@ -1240,7 +1323,9 @@ This project follows Xavier Framework standards:
             "sprint_id": sprint_id,
             "status": "Active",
             "tasks_started": len(agent_tasks),
-            "execution_mode": "strict" if args.get("strict_mode", True) else "parallel"
+            "execution_mode": "strict" if args.get("strict_mode", True) else "parallel",
+            "worktrees_created": len(worktrees_created),
+            "worktree_details": worktrees_created
         }
 
     def end_sprint(self, args: Dict[str, Any]) -> Dict[str, Any]:
