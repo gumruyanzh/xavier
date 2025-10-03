@@ -844,20 +844,20 @@ class XavierCommands:
 
     def _setup_project_agents(self, tech_stack: Dict[str, Any]) -> List[str]:
         """Setup agents based on project tech stack"""
-        agents = ["project_manager", "context_manager"]  # Always include these
+        agents = ["project-manager", "context-manager"]  # Always include these
 
         # Add language-specific agents
         if "backend" in tech_stack:
             backend_lang = tech_stack["backend"].get("language", "").lower()
             if "python" in backend_lang:
-                agents.append("python_engineer")
+                agents.append("python-engineer")
             if "go" in backend_lang:
-                agents.append("golang_engineer")
+                agents.append("golang-engineer")
             if "node" in backend_lang or "javascript" in backend_lang:
                 agents.append("nodejs_engineer")
 
         if "frontend" in tech_stack:
-            agents.append("frontend_engineer")
+            agents.append("frontend-engineer")
 
         if "database" in tech_stack:
             agents.append("database_engineer")
@@ -2347,8 +2347,8 @@ Begin sprint execution with agents.
 
         # Define agent templates
         agent_templates = {
-            "project_manager": {
-                "filename": "project_manager.md",
+            "project-manager": {
+                "filename": "project-manager.md",
                 "content": """# Project Manager Agent
 
 ## Role
@@ -2366,8 +2366,8 @@ Responsible for sprint planning, story point estimation, and task assignment.
 - Cannot deploy
 """
             },
-            "python_engineer": {
-                "filename": "python_engineer.md",
+            "python-engineer": {
+                "filename": "python-engineer.md",
                 "content": """# Python Engineer Agent
 
 ## Role
@@ -2386,8 +2386,8 @@ Python backend development with strict language boundaries.
 - Must achieve 100% test coverage
 """
             },
-            "golang_engineer": {
-                "filename": "golang_engineer.md",
+            "golang-engineer": {
+                "filename": "golang-engineer.md",
                 "content": """# Golang Engineer Agent
 
 ## Role
@@ -2406,8 +2406,8 @@ Go backend development with strict language boundaries.
 - Must achieve 100% test coverage
 """
             },
-            "frontend_engineer": {
-                "filename": "frontend_engineer.md",
+            "frontend-engineer": {
+                "filename": "frontend-engineer.md",
                 "content": """# Frontend Engineer Agent
 
 ## Role
@@ -2427,8 +2427,8 @@ Frontend development with TypeScript and modern frameworks.
 - Must achieve 100% test coverage
 """
             },
-            "context_manager": {
-                "filename": "context_manager.md",
+            "context-manager": {
+                "filename": "context-manager.md",
                 "content": """# Context Manager Agent
 
 ## Role
