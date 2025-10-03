@@ -10,6 +10,17 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 import os
+from pathlib import Path
+
+# Import data format validator
+try:
+    from xavier.src.validators.data_format_validator import DataFormatValidator
+except ImportError:
+    # Fallback for relative imports
+    try:
+        from ..validators.data_format_validator import DataFormatValidator
+    except ImportError:
+        DataFormatValidator = None
 
 
 class SprintStatus(Enum):
@@ -231,6 +242,13 @@ class SCRUMManager:
         # Story point scale (Fibonacci)
         self.story_point_scale = [1, 2, 3, 5, 8, 13, 21]
 
+        # Initialize data format validator
+        self.format_validator = DataFormatValidator(Path(data_dir).parent) if DataFormatValidator else None
+
+        # Enforce JSON-only storage if validator available
+        if self.format_validator:
+            self.format_validator.enforce_json_only_storage()
+
         # Initialize data structure
         self._initialize_data_structure()
 
@@ -280,7 +298,7 @@ class SCRUMManager:
                     print(f"Error loading {data_type}: {e}")
 
     def _save_data(self):
-        """Save SCRUM data to disk with proper serialization"""
+        """Save SCRUM data to disk with proper serialization - JSON format only"""
         data_files = {
             "stories": self.stories,
             "tasks": self.tasks,
@@ -303,8 +321,13 @@ class SCRUMManager:
                         # It's already a dict (backward compatibility)
                         serializable_data[key] = obj
 
-                with open(file_path, 'w') as f:
-                    json.dump(serializable_data, f, indent=2, default=str)
+                # Use validator if available to ensure JSON format
+                if self.format_validator:
+                    self.format_validator.wrap_data_save(data_type, serializable_data)
+                else:
+                    # Fallback to direct save
+                    with open(file_path, 'w') as f:
+                        json.dump(serializable_data, f, indent=2, default=str)
             except Exception as e:
                 print(f"Error saving {data_type}: {e}")
 

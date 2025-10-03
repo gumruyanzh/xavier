@@ -10,12 +10,20 @@ import json
 import argparse
 from typing import Dict, Any, List, Optional
 from pathlib import Path
+from datetime import datetime, timedelta
 
 # Add xavier to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from xavier.src.commands.xavier_commands import XavierCommands
 from xavier.src.git_worktree import GitWorktreeManager
+
+# Import JSON output formatter for consistent output
+try:
+    from xavier.src.utils.json_output_formatter import JSONOutputFormatter, ensure_json_output
+except ImportError:
+    JSONOutputFormatter = None
+    ensure_json_output = lambda x: x  # Fallback decorator
 
 
 class ClaudeCodeXavierIntegration:
@@ -190,8 +198,9 @@ class ClaudeCodeXavierIntegration:
             "emoji": args.get("emoji", "🤖")
         })
 
+    @ensure_json_output
     def create_story(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new user story"""
+        """Create a new user story - always returns JSON format"""
         story_data = {
             "title": args.get("title"),
             "as_a": args.get("as_a"),
@@ -201,7 +210,7 @@ class ClaudeCodeXavierIntegration:
             "story_points": args.get("points", 0)
         }
 
-        # Save to backlog
+        # Save to backlog (JSON format only)
         backlog_path = Path(self.project_path) / ".xavier" / "data" / "backlog.json"
         if backlog_path.exists():
             with open(backlog_path, 'r') as f:
@@ -213,19 +222,25 @@ class ClaudeCodeXavierIntegration:
         story_id = f"STORY-{len(backlog['stories']) + 1:03d}"
         story_data["id"] = story_id
         story_data["status"] = "backlog"
+        story_data["created_at"] = datetime.now().isoformat()
 
         backlog["stories"].append(story_data)
 
-        # Save backlog
+        # Save backlog (strictly JSON format)
         backlog_path.parent.mkdir(parents=True, exist_ok=True)
         with open(backlog_path, 'w') as f:
             json.dump(backlog, f, indent=2)
 
-        return {
-            "status": "success",
-            "story_id": story_id,
-            "message": f"Story '{args.get('title')}' created with ID {story_id}"
-        }
+        # Return JSON-formatted output
+        if JSONOutputFormatter:
+            return json.loads(JSONOutputFormatter.format_story_output(story_data))
+        else:
+            return {
+                "status": "success",
+                "story_id": story_id,
+                "message": f"Story '{args.get('title')}' created with ID {story_id}",
+                "data": story_data
+            }
 
     def estimate_stories(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Estimate story points for stories"""
