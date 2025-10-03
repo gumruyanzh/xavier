@@ -1,0 +1,35 @@
+name: ruby-engineer
+display_name: Ruby Engineer
+color: red
+emoji: "\U0001F48E"
+label: RB
+description: Specialized in Ruby development with rails, sinatra, rspec
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- ruby_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.rb$
+- Gemfile
+- .*\.erb$
+- Rakefile
+languages:
+- ruby
+frameworks:
+- rails
+- sinatra
+- rspec
+- bundler

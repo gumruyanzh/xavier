@@ -90,6 +90,21 @@ class BaseAgent(ABC):
         """Check if action is permitted for this agent"""
         return action not in self.capabilities.restricted_actions
 
+    def _enter_worktree(self, task: AgentTask) -> Optional[str]:
+        """Change to worktree directory if specified. Returns original directory or None."""
+        if task.working_dir and os.path.exists(task.working_dir):
+            original_dir = os.getcwd()
+            os.chdir(task.working_dir)
+            self.logger.info(f"Changed to worktree directory: {task.working_dir}")
+            return original_dir
+        return None
+
+    def _exit_worktree(self, original_dir: Optional[str]) -> None:
+        """Restore original directory if it was changed."""
+        if original_dir:
+            os.chdir(original_dir)
+            self.logger.info(f"Restored original directory: {original_dir}")
+
     def start_task(self, task: AgentTask) -> None:
         """Start working on a task with colored output"""
         self.current_task = task
@@ -142,28 +157,32 @@ class ProjectManagerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute project management tasks"""
-        self.start_task(task)
+        original_dir = self._enter_worktree(task)
+        try:
+            self.start_task(task)
 
-        if task.task_type == "estimate_story":
-            result = self._estimate_story_points(task)
-        elif task.task_type == "plan_sprint":
-            result = self._plan_sprint(task)
-        elif task.task_type == "assign_tasks":
-            result = self._assign_tasks(task)
-        else:
-            result = AgentResult(
-                success=False,
-                task_id=task.task_id,
-                output="",
-                test_results=None,
-                files_created=[],
-                files_modified=[],
-                validation_results={},
-                errors=[f"Unknown task type: {task.task_type}"]
-            )
+            if task.task_type == "estimate_story":
+                result = self._estimate_story_points(task)
+            elif task.task_type == "plan_sprint":
+                result = self._plan_sprint(task)
+            elif task.task_type == "assign_tasks":
+                result = self._assign_tasks(task)
+            else:
+                result = AgentResult(
+                    success=False,
+                    task_id=task.task_id,
+                    output="",
+                    test_results=None,
+                    files_created=[],
+                    files_modified=[],
+                    validation_results={},
+                    errors=[f"Unknown task type: {task.task_type}"]
+                )
 
-        self.complete_task(result.success, result.output[:100] if result.output else "Task completed")
-        return result
+            self.complete_task(result.success, result.output[:100] if result.output else "Task completed")
+            return result
+        finally:
+            self._exit_worktree(original_dir)
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate project management task"""
@@ -317,28 +336,32 @@ class ContextManagerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute context management tasks"""
-        self.start_task(task)
+        original_dir = self._enter_worktree(task)
+        try:
+            self.start_task(task)
 
-        if task.task_type == "analyze_codebase":
-            result = self._analyze_codebase(task)
-        elif task.task_type == "find_implementations":
-            result = self._find_implementations(task)
-        elif task.task_type == "check_dependencies":
-            result = self._check_dependencies(task)
-        else:
-            result = AgentResult(
-                success=False,
-                task_id=task.task_id,
-                output="",
-                test_results=None,
-                files_created=[],
-                files_modified=[],
-                validation_results={},
-                errors=[f"Unknown task type: {task.task_type}"]
-            )
+            if task.task_type == "analyze_codebase":
+                result = self._analyze_codebase(task)
+            elif task.task_type == "find_implementations":
+                result = self._find_implementations(task)
+            elif task.task_type == "check_dependencies":
+                result = self._check_dependencies(task)
+            else:
+                result = AgentResult(
+                    success=False,
+                    task_id=task.task_id,
+                    output="",
+                    test_results=None,
+                    files_created=[],
+                    files_modified=[],
+                    validation_results={},
+                    errors=[f"Unknown task type: {task.task_type}"]
+                )
 
-        self.complete_task(result.success, result.output[:100] if result.output else "Analysis completed")
-        return result
+            self.complete_task(result.success, result.output[:100] if result.output else "Analysis completed")
+            return result
+        finally:
+            self._exit_worktree(original_dir)
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate context management task"""
@@ -405,40 +428,44 @@ class PythonEngineerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Python development tasks with test-first approach"""
-        self.start_task(task)
+        original_dir = self._enter_worktree(task)
+        try:
+            self.start_task(task)
 
-        # Validate language constraint
-        if not self._validate_python_only(task):
-            result = AgentResult(
-                success=False,
-                task_id=task.task_id,
-                output="",
-                test_results=None,
-                files_created=[],
-                files_modified=[],
-                validation_results={},
-                errors=["Task requires non-Python code. Python Engineer can only write Python."]
-            )
-            self.complete_task(False, "Task requires non-Python code")
+            # Validate language constraint
+            if not self._validate_python_only(task):
+                result = AgentResult(
+                    success=False,
+                    task_id=task.task_id,
+                    output="",
+                    test_results=None,
+                    files_created=[],
+                    files_modified=[],
+                    validation_results={},
+                    errors=["Task requires non-Python code. Python Engineer can only write Python."]
+                )
+                self.complete_task(False, "Task requires non-Python code")
+                return result
+
+            # Test-first enforcement
+            if task.task_type == "implement_feature":
+                self.update_status("Testing", "Writing tests first (TDD)")
+                # Write tests first
+                test_result = self._write_tests_first(task)
+                if not test_result.success:
+                    self.complete_task(False, "Failed to write tests")
+                    return test_result
+
+                self.update_status("Working", "Implementing feature")
+                # Then implement
+                result = self._implement_python_feature(task)
+            else:
+                result = self._execute_python_task(task)
+
+            self.complete_task(result.success, result.output[:100] if result.output else "Python task completed")
             return result
-
-        # Test-first enforcement
-        if task.task_type == "implement_feature":
-            self.update_status("Testing", "Writing tests first (TDD)")
-            # Write tests first
-            test_result = self._write_tests_first(task)
-            if not test_result.success:
-                self.complete_task(False, "Failed to write tests")
-                return test_result
-
-            self.update_status("Working", "Implementing feature")
-            # Then implement
-            result = self._implement_python_feature(task)
-        else:
-            result = self._execute_python_task(task)
-
-        self.complete_task(result.success, result.output[:100] if result.output else "Python task completed")
-        return result
+        finally:
+            self._exit_worktree(original_dir)
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate Python-only constraint"""
@@ -556,40 +583,44 @@ class GolangEngineerAgent(BaseAgent):
 
     def execute_task(self, task: AgentTask) -> AgentResult:
         """Execute Go development tasks with test-first approach"""
-        self.start_task(task)
+        original_dir = self._enter_worktree(task)
+        try:
+            self.start_task(task)
 
-        # Validate language constraint
-        if not self._validate_golang_only(task):
-            result = AgentResult(
-                success=False,
-                task_id=task.task_id,
-                output="",
-                test_results=None,
-                files_created=[],
-                files_modified=[],
-                validation_results={},
-                errors=["Task requires non-Go code. Golang Engineer can only write Go."]
-            )
-            self.complete_task(False, "Task requires non-Go code")
+            # Validate language constraint
+            if not self._validate_golang_only(task):
+                result = AgentResult(
+                    success=False,
+                    task_id=task.task_id,
+                    output="",
+                    test_results=None,
+                    files_created=[],
+                    files_modified=[],
+                    validation_results={},
+                    errors=["Task requires non-Go code. Golang Engineer can only write Go."]
+                )
+                self.complete_task(False, "Task requires non-Go code")
+                return result
+
+            # Test-first enforcement
+            if task.task_type == "implement_feature":
+                self.update_status("Testing", "Writing Go tests first (TDD)")
+                # Write tests first
+                test_result = self._write_tests_first(task)
+                if not test_result.success:
+                    self.complete_task(False, "Failed to write tests")
+                    return test_result
+
+                self.update_status("Working", "Implementing Go feature")
+                # Then implement
+                result = self._implement_go_feature(task)
+            else:
+                result = self._execute_go_task(task)
+
+            self.complete_task(result.success, result.output[:100] if result.output else "Go task completed")
             return result
-
-        # Test-first enforcement
-        if task.task_type == "implement_feature":
-            self.update_status("Testing", "Writing Go tests first (TDD)")
-            # Write tests first
-            test_result = self._write_tests_first(task)
-            if not test_result.success:
-                self.complete_task(False, "Failed to write tests")
-                return test_result
-
-            self.update_status("Working", "Implementing Go feature")
-            # Then implement
-            result = self._implement_go_feature(task)
-        else:
-            result = self._execute_go_task(task)
-
-        self.complete_task(result.success, result.output[:100] if result.output else "Go task completed")
-        return result
+        finally:
+            self._exit_worktree(original_dir)
 
     def validate_task(self, task: AgentTask) -> Tuple[bool, List[str]]:
         """Validate Go-only constraint"""

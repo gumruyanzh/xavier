@@ -5,6 +5,28 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-10-03
+
+### Fixed
+- **Git Worktree Integration**: Fixed agents to properly change to worktree directories
+  - Added `_enter_worktree()` and `_exit_worktree()` helper methods to BaseAgent
+  - All agent `execute_task()` methods now properly use worktree directories
+  - Agents correctly restore original directory after task completion
+
+- **Dynamic Agent Factory**: Fixed auto-creation to work reliably
+  - Updated `_generate_tech_stack_agents()` to use DynamicAgentFactory
+  - Removed obsolete manual agent generation methods
+  - Factory now properly creates YAML configurations for persistence
+  - Agents are correctly registered with orchestrator on creation
+
+### Enhanced
+- **Agent Worktree Support**: All agents now support working directory isolation
+  - ProjectManagerAgent uses worktrees for estimation tasks
+  - ContextManagerAgent analyzes code in worktree context
+  - PythonEngineerAgent executes in isolated environments
+  - GolangEngineerAgent maintains Go module isolation
+  - All dynamically created agents inherit worktree support
+
 ## [1.2.0] - 2025-10-03
 
 ### Added

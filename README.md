@@ -1,7 +1,9 @@
-# Xavier Framework
+# Xavier Framework v1.2.1
 ## Enterprise-Grade SCRUM Development Framework for Claude Code
 
 Xavier is a comprehensive enterprise development framework that brings strict SCRUM methodology, test-first development, and Clean Code principles to Claude Code. It ensures 100% test coverage, sequential task execution, and enterprise-grade code quality.
+
+**Latest Version:** v1.2.1 (2025-10-03) - Git Worktree & Dynamic Agent Fixes
 
 ## Key Features
 

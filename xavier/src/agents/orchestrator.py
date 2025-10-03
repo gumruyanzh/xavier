@@ -198,96 +198,35 @@ class AgentOrchestrator:
         )
 
     def _generate_tech_stack_agents(self):
-        """Generate agents for detected tech stack"""
+        """Generate agents for detected tech stack using DynamicAgentFactory"""
         if not self.tech_stack:
             return
 
-        # Map of language to agent generator
-        language_agent_generators = {
-            "ruby": self._generate_ruby_agent,
-            "java": self._generate_java_agent,
-            "rust": self._generate_rust_agent,
-            "csharp": self._generate_csharp_agent
-        }
+        # Get the dynamic agent factory
+        factory = get_agent_factory()
 
+        # Process each detected language
         for language in self.tech_stack.languages:
-            if language in language_agent_generators and f"{language}-engineer" not in self.agents:
-                agent = language_agent_generators[language]()
+            agent_name = f"{language}-engineer"
+
+            # Skip if agent already exists
+            if agent_name in self.agents:
+                continue
+
+            # Try to create agent using the factory
+            if language.lower() in factory.list_available_templates():
+                agent = factory.get_or_create_agent(language.lower())
                 if agent:
-                    self.agents[f"{language}-engineer"] = agent
-                    self.logger.info(f"Generated {language} engineer agent")
+                    self.agents[agent.name] = agent
+                    self.logger.info(f"Auto-created {language} engineer agent using DynamicAgentFactory")
 
-    def _generate_ruby_agent(self) -> Optional[BaseAgent]:
-        """Generate Ruby engineer agent dynamically"""
-        class RubyEngineerAgent(BaseAgent):
-            def __init__(self):
-                capabilities = AgentCapability(
-                    languages=["ruby"],
-                    frameworks=["rails", "sinatra"],
-                    tools=["bundler", "rspec", "rubocop"],
-                    restricted_actions=["python_code", "golang_code", "javascript_code"],
-                    allowed_file_patterns=[r".*\.rb$", r"Gemfile", r".*\.erb$"]
-                )
-                super().__init__("ruby-engineer", capabilities)
+                    # Also create the YAML file for persistence
+                    if not factory.agent_exists(language.lower()):
+                        factory.create_agent_yaml(language.lower())
+            else:
+                self.logger.debug(f"No template available for {language}, skipping agent creation")
 
-            def execute_task(self, task: AgentTask) -> AgentResult:
-                # Ruby-specific implementation
-                return AgentResult(
-                    success=True,
-                    task_id=task.task_id,
-                    output="Ruby task executed",
-                    test_results={"coverage": 100.0},
-                    files_created=[],
-                    files_modified=[],
-                    validation_results={},
-                    errors=[]
-                )
 
-            def validate_task(self, task: AgentTask) -> tuple[bool, List[str]]:
-                return True, []
-
-        return RubyEngineerAgent()
-
-    def _generate_java_agent(self) -> Optional[BaseAgent]:
-        """Generate Java engineer agent dynamically"""
-        class JavaEngineerAgent(BaseAgent):
-            def __init__(self):
-                capabilities = AgentCapability(
-                    languages=["java"],
-                    frameworks=["spring", "springboot"],
-                    tools=["maven", "gradle", "junit"],
-                    restricted_actions=["python_code", "golang_code", "javascript_code"],
-                    allowed_file_patterns=[r".*\.java$", r"pom\.xml$", r"build\.gradle$"]
-                )
-                super().__init__("java-engineer", capabilities)
-
-            def execute_task(self, task: AgentTask) -> AgentResult:
-                # Java-specific implementation
-                return AgentResult(
-                    success=True,
-                    task_id=task.task_id,
-                    output="Java task executed",
-                    test_results={"coverage": 100.0},
-                    files_created=[],
-                    files_modified=[],
-                    validation_results={},
-                    errors=[]
-                )
-
-            def validate_task(self, task: AgentTask) -> tuple[bool, List[str]]:
-                return True, []
-
-        return JavaEngineerAgent()
-
-    def _generate_rust_agent(self) -> Optional[BaseAgent]:
-        """Generate Rust engineer agent dynamically"""
-        # Similar implementation for Rust
-        return None
-
-    def _generate_csharp_agent(self) -> Optional[BaseAgent]:
-        """Generate C# engineer agent dynamically"""
-        # Similar implementation for C#
-        return None
 
     def delegate_task(self, task: AgentTask) -> AgentResult:
         """Delegate task to appropriate agent with strict validation"""

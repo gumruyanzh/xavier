@@ -624,7 +624,7 @@ class XavierCommands:
             "team_size": args.get("team_size", 5),
             "methodology": args.get("methodology", "Scrum"),
             "created_at": datetime.now().isoformat(),
-            "xavier_version": "1.1.12"
+            "xavier_version": "1.2.1"
         }
 
         # Save project configuration
@@ -1781,7 +1781,7 @@ This project follows Xavier Framework standards:
         import subprocess
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")
         if os.path.exists(greeting_script):
-            subprocess.run([greeting_script, "welcome", "1.1.12"], check=False)
+            subprocess.run([greeting_script, "welcome", "1.2.1"], check=False)
 
         help_text = """# Xavier Framework Commands
 
@@ -1997,7 +1997,7 @@ Estimated sprints: 0.7
         return {
             "help": help_text,
             "commands_count": 22,
-            "framework_version": "1.1.12"
+            "framework_version": "1.2.1"
         }
 
     def xavier_update(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -2006,7 +2006,7 @@ Estimated sprints: 0.7
         import requests
 
         # Get current version from multiple sources (priority order)
-        current_version = "1.1.10"  # Embedded fallback version
+        current_version = "1.2.1"  # Embedded fallback version
 
         # 1. Try VERSION file first (most reliable)
         version_file = os.path.join(self.project_path, "VERSION")

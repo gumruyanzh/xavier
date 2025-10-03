@@ -269,7 +269,7 @@ class XavierSetup:
             "name": project_name,
             "description": description,
             "version": "1.0.0",
-            "xavier_version": "1.2.0",
+            "xavier_version": "1.2.1",
             "settings": {
                 "strict_mode": True,
                 "test_first": True,
