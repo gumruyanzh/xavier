@@ -25,6 +25,7 @@ from .base_agent import (
     FrontendEngineerAgent, TestRunnerAgent,
     RubyEngineerAgent, JavaEngineerAgent
 )
+from .dynamic_agent_factory import get_agent_factory, auto_create_agent
 
 
 @dataclass
@@ -435,6 +436,15 @@ class AgentOrchestrator:
                 if agent:
                     return agent
 
+            # 4.1 Try to auto-create agent for unrecognized languages
+            # This will check all known language templates
+            dynamic_agent = auto_create_agent(task)
+            if dynamic_agent:
+                # Add to our agents registry for future use
+                self.agents[dynamic_agent.name] = dynamic_agent
+                self.logger.info(f"Auto-created and registered agent: {dynamic_agent.name}")
+                return dynamic_agent
+
         # 5. Task type based routing
         if task_type == "implement_feature":
             # For feature implementation, try to detect language from project structure
@@ -460,18 +470,46 @@ class AgentOrchestrator:
                         agent = self.agents.get("java-engineer")
                         if agent:
                             return agent
+                    else:
+                        # Try to auto-create agent for detected language
+                        agent_name = f"{lang}-engineer"
+                        if agent_name not in self.agents:
+                            # Create a task with the detected language for auto-creation
+                            temp_task = AgentTask(
+                                task_id=task.task_id,
+                                task_type=task.task_type,
+                                description=task.description,
+                                requirements=task.requirements,
+                                test_requirements=task.test_requirements,
+                                acceptance_criteria=task.acceptance_criteria,
+                                tech_constraints=[lang] + task.tech_constraints,
+                                working_dir=task.working_dir
+                            )
+                            dynamic_agent = auto_create_agent(temp_task)
+                            if dynamic_agent:
+                                self.agents[dynamic_agent.name] = dynamic_agent
+                                self.logger.info(f"Auto-created agent for detected language: {lang}")
+                                return dynamic_agent
 
-        # 6. Default fallback - prefer Python engineer for general development tasks
+        # 6. Try to auto-create agent based on full task context
+        # This is a last-ditch effort to find any language mentioned
+        dynamic_agent = auto_create_agent(task)
+        if dynamic_agent:
+            self.agents[dynamic_agent.name] = dynamic_agent
+            self.logger.info(f"Auto-created agent from task context: {dynamic_agent.name}")
+            return dynamic_agent
+
+        # 7. Default fallback - prefer Python engineer for general development tasks
         python_agent = self.agents.get("python-engineer")
         if python_agent:
             return python_agent
 
-        # 7. Last resort - return any available agent (should never happen)
+        # 8. Last resort - return any available agent (should never happen)
         for agent in self.agents.values():
             if agent:
                 return agent
 
-        # 8. Emergency fallback - create a basic agent if none exist
+        # 9. Emergency fallback - create a basic agent if none exist
         return ProjectManagerAgent()
 
     def _validate_result(self, result: AgentResult, task: AgentTask) -> bool:

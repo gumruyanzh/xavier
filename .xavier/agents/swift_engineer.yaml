@@ -1,0 +1,34 @@
+name: swift-engineer
+display_name: Swift Engineer
+color: yellow
+emoji: "\U0001F989"
+label: SW
+description: Specialized in Swift development with swiftui, uikit, vapor
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- swift_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.swift$
+- .*\.xcodeproj$
+- Package\.swift$
+languages:
+- swift
+frameworks:
+- swiftui
+- uikit
+- vapor
+- combine

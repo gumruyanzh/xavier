@@ -1,0 +1,36 @@
+name: java-engineer
+display_name: Java Engineer
+color: red
+emoji: "\u2615"
+label: JAVA
+description: Specialized in Java development with spring, springboot, hibernate
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- java_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.java$
+- pom\.xml$
+- build\.gradle$
+- .*\.kt$
+languages:
+- java
+frameworks:
+- spring
+- springboot
+- hibernate
+- maven
+- gradle

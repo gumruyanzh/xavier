@@ -1,0 +1,34 @@
+name: elixir-engineer
+display_name: Elixir Engineer
+color: magenta
+emoji: "\U0001F4A7"
+label: EX
+description: Specialized in Elixir development with phoenix, ecto, otp
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- elixir_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.ex$
+- .*\.exs$
+- mix\.exs$
+languages:
+- elixir
+frameworks:
+- phoenix
+- ecto
+- otp
+- nerves

@@ -1,0 +1,34 @@
+name: rust-engineer
+display_name: Rust Engineer
+color: yellow
+emoji: "\U0001F980"
+label: RS
+description: Specialized in Rust development with tokio, actix, rocket
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- rust_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.rs$
+- Cargo\.toml$
+- Cargo\.lock$
+languages:
+- rust
+frameworks:
+- tokio
+- actix
+- rocket
+- serde

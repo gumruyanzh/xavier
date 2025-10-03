@@ -5,6 +5,54 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-10-03
+
+### Added
+- **Git Worktrees Support**: Revolutionary parallel development workflow with automatic worktree creation
+  - Automatically creates `.trees/` directory with git worktrees for each sprint story/bug
+  - Branch naming convention follows `feature/PROJ-1`, `fix/PROJ-2` pattern
+  - Each story/bug gets isolated working directory for parallel development
+  - Tasks inherit worktree paths from parent stories for seamless context switching
+  - No more branch conflicts or stashing - work on multiple features simultaneously
+  - Integrated into `/start-sprint` command with automatic worktree generation
+
+- **Dynamic Agent Auto-Creation**: Intelligent on-demand agent generation for any technology
+  - Automatically detects and creates agents for 23+ languages/technologies
+  - Supported languages: Java, Ruby, Rust, C#, PHP, Swift, Kotlin, Scala, Dart/Flutter, Elixir, Haskell, Julia, Lua, Perl, R, MATLAB, Objective-C, Groovy, Clojure, Solidity, Zig, Nim, Crystal
+  - Each auto-created agent includes:
+    - Colored terminal displays with unique emojis
+    - Full Claude Code integration
+    - Language-specific frameworks and tools
+    - Test framework configuration
+    - YAML metadata persistence in `.xavier/agents/`
+  - Seamless integration with existing agent orchestration system
+  - Zero configuration required - agents created automatically when needed
+
+### Enhanced
+- **Orchestrator Intelligence**: Smart agent detection and creation workflow
+  - Analyzes task tech constraints to detect required agent type
+  - Checks project tech stack for language requirements
+  - Parses task descriptions for technology mentions
+  - Automatically creates and registers missing agents
+  - Caches created agents for reuse across tasks
+  - Fallback strategies ensure tasks always have assigned agents
+
+- **Sprint Execution**: Enhanced with worktree isolation
+  - Each sprint item works in isolated environment
+  - Agents receive worktree paths for task execution
+  - Visual indicators show active worktree in agent displays
+  - Clean separation between features under development
+
+### Technical
+- Added `dynamic_agent_factory.py` with 23 language templates
+- Modified orchestrator `_select_agent_for_task()` with auto-creation logic
+- Integrated git worktree management into sprint workflow
+- Enhanced `AgentTask` dataclass with `working_dir` field
+- Automatic YAML generation for agent metadata persistence
+
+### Impact
+This release transforms Xavier into an adaptive, parallel development powerhouse. Teams can now work on multiple features simultaneously without branch conflicts, while the framework automatically creates specialized agents for any technology stack. No more manual agent configuration or branch switching overhead - Xavier adapts to your needs automatically.
+
 ## [1.1.14] - 2025-09-23
 
 ### Added
