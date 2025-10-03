@@ -2,7 +2,7 @@
 
 # Xavier Framework Installation Script
 # Enterprise-Grade SCRUM Development for Claude Code
-# Version 1.0.3 - macOS compatible
+# Version 1.2.2 - macOS compatible
 
 set -e
 
@@ -30,7 +30,7 @@ echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╔╝ ██╗██║  █
 echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝${NC}                       ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}║${NC}              ${BOLD_WHITE}Enterprise SCRUM Framework${NC}                             ${LIGHT_CYAN}║${NC}"
-echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.0.3${NC}                                     ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.2.2${NC}                                     ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
 echo
@@ -189,7 +189,7 @@ print("Initializing Xavier Framework...")
 config = {
     "name": Path.cwd().name,
     "version": "1.0.0",
-    "xavier_version": "1.1.12",
+    "xavier_version": "1.2.2",
     "settings": {
         "strict_mode": True,
         "test_first": True,
