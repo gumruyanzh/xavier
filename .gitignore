@@ -48,6 +48,7 @@ htmlcov/
 .xavier/reports/
 .xavier/sprints/*.json
 *.log
+.trees/
 
 # Node (for frontend agents)
 node_modules/

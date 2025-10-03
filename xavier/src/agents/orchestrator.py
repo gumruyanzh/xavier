@@ -343,10 +343,17 @@ class AgentOrchestrator:
             display_agent_handoff(self._last_agent, selected_agent.name, f"Task: {task.task_type}")
         elif not hasattr(self, '_last_agent') or not self._last_agent:
             # First agent assignment
+            assignment_lines = [
+                f"🎯 Assigning task to {get_agent_display_name(selected_agent.name)}",
+                f"Task: {task.task_id} - {task.task_type}"
+            ]
+            # Add working directory if specified
+            if task.working_dir:
+                assignment_lines.append(f"📁 Worktree: {task.working_dir}")
+
             assignment_box = AgentBoxDrawing.create_agent_box(
                 "orchestrator",
-                [f"🎯 Assigning task to {get_agent_display_name(selected_agent.name)}",
-                 f"Task: {task.task_id} - {task.task_type}"],
+                assignment_lines,
                 status="Task Assignment"
             )
             for line in assignment_box:

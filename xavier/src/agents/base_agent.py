@@ -40,6 +40,7 @@ class AgentTask:
     test_requirements: Dict[str, Any]
     acceptance_criteria: List[str]
     tech_constraints: List[str]
+    working_dir: Optional[str] = None  # Worktree path for this task
 
 
 @dataclass
