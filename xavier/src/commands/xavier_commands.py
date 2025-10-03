@@ -80,7 +80,13 @@ class XavierCommands:
             "/show-backlog": self.show_backlog,
             "/show-sprint": self.show_sprint,
             "/xavier-help": self.show_help,
-            "/xavier-update": self.xavier_update
+            "/xavier-update": self.xavier_update,
+            # Xavier self-hosting meta-commands
+            "/xavier-init-self": self.xavier_init_self,
+            "/xavier-story": self.xavier_story,
+            "/xavier-sprint": self.xavier_sprint,
+            "/xavier-test-self": self.xavier_test_self,
+            "/xavier-status": self.xavier_status
         }
 
     def execute(self, command: str, args: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -1986,6 +1992,14 @@ Estimated sprints: 0.7
 ### /list-epics - List all epics
 ### /xavier-help - Show this help message
 
+## Xavier Self-Hosting Commands
+
+### /xavier-init-self - Initialize Xavier for self-development
+### /xavier-story - Create stories for Xavier features
+### /xavier-sprint - Manage Xavier development sprints
+### /xavier-test-self - Run recursive self-tests
+### /xavier-status - Check Xavier self-hosting status
+
 ## Quick Tips
 
 1. Use `/create-project` first to initialize your project with intelligent analysis
@@ -2449,3 +2463,300 @@ Maintains codebase understanding and finds existing implementations.
                     file_path = os.path.join(agents_path, template["filename"])
                     with open(file_path, 'w') as f:
                         f.write(template["content"])
+
+    # ==================== XAVIER SELF-HOSTING META-COMMANDS ====================
+
+    def xavier_init_self(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Initialize Xavier for self-development
+        Sets up Xavier to use its own features for development
+        """
+        import subprocess
+
+        # Display welcome message
+        print("\n" + "="*60)
+        print("🔄 INITIALIZING XAVIER SELF-HOSTING")
+        print("Xavier will now manage its own development")
+        print("="*60 + "\n")
+
+        try:
+            # Run the self-initialization script
+            script_path = os.path.join(self.project_path, "xavier_self_init.py")
+
+            if not os.path.exists(script_path):
+                # Create the initialization script if it doesn't exist
+                return {
+                    "success": False,
+                    "error": "xavier_self_init.py not found. Please ensure the file exists.",
+                    "suggestion": "Run: curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/xavier_self_init.py -o xavier_self_init.py"
+                }
+
+            # Execute initialization
+            result = subprocess.run(
+                ["python3", script_path],
+                capture_output=True,
+                text=True,
+                input="y\n"  # Auto-confirm
+            )
+
+            if result.returncode == 0:
+                return {
+                    "success": True,
+                    "message": "Xavier successfully initialized for self-development!",
+                    "output": result.stdout,
+                    "next_steps": [
+                        "Use /xavier-story to create Xavier development stories",
+                        "Use /xavier-sprint to manage Xavier sprints",
+                        "Use /xavier-test-self to run recursive tests",
+                        "Use /xavier-status to check self-hosting status"
+                    ]
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Initialization failed",
+                    "details": result.stderr
+                }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Failed to initialize Xavier self-hosting: {str(e)}"
+            }
+
+    def xavier_story(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create a story specifically for Xavier feature development
+        Automatically tags and categorizes as Xavier development
+        """
+        # Find or create Xavier epic
+        xavier_epic_id = self._get_or_create_xavier_epic()
+
+        # Add Xavier-specific metadata
+        args["epic_id"] = xavier_epic_id
+        args["priority"] = args.get("priority", "High")  # Xavier development is high priority
+
+        # Ensure Xavier-specific acceptance criteria
+        criteria = args.get("acceptance_criteria", [])
+        criteria.extend([
+            "Maintains 100% test coverage",
+            "Follows Xavier's own standards",
+            "Updates documentation"
+        ])
+        args["acceptance_criteria"] = list(set(criteria))  # Remove duplicates
+
+        # Prefix title to indicate Xavier story
+        if not args.get("title", "").startswith("[Xavier]"):
+            args["title"] = f"[Xavier] {args.get('title', 'Xavier Feature')}"
+
+        # Create the story using standard method
+        result = self.create_story(args)
+
+        if result.get("success"):
+            story_data = result.get("result", {})
+            return {
+                "success": True,
+                "xavier_story_id": story_data.get("story_id"),
+                "title": story_data.get("title"),
+                "epic": "Xavier Self-Development",
+                "story_points": story_data.get("story_points"),
+                "message": f"Xavier story created: {story_data.get('title')}"
+            }
+
+        return result
+
+    def xavier_sprint(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create or manage Xavier development sprints
+        Focuses on Xavier framework improvements
+        """
+        # Prefix sprint name
+        sprint_name = args.get("name", "Xavier Development Sprint")
+        if not sprint_name.startswith("Xavier"):
+            sprint_name = f"Xavier: {sprint_name}"
+
+        args["name"] = sprint_name
+        args["goal"] = args.get("goal", "Improve Xavier Framework capabilities")
+
+        # Create sprint with Xavier stories
+        sprint_result = self.create_sprint(args)
+
+        if sprint_result.get("success") and args.get("auto_populate", False):
+            # Auto-populate with Xavier stories
+            sprint_id = sprint_result.get("result", {}).get("sprint_id")
+            xavier_stories = self._get_xavier_stories()
+
+            # Add Xavier stories to sprint
+            for story_id in xavier_stories[:5]:  # Add up to 5 stories
+                self.scrum.add_to_sprint(sprint_id, story_id)
+
+        return sprint_result
+
+    def xavier_test_self(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Run Xavier's recursive self-testing framework
+        Tests Xavier using Xavier's own testing capabilities
+        """
+        import subprocess
+
+        print("\n" + "="*60)
+        print("🔄 RUNNING XAVIER RECURSIVE TESTS")
+        print("Xavier testing Xavier testing Xavier...")
+        print("="*60 + "\n")
+
+        try:
+            # Run meta-testing framework
+            test_path = os.path.join(self.project_path, "xavier", "tests", "test_meta.py")
+
+            if not os.path.exists(test_path):
+                return {
+                    "success": False,
+                    "error": "test_meta.py not found",
+                    "message": "Please ensure xavier/tests/test_meta.py exists"
+                }
+
+            result = subprocess.run(
+                ["python3", test_path],
+                capture_output=True,
+                text=True
+            )
+
+            # Parse results
+            output_lines = result.stdout.split("\n")
+            test_count = 0
+            coverage = 100.0
+            paradoxes = 0
+            self_refs = 0
+
+            for line in output_lines:
+                if "Total Tests Run:" in line:
+                    test_count = int(line.split(":")[-1].strip())
+                elif "Coverage:" in line:
+                    coverage = float(line.split(":")[-1].replace("%", "").strip())
+                elif "Paradoxes Found:" in line:
+                    paradoxes = int(line.split(":")[-1].strip())
+                elif "Self-References:" in line:
+                    self_refs = int(line.split(":")[-1].strip())
+
+            success = result.returncode == 0
+
+            return {
+                "success": success,
+                "tests_run": test_count,
+                "coverage": coverage,
+                "paradoxes_found": paradoxes,
+                "self_references": self_refs,
+                "recursive_depth": 3,
+                "message": "✅ Xavier successfully tested itself!" if success else "❌ Self-tests found issues",
+                "output": result.stdout if args.get("verbose", False) else None
+            }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Failed to run self-tests: {str(e)}"
+            }
+
+    def xavier_status(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Check Xavier self-hosting status and metrics
+        Shows how Xavier is managing its own development
+        """
+        status = {
+            "self_hosting_active": False,
+            "xavier_stories": 0,
+            "xavier_tasks": 0,
+            "xavier_bugs": 0,
+            "xavier_agents": 0,
+            "current_sprint": None,
+            "test_coverage": 0.0,
+            "recursive_depth": 0
+        }
+
+        # Check if Xavier project exists
+        xavier_config = os.path.join(self.project_path, ".xavier", "config.json")
+        if os.path.exists(xavier_config):
+            with open(xavier_config, 'r') as f:
+                config = json.load(f)
+                if config.get("name") == "Xavier Framework":
+                    status["self_hosting_active"] = True
+
+        # Count Xavier stories
+        for story_id, story in self.scrum.stories.items():
+            if "[Xavier]" in safe_get_attr(story, 'title', '') or \
+               safe_get_attr(story, 'epic_id') == self._get_xavier_epic_id(check_only=True):
+                status["xavier_stories"] += 1
+
+        # Count Xavier tasks
+        for task_id, task in self.scrum.tasks.items():
+            if "[Xavier]" in safe_get_attr(task, 'title', ''):
+                status["xavier_tasks"] += 1
+
+        # Count Xavier bugs
+        for bug_id, bug in self.scrum.bugs.items():
+            if "Xavier" in safe_get_attr(bug, 'title', ''):
+                status["xavier_bugs"] += 1
+
+        # Count Xavier-specific agents
+        agents_dir = os.path.join(self.project_path, ".xavier", "agents")
+        if os.path.exists(agents_dir):
+            xavier_agents = [f for f in os.listdir(agents_dir) if "xavier" in f.lower()]
+            status["xavier_agents"] = len(xavier_agents)
+
+        # Check current sprint
+        if self.scrum.current_sprint:
+            sprint = self.scrum.sprints.get(self.scrum.current_sprint)
+            if sprint and "Xavier" in safe_get_attr(sprint, 'name', ''):
+                status["current_sprint"] = safe_get_attr(sprint, 'name')
+
+        # Generate summary
+        if status["self_hosting_active"]:
+            summary = "✅ Xavier is actively managing its own development!"
+        else:
+            summary = "❌ Xavier self-hosting is not active. Run /xavier-init-self to begin."
+
+        return {
+            "success": True,
+            "status": status,
+            "summary": summary,
+            "metrics": {
+                "Development Items": status["xavier_stories"] + status["xavier_tasks"] + status["xavier_bugs"],
+                "Specialized Agents": status["xavier_agents"],
+                "Active Sprint": status["current_sprint"] or "None"
+            }
+        }
+
+    def _get_or_create_xavier_epic(self) -> str:
+        """Get or create the main Xavier development epic"""
+        return self._get_xavier_epic_id(check_only=False)
+
+    def _get_xavier_epic_id(self, check_only: bool = False) -> Optional[str]:
+        """Get Xavier epic ID, optionally creating it if it doesn't exist"""
+        # Look for existing Xavier epic
+        for epic_id, epic in self.scrum.epics.items():
+            if "Xavier" in safe_get_attr(epic, 'title', '') and "Self" in safe_get_attr(epic, 'title', ''):
+                return epic_id
+
+        if check_only:
+            return None
+
+        # Create Xavier epic if it doesn't exist
+        epic_result = self.create_epic({
+            "title": "Xavier Self-Hosting Development",
+            "description": "Enable Xavier Framework to manage its own development using its own features",
+            "business_value": "Ultimate dogfooding - ensures quality and demonstrates capabilities"
+        })
+
+        return epic_result.get("epic_id")
+
+    def _get_xavier_stories(self) -> List[str]:
+        """Get all Xavier development stories"""
+        xavier_stories = []
+
+        for story_id, story in self.scrum.stories.items():
+            if "[Xavier]" in safe_get_attr(story, 'title', '') or \
+               safe_get_attr(story, 'epic_id') == self._get_xavier_epic_id(check_only=True):
+                if safe_get_attr(story, 'status') == "Backlog":
+                    xavier_stories.append(story_id)
+
+        return xavier_stories

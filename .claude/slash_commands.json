@@ -1,0 +1,259 @@
+{
+  "commands": [
+    {
+      "name": "create-project",
+      "description": "Initialize a new Xavier project with intelligent analysis",
+      "parameters": {
+        "name": "Project name (required)",
+        "description": "Detailed project description",
+        "tech_stack": "Technology stack definition (optional)",
+        "project_type": "Type of project (web, api, mobile, etc.)"
+      }
+    },
+    {
+      "name": "create-story",
+      "description": "Create a user story with acceptance criteria",
+      "parameters": {
+        "title": "Story title",
+        "as_a": "User role",
+        "i_want": "Feature description",
+        "so_that": "Business value",
+        "acceptance_criteria": "List of acceptance criteria",
+        "priority": "Priority level (Critical/High/Medium/Low)"
+      }
+    },
+    {
+      "name": "create-task",
+      "description": "Create a task under a story",
+      "parameters": {
+        "story_id": "Parent story ID",
+        "title": "Task title",
+        "description": "Task description",
+        "estimated_hours": "Estimated hours"
+      }
+    },
+    {
+      "name": "create-bug",
+      "description": "Report a bug with reproduction steps",
+      "parameters": {
+        "title": "Bug title",
+        "description": "Bug description",
+        "steps_to_reproduce": "List of reproduction steps",
+        "severity": "Severity (Critical/High/Medium/Low)"
+      }
+    },
+    {
+      "name": "create-epic",
+      "description": "Create an epic to group related stories",
+      "parameters": {
+        "title": "Epic title",
+        "description": "Epic description",
+        "business_value": "Business value statement"
+      }
+    },
+    {
+      "name": "add-to-epic",
+      "description": "Add stories to an existing epic",
+      "parameters": {
+        "epic_id": "Epic ID",
+        "story_ids": "List of story IDs to add"
+      }
+    },
+    {
+      "name": "list-epics",
+      "description": "List all epics with optional filtering",
+      "parameters": {
+        "status": "Filter by status (optional)",
+        "target_release": "Filter by release (optional)"
+      }
+    },
+    {
+      "name": "create-roadmap",
+      "description": "Create product roadmap with auto-generation",
+      "parameters": {
+        "name": "Roadmap name (optional)",
+        "vision": "Product vision (optional)",
+        "auto_generate": "Auto-generate from project (default: true)"
+      }
+    },
+    {
+      "name": "add-to-roadmap",
+      "description": "Add milestones to existing roadmap",
+      "parameters": {
+        "roadmap_id": "Roadmap ID (optional)",
+        "milestone": "Milestone definition with name, target_date, success_criteria"
+      }
+    },
+    {
+      "name": "create-sprint",
+      "description": "Create a new sprint with auto-planning",
+      "parameters": {
+        "name": "Sprint name",
+        "goal": "Sprint goal",
+        "duration_days": "Sprint duration in days (default: 14)"
+      }
+    },
+    {
+      "name": "start-sprint",
+      "description": "Start sprint execution with agents",
+      "parameters": {
+        "sprint_id": "Sprint ID (optional, uses current sprint)",
+        "strict_mode": "Enable strict sequential execution (default: true)"
+      }
+    },
+    {
+      "name": "end-sprint",
+      "description": "Complete current sprint with retrospective",
+      "parameters": {
+        "retrospective_notes": "Sprint retrospective notes"
+      }
+    },
+    {
+      "name": "estimate-story",
+      "description": "Use PM agent to automatically estimate story points",
+      "parameters": {
+        "story_id": "Specific story to estimate (optional)",
+        "all": "Re-estimate all stories (default: false)"
+      }
+    },
+    {
+      "name": "set-story-points",
+      "description": "Manually set story points for a story",
+      "parameters": {
+        "story_id": "Story ID",
+        "points": "Story points (Fibonacci: 1,2,3,5,8,13,21)"
+      }
+    },
+    {
+      "name": "assign-task",
+      "description": "Assign task to an agent",
+      "parameters": {
+        "task_id": "Task ID",
+        "agent": "Agent name (optional, auto-assigns)"
+      }
+    },
+    {
+      "name": "review-code",
+      "description": "Trigger code review for task",
+      "parameters": {
+        "task_id": "Task ID",
+        "files": "List of files to review"
+      }
+    },
+    {
+      "name": "generate-report",
+      "description": "Generate various reports",
+      "parameters": {
+        "report_type": "Type (backlog/sprint/velocity/agents)",
+        "sprint_id": "Sprint ID (for sprint reports)"
+      }
+    },
+    {
+      "name": "tech-stack-analyze",
+      "description": "Analyze project tech stack",
+      "parameters": {}
+    },
+    {
+      "name": "create-agent",
+      "description": "Create a custom agent with skills and styling",
+      "parameters": {
+        "name": "Agent name",
+        "display_name": "Display name (optional)",
+        "skills": "List of skills/capabilities",
+        "color": "Color for display (optional)",
+        "emoji": "Emoji for agent (optional)"
+      }
+    },
+    {
+      "name": "list-stories",
+      "description": "List all stories with optional filtering",
+      "parameters": {
+        "status": "Filter by status (optional)",
+        "priority": "Filter by priority (optional)"
+      }
+    },
+    {
+      "name": "list-tasks",
+      "description": "List all tasks with optional filtering",
+      "parameters": {
+        "status": "Filter by status (optional)",
+        "story_id": "Filter by story ID (optional)"
+      }
+    },
+    {
+      "name": "list-bugs",
+      "description": "List all bugs with optional filtering",
+      "parameters": {
+        "status": "Filter by status (optional)",
+        "severity": "Filter by severity (optional)"
+      }
+    },
+    {
+      "name": "show-backlog",
+      "description": "Show backlog overview with priority items",
+      "parameters": {}
+    },
+    {
+      "name": "show-sprint",
+      "description": "Show current sprint details",
+      "parameters": {
+        "sprint_id": "Sprint ID (optional)"
+      }
+    },
+    {
+      "name": "learn-project",
+      "description": "Learn existing project structure and tech stack",
+      "parameters": {
+        "deep_scan": "Perform deep analysis (default: true)",
+        "generate_agents": "Generate missing agents (default: true)"
+      }
+    },
+    {
+      "name": "xavier-help",
+      "description": "Show Xavier help and commands",
+      "parameters": {}
+    },
+    {
+      "name": "xavier-update",
+      "description": "Check for and install Xavier Framework updates",
+      "parameters": {}
+    },
+    {
+      "name": "xavier-init-self",
+      "description": "🔄 Initialize Xavier for self-development (Meta)",
+      "parameters": {}
+    },
+    {
+      "name": "xavier-story",
+      "description": "📝 Create story for Xavier feature development (Meta)",
+      "parameters": {
+        "title": "Story title",
+        "as_a": "User role",
+        "i_want": "Feature description",
+        "so_that": "Business value",
+        "acceptance_criteria": "List of acceptance criteria"
+      }
+    },
+    {
+      "name": "xavier-sprint",
+      "description": "🏃 Create/manage Xavier development sprint (Meta)",
+      "parameters": {
+        "name": "Sprint name",
+        "goal": "Sprint goal (optional)",
+        "auto_populate": "Auto-populate with Xavier stories (default: false)"
+      }
+    },
+    {
+      "name": "xavier-test-self",
+      "description": "🧪 Run Xavier recursive self-tests (Meta)",
+      "parameters": {
+        "verbose": "Show detailed output (default: false)"
+      }
+    },
+    {
+      "name": "xavier-status",
+      "description": "📊 Check Xavier self-hosting status (Meta)",
+      "parameters": {}
+    }
+  ]
+}
