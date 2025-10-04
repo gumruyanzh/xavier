@@ -1,0 +1,30 @@
+{
+  "US-7FFF5AE0": {
+    "id": "US-7FFF5AE0",
+    "title": "Multi-technology Feature",
+    "description": "As a user, I want a full-stack feature, so that I can use the application",
+    "as_a": "user",
+    "i_want": "a full-stack feature",
+    "so_that": "I can use the application",
+    "acceptance_criteria": [
+      "Backend API in Python",
+      "Frontend in React",
+      "Database with PostgreSQL",
+      "Tests with pytest"
+    ],
+    "story_points": 0,
+    "priority": "High",
+    "epic_id": null,
+    "tasks": [
+      "T-48533077",
+      "T-75C61D3B",
+      "T-4F18C1BA",
+      "T-15189B05",
+      "T-75249BA0"
+    ],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-03T18:27:10.597851",
+    "updated_at": "2025-10-03T18:27:10.597855"
+  }
+}

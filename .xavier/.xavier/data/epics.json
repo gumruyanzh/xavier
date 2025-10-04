@@ -1,0 +1,43 @@
+{
+  "E-F636BC8A": {
+    "id": "E-F636BC8A",
+    "title": "Test Epic",
+    "description": "Testing epic functionality",
+    "business_value": "Delivers test epic capabilities to enhance user experience and system functionality",
+    "target_release": null,
+    "stories": [
+      "US-99C0C209"
+    ],
+    "total_points": 0,
+    "completed_points": 0,
+    "status": "Planning",
+    "created_at": "2025-09-22T19:07:55.371706"
+  },
+  "E-57B6B8AE": {
+    "id": "E-57B6B8AE",
+    "title": "Feature Set Epic",
+    "description": "Multiple features grouped",
+    "business_value": "High value features",
+    "target_release": "v3.0",
+    "stories": [
+      "US-99C0C209",
+      "US-D461006D"
+    ],
+    "total_points": 0,
+    "completed_points": 0,
+    "status": "Planning",
+    "created_at": "2025-09-22T19:09:16.120605"
+  },
+  "E-FDD7A8B0": {
+    "id": "E-FDD7A8B0",
+    "title": "Test Epic Fix",
+    "description": "Testing if epic commands work after fix",
+    "business_value": "Delivers test epic fix capabilities to enhance user experience and system functionality",
+    "target_release": null,
+    "stories": [],
+    "total_points": 0,
+    "completed_points": 0,
+    "status": "Planning",
+    "created_at": "2025-09-22T20:09:12.182121"
+  }
+}

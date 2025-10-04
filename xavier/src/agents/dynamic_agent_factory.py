@@ -253,6 +253,17 @@ class DynamicAgentFactory:
             file_patterns=[r".*\.sol$", r"truffle-config\.js$", r"hardhat\.config\.js$"],
             test_framework="truffle test"
         ),
+        "devops": AgentTemplate(
+            language="devops",
+            display_name="DevOps Engineer",
+            color="magenta",
+            emoji="🚀",
+            label="DO",
+            frameworks=["docker", "kubernetes", "terraform", "ansible", "jenkins", "github-actions"],
+            tools=["docker", "kubectl", "terraform", "ansible", "helm"],
+            file_patterns=[r"Dockerfile$", r".*\.yaml$", r".*\.yml$", r".*\.tf$", r"Jenkinsfile$"],
+            test_framework="inspec"
+        ),
         "zig": AgentTemplate(
             language="zig",
             display_name="Zig Engineer",
@@ -474,6 +485,156 @@ class DynamicAgentFactory:
             return agent_class()
 
         return None
+
+    def create_agent(self, name: str, display_name: str, technology: str, role_description: str) -> Tuple[bool, str]:
+        """Create an agent with specified parameters
+
+        Args:
+            name: Agent name (e.g., 'devops-engineer')
+            display_name: Display name (e.g., 'DevOps Engineer')
+            technology: Primary technology (e.g., 'docker', 'kubernetes')
+            role_description: Description of the agent's role
+
+        Returns:
+            Tuple of (success, message)
+        """
+        # Extract base technology from agent name if needed
+        if '-' in name:
+            base_tech = name.split('-')[0]
+        else:
+            base_tech = technology.lower()
+
+        # Check if we have a template for this technology
+        if base_tech not in self.AGENT_TEMPLATES:
+            # Create a generic template for unknown technologies
+            self.logger.info(f"Creating generic agent for {base_tech}")
+
+            # Create a basic agent configuration
+            agent_config = {
+                "name": name,
+                "display_name": display_name,
+                "color": "blue",
+                "emoji": "🔧",
+                "label": base_tech.upper()[:3],
+                "description": role_description,
+                "tools": ["Edit", "Write", "Read", "Bash", "Grep", "Glob"],
+                "capabilities": [
+                    f"{base_tech}_development",
+                    "testing",
+                    "debugging",
+                    "code_review",
+                    "refactoring"
+                ],
+                "restricted_actions": [
+                    "deploy_production",
+                    "delete_database"
+                ],
+                "allowed_file_patterns": [".*"],
+                "languages": [base_tech],
+                "frameworks": []
+            }
+
+            # Write YAML file
+            agent_file = os.path.join(self.agents_dir, f"{name.replace('-', '_')}.yaml")
+            try:
+                with open(agent_file, 'w') as f:
+                    yaml.dump(agent_config, f, default_flow_style=False, sort_keys=False)
+
+                self.logger.info(f"Created generic agent configuration: {agent_file}")
+
+                # Create Claude Code agent MD file
+                claude_agents_dir = os.path.join(os.path.dirname(self.xavier_path), ".claude", "agents")
+                os.makedirs(claude_agents_dir, exist_ok=True)
+
+                claude_agent_file = os.path.join(claude_agents_dir, f"{name}.md")
+                claude_content = f"""# {display_name}
+
+{role_description}
+
+## Capabilities
+- {base_tech.title()} development and implementation
+- Writing clean, testable code
+- Following TDD practices
+- Code review and refactoring
+- Performance optimization
+
+## Tools
+- Edit: Modify existing files
+- Write: Create new files
+- Read: Read file contents
+- Bash: Execute shell commands
+- Grep: Search file contents
+- Glob: Find files by pattern
+
+## Approach
+1. Understand requirements thoroughly
+2. Design solution following best practices
+3. Implement with TDD approach
+4. Ensure comprehensive test coverage
+5. Document implementation clearly
+"""
+
+                with open(claude_agent_file, 'w') as f:
+                    f.write(claude_content)
+
+                self.logger.info(f"Created Claude agent file: {claude_agent_file}")
+
+                # Reload agent metadata
+                from .agent_metadata import get_metadata_manager
+                get_metadata_manager().reload_metadata()
+
+                return True, f"Successfully created agent: {name}"
+
+            except Exception as e:
+                error_msg = f"Failed to create agent {name}: {e}"
+                self.logger.error(error_msg)
+                return False, error_msg
+
+        # Use existing template
+        if not self.agent_exists(base_tech):
+            if self.create_agent_yaml(base_tech):
+                # Also create Claude Code MD file
+                self._create_claude_agent_md(name, display_name)
+                return True, f"Successfully created agent from template: {name}"
+            else:
+                return False, f"Failed to create agent from template: {name}"
+
+        return True, f"Agent already exists: {name}"
+
+    def _create_claude_agent_md(self, name: str, display_name: str):
+        """Create Claude Code compatible MD file for agent"""
+        claude_agents_dir = os.path.join(os.path.dirname(self.xavier_path), ".claude", "agents")
+        os.makedirs(claude_agents_dir, exist_ok=True)
+
+        claude_agent_file = os.path.join(claude_agents_dir, f"{name}.md")
+        if not os.path.exists(claude_agent_file):
+            # Extract technology from name
+            base_tech = name.split('-')[0] if '-' in name else name
+
+            content = f"""# {display_name}
+
+Specialized {display_name} with expertise in {base_tech} development.
+
+## Capabilities
+- {base_tech.title()} development and implementation
+- Writing clean, testable code following TDD
+- Code review and refactoring
+- Performance optimization
+- Following best practices and design patterns
+
+## Tools
+- Edit: Modify existing files
+- Write: Create new files
+- Read: Read file contents
+- Bash: Execute shell commands
+- Grep: Search file contents
+- Glob: Find files by pattern
+"""
+
+            with open(claude_agent_file, 'w') as f:
+                f.write(content)
+
+            self.logger.info(f"Created Claude agent MD: {claude_agent_file}")
 
     def auto_detect_and_create(self, task: AgentTask) -> Optional[BaseAgent]:
         """Automatically detect required agent and create if needed"""

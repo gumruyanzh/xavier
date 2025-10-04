@@ -1,0 +1,38 @@
+name: devops-engineer
+display_name: DevOps Engineer
+color: magenta
+emoji: "\U0001F680"
+label: DO
+description: Specialized in Devops development with docker, kubernetes, terraform
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- devops_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- Dockerfile$
+- .*\.yaml$
+- .*\.yml$
+- .*\.tf$
+- Jenkinsfile$
+languages:
+- devops
+frameworks:
+- docker
+- kubernetes
+- terraform
+- ansible
+- jenkins
+- github-actions
