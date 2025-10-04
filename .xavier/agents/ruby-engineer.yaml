@@ -1,0 +1,35 @@
+name: ruby-engineer
+display_name: Ruby Engineer
+color: red
+emoji: "\U0001F48E"
+label: RUB
+description: 'Custom agent with skills: ruby, rails, sinatra, rspec, bundler, activerecord,
+  sidekiq, capistrano. Experience: Expert in Ruby on Rails web development and testing'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- ruby
+- rails
+- sinatra
+- rspec
+- bundler
+- activerecord
+- sidekiq
+- capistrano
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- ruby
+frameworks:
+- rails
+- sinatra
+- rspec
+- bundler
+- capybara
+- devise

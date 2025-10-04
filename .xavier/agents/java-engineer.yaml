@@ -1,0 +1,39 @@
+name: java-engineer
+display_name: Java Engineer
+color: red
+emoji: "\u2615"
+label: JAV
+description: 'Custom agent with skills: java, spring, spring-boot, hibernate, maven,
+  gradle, junit, microservices. Experience: Specialist in enterprise Java development
+  with Spring ecosystem'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- java
+- spring
+- spring-boot
+- hibernate
+- maven
+- gradle
+- junit
+- microservices
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- java
+- kotlin
+- groovy
+frameworks:
+- spring
+- spring-boot
+- hibernate
+- maven
+- gradle
+- junit
+- mockito

@@ -1,0 +1,36 @@
+name: database-engineer
+display_name: Database Engineer
+color: green
+emoji: "\U0001F5C4\uFE0F"
+label: DAT
+description: 'Custom agent with skills: sql, postgresql, mysql, mongodb, redis, optimization,
+  indexing, replication. Experience: Database architecture and optimization specialist'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- sql
+- postgresql
+- mysql
+- mongodb
+- redis
+- optimization
+- indexing
+- replication
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- sql
+- plpgsql
+frameworks:
+- postgresql
+- mysql
+- mongodb
+- redis
+- elasticsearch
+- cassandra

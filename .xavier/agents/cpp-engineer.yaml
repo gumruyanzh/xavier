@@ -1,0 +1,37 @@
+name: cpp-engineer
+display_name: C++ Engineer
+color: blue
+emoji: "\u26A1"
+label: CPP
+description: 'Custom agent with skills: c++, stl, boost, cmake, gtest, memory-management,
+  templates, raii. Experience: High-performance systems programming with modern C++
+  standards'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- c++
+- stl
+- boost
+- cmake
+- gtest
+- memory-management
+- templates
+- raii
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- c++
+- c
+frameworks:
+- stl
+- boost
+- qt
+- opencv
+- eigen
+- gtest

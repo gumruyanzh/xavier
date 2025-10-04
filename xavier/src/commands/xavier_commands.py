@@ -1656,12 +1656,67 @@ This project follows Xavier Framework standards:
         agents_dir = ".xavier/agents"
         os.makedirs(agents_dir, exist_ok=True)
 
-        # Write agent YAML file
+        # Write agent YAML file for Xavier
         agent_file = os.path.join(agents_dir, f"{agent_key}.yaml")
 
         try:
             with open(agent_file, 'w') as f:
                 yaml.dump(agent_config, f, default_flow_style=False, sort_keys=False)
+
+            # Create Claude Code agent MD file with proper YAML frontmatter
+            claude_agents_dir = ".claude/agents"
+            os.makedirs(claude_agents_dir, exist_ok=True)
+
+            claude_agent_file = os.path.join(claude_agents_dir, f"{agent_key}.md")
+
+            # Create skills description for frontmatter
+            skills_str = ", ".join(args["skills"][:5])  # Limit to 5 for description
+            if len(args["skills"]) > 5:
+                skills_str += f", and {len(args['skills']) - 5} more"
+
+            # Generate comprehensive description
+            description = f"{display_name} specialist for {skills_str}. "
+            if args.get("experience"):
+                description += f"{args['experience'][:100]}. "  # Limit experience length
+            description += f"Handles development, testing, debugging, optimization."
+
+            # Create Claude Code compatible content
+            claude_content = f"""---
+name: {agent_key}
+description: {description[:250]}
+tools: {', '.join(agent_config['tools'])}
+model: sonnet
+---
+
+# {display_name}
+
+You are an expert {display_name} with specialized skills and experience.
+
+## Core Expertise
+{chr(10).join(f"- **{skill}**: Expert-level proficiency" for skill in args["skills"][:10])}
+
+## Technical Stack
+- **Languages**: {', '.join(args.get('languages', ['Multiple']))[:100]}
+- **Frameworks**: {', '.join(args.get('frameworks', ['Various']))[:100]}
+- **Tools**: {', '.join(agent_config['tools'])}
+
+## Development Approach
+1. **Requirements Analysis**: Thoroughly understand the problem
+2. **Test-Driven Development**: Write tests before implementation
+3. **Clean Code**: Follow SOLID principles and best practices
+4. **Performance**: Optimize for efficiency and scalability
+5. **Documentation**: Maintain clear and comprehensive docs
+
+## Experience
+{args.get('experience', f'Extensive experience in {", ".join(args["skills"][:3])}')}
+
+I deliver high-quality solutions using industry best practices and modern development methodologies.
+"""
+
+            with open(claude_agent_file, 'w') as f:
+                f.write(claude_content)
+
+            self.logger.info(f"Created Claude Code agent: {claude_agent_file}")
 
             # Reload agent metadata to include new agent
             from agents.agent_metadata import get_metadata_manager
@@ -1672,6 +1727,7 @@ This project follows Xavier Framework standards:
                 "agent_id": agent_key,
                 "agent_name": display_name,
                 "agent_file": agent_file,
+                "claude_agent_file": claude_agent_file,
                 "color": agent_config["color"],
                 "emoji": agent_config["emoji"],
                 "skills": agent_config["capabilities"],

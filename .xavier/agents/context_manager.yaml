@@ -1,27 +1,27 @@
 name: context-manager
 display_name: Context Manager
 color: blue
-emoji: 🔍
-label: CTX
-description: Gathers and analyzes project context, understands codebase structure
+emoji: "\U0001F527"
+label: CON
+description: Specialized Context Manager following best practices
 tools:
-  - Read
-  - Grep
-  - Glob
-  - WebFetch
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
 capabilities:
-  - codebase_analysis
-  - dependency_mapping
-  - context_gathering
-  - documentation_parsing
+- context_development
+- testing
+- debugging
+- code_review
+- refactoring
 restricted_actions:
-  - code_write
-  - code_execute
-  - deploy
-  - file_delete
+- deploy_production
+- delete_database
 allowed_file_patterns:
-  - ".*\\.[a-zA-Z]+$"
+- .*
 languages:
-  - any
-frameworks:
-  - any
+- context
+frameworks: []

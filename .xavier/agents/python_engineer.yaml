@@ -1,39 +1,27 @@
 name: python-engineer
 display_name: Python Engineer
-color: green
-emoji: 🐍
-label: PY
-description: Specialized in Python development, testing, and best practices
+color: blue
+emoji: "\U0001F527"
+label: PYT
+description: Specialized Python Engineer following best practices
 tools:
-  - Edit
-  - Write
-  - Read
-  - Bash
-  - Grep
-  - Glob
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
 capabilities:
-  - python_development
-  - testing
-  - debugging
-  - package_management
-  - code_review
+- python_development
+- testing
+- debugging
+- code_review
+- refactoring
 restricted_actions:
-  - deploy
-  - database_modify
+- deploy_production
+- delete_database
 allowed_file_patterns:
-  - ".*\\.py$"
-  - ".*\\.pyx$"
-  - ".*\\.pyi$"
-  - "requirements.*\\.txt$"
-  - "setup\\.py$"
-  - "pyproject\\.toml$"
-  - ".*\\.cfg$"
-  - ".*\\.ini$"
+- .*
 languages:
-  - python
-frameworks:
-  - django
-  - flask
-  - fastapi
-  - pytest
-  - unittest
+- python
+frameworks: []

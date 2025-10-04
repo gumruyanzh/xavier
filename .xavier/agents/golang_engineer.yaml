@@ -1,37 +1,27 @@
 name: golang-engineer
 display_name: Golang Engineer
-color: cyan
-emoji: 🔷
-label: GO
-description: Specialized in Go development, microservices, and performance optimization
+color: blue
+emoji: "\U0001F527"
+label: GOL
+description: Specialized Golang Engineer following best practices
 tools:
-  - Edit
-  - Write
-  - Read
-  - Bash
-  - Grep
-  - Glob
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
 capabilities:
-  - golang_development
-  - microservices
-  - performance_optimization
-  - testing
-  - concurrency
+- golang_development
+- testing
+- debugging
+- code_review
+- refactoring
 restricted_actions:
-  - deploy
-  - database_modify
+- deploy_production
+- delete_database
 allowed_file_patterns:
-  - ".*\\.go$"
-  - "go\\.mod$"
-  - "go\\.sum$"
-  - "Makefile$"
-  - "Dockerfile$"
+- .*
 languages:
-  - go
-  - golang
-frameworks:
-  - gin
-  - echo
-  - fiber
-  - gorm
-  - testify
+- golang
+frameworks: []

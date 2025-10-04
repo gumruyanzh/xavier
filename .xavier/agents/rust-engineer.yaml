@@ -1,0 +1,36 @@
+name: rust-engineer
+display_name: Rust Engineer
+color: yellow
+emoji: "\U0001F980"
+label: RUS
+description: 'Custom agent with skills: rust, cargo, tokio, actix, serde, memory-safety,
+  concurrency, systems-programming. Experience: Systems programming expert focusing
+  on performance and memory safety'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- rust
+- cargo
+- tokio
+- actix
+- serde
+- memory-safety
+- concurrency
+- systems-programming
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- rust
+frameworks:
+- tokio
+- actix
+- rocket
+- serde
+- diesel
+- wasm

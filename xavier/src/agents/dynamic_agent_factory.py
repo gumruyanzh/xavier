@@ -542,42 +542,46 @@ class DynamicAgentFactory:
 
                 self.logger.info(f"Created generic agent configuration: {agent_file}")
 
-                # Create Claude Code agent MD file
+                # Create Claude Code agent MD file with proper YAML frontmatter
                 claude_agents_dir = os.path.join(os.path.dirname(self.xavier_path), ".claude", "agents")
                 os.makedirs(claude_agents_dir, exist_ok=True)
 
                 claude_agent_file = os.path.join(claude_agents_dir, f"{name}.md")
-                claude_content = f"""# {display_name}
+                # Create proper Claude Code agent with YAML frontmatter
+                claude_content = f"""---
+name: {name}
+description: {role_description[:200] if len(role_description) > 200 else role_description}
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: sonnet
+---
+
+# {display_name}
+
+You are an expert {display_name}.
 
 {role_description}
 
-## Capabilities
-- {base_tech.title()} development and implementation
-- Writing clean, testable code
-- Following TDD practices
-- Code review and refactoring
-- Performance optimization
+## Core Expertise
+- **{base_tech.title()}**: Full-stack development and implementation
+- **Testing**: TDD, comprehensive test coverage
+- **Clean Code**: Following best practices and SOLID principles
+- **Performance**: Optimization and profiling
+- **Debugging**: Advanced troubleshooting skills
 
-## Tools
-- Edit: Modify existing files
-- Write: Create new files
-- Read: Read file contents
-- Bash: Execute shell commands
-- Grep: Search file contents
-- Glob: Find files by pattern
+## Development Approach
+1. **Test-First**: Write tests before implementation
+2. **Clean Architecture**: Maintainable and scalable design
+3. **Performance**: Optimize for efficiency
+4. **Documentation**: Clear and comprehensive
+5. **Security**: Follow security best practices
 
-## Approach
-1. Understand requirements thoroughly
-2. Design solution following best practices
-3. Implement with TDD approach
-4. Ensure comprehensive test coverage
-5. Document implementation clearly
+I deliver high-quality solutions following industry best practices.
 """
 
                 with open(claude_agent_file, 'w') as f:
                     f.write(claude_content)
 
-                self.logger.info(f"Created Claude agent file: {claude_agent_file}")
+                self.logger.info(f"Created Claude agent file with YAML frontmatter: {claude_agent_file}")
 
                 # Reload agent metadata
                 from .agent_metadata import get_metadata_manager
@@ -602,7 +606,7 @@ class DynamicAgentFactory:
         return True, f"Agent already exists: {name}"
 
     def _create_claude_agent_md(self, name: str, display_name: str):
-        """Create Claude Code compatible MD file for agent"""
+        """Create Claude Code compatible MD file for agent with proper YAML frontmatter"""
         claude_agents_dir = os.path.join(os.path.dirname(self.xavier_path), ".claude", "agents")
         os.makedirs(claude_agents_dir, exist_ok=True)
 
@@ -611,30 +615,47 @@ class DynamicAgentFactory:
             # Extract technology from name
             base_tech = name.split('-')[0] if '-' in name else name
 
-            content = f"""# {display_name}
+            # Get template if available for better descriptions
+            template = self.AGENT_TEMPLATES.get(base_tech)
+            if template:
+                frameworks_str = ', '.join(template.frameworks[:3])
+                description = f"{display_name} for {frameworks_str}. Handles {base_tech} development, testing, debugging, performance optimization."
+            else:
+                description = f"{display_name} specialist. Handles {base_tech} development, testing, debugging, code review, refactoring."
 
-Specialized {display_name} with expertise in {base_tech} development.
+            # Create content with proper YAML frontmatter for Claude Code
+            content = f"""---
+name: {name}
+description: {description}
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: sonnet
+---
 
-## Capabilities
-- {base_tech.title()} development and implementation
-- Writing clean, testable code following TDD
-- Code review and refactoring
-- Performance optimization
-- Following best practices and design patterns
+# {display_name}
 
-## Tools
-- Edit: Modify existing files
-- Write: Create new files
-- Read: Read file contents
-- Bash: Execute shell commands
-- Grep: Search file contents
-- Glob: Find files by pattern
+You are an expert {display_name} specializing in {base_tech} development.
+
+## Core Expertise
+- **{base_tech.title()}**: Full-stack development and architecture
+- **Testing**: TDD, unit tests, integration tests
+- **Best Practices**: Clean code, SOLID principles
+- **Performance**: Optimization and profiling
+- **Tools**: Industry-standard tooling and frameworks
+
+## Development Approach
+1. **Test-First**: Write tests before implementation
+2. **Clean Code**: Maintainable and readable code
+3. **Performance**: Optimize for efficiency
+4. **Documentation**: Clear and comprehensive
+5. **Security**: Follow security best practices
+
+I deliver high-quality {base_tech} solutions following best practices.
 """
 
             with open(claude_agent_file, 'w') as f:
                 f.write(content)
 
-            self.logger.info(f"Created Claude agent MD: {claude_agent_file}")
+            self.logger.info(f"Created Claude agent MD with YAML frontmatter: {claude_agent_file}")
 
     def auto_detect_and_create(self, task: AgentTask) -> Optional[BaseAgent]:
         """Automatically detect required agent and create if needed"""

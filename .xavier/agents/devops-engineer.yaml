@@ -1,0 +1,42 @@
+name: devops-engineer
+display_name: DevOps Engineer
+color: magenta
+emoji: "\U0001F680"
+label: DEV
+description: 'Custom agent with skills: docker, kubernetes, terraform, ansible, ci/cd,
+  jenkins, aws, gcp, azure, monitoring. Experience: Expert in containerization, orchestration,
+  infrastructure as code, and cloud platforms'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- docker
+- kubernetes
+- terraform
+- ansible
+- ci/cd
+- jenkins
+- aws
+- gcp
+- azure
+- monitoring
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- yaml
+- bash
+- python
+- go
+frameworks:
+- docker
+- kubernetes
+- terraform
+- ansible
+- jenkins
+- github-actions
+- gitlab-ci

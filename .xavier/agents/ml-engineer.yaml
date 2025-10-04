@@ -1,0 +1,37 @@
+name: ml-engineer
+display_name: ML Engineer
+color: yellow
+emoji: "\U0001F916"
+label: ML-
+description: 'Custom agent with skills: machine-learning, pytorch, tensorflow, scikit-learn,
+  deep-learning, nlp, computer-vision. Experience: Machine learning and deep learning
+  specialist'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- machine-learning
+- pytorch
+- tensorflow
+- scikit-learn
+- deep-learning
+- nlp
+- computer-vision
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- python
+- r
+- julia
+frameworks:
+- pytorch
+- tensorflow
+- scikit-learn
+- keras
+- transformers
+- opencv

@@ -1,37 +1,27 @@
 name: test-runner
 display_name: Test Runner
-color: red
-emoji: 🧪
-label: TEST
-description: Specialized in running tests, analyzing failures, and ensuring code quality
+color: blue
+emoji: "\U0001F527"
+label: TES
+description: Specialized Test Runner following best practices
 tools:
-  - Bash
-  - Read
-  - Grep
-  - Glob
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
 capabilities:
-  - test_execution
-  - failure_analysis
-  - coverage_analysis
-  - performance_testing
-  - quality_assurance
+- test_development
+- testing
+- debugging
+- code_review
+- refactoring
 restricted_actions:
-  - code_write
-  - deploy
-  - database_modify
+- deploy_production
+- delete_database
 allowed_file_patterns:
-  - ".*test.*\\.[a-zA-Z]+$"
-  - ".*spec.*\\.[a-zA-Z]+$"
-  - ".*\\.test\\.[a-zA-Z]+$"
-  - ".*\\.spec\\.[a-zA-Z]+$"
-  - "pytest\\.ini$"
-  - "jest\\.config\\.[a-zA-Z]+$"
-  - "karma\\.conf\\.[a-zA-Z]+$"
+- .*
 languages:
-  - any
-frameworks:
-  - pytest
-  - unittest
-  - jest
-  - mocha
-  - jasmine
+- test
+frameworks: []

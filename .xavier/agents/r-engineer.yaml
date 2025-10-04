@@ -1,0 +1,36 @@
+name: r-engineer
+display_name: R Engineer
+color: blue
+emoji: "\U0001F4CA"
+label: R-E
+description: 'Custom agent with skills: r, statistics, data-analysis, ggplot2, tidyverse,
+  shiny, modeling, visualization. Experience: Statistical computing and data visualization
+  expert'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- r
+- statistics
+- data-analysis
+- ggplot2
+- tidyverse
+- shiny
+- modeling
+- visualization
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- r
+frameworks:
+- tidyverse
+- ggplot2
+- shiny
+- caret
+- data.table
+- plotly

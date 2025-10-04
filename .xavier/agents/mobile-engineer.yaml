@@ -1,0 +1,39 @@
+name: mobile-engineer
+display_name: Mobile Engineer
+color: cyan
+emoji: "\U0001F4F1"
+label: MOB
+description: 'Custom agent with skills: react-native, flutter, ios, android, swift,
+  kotlin, cross-platform, mobile-ui. Experience: Cross-platform mobile development
+  expert'
+tools:
+- Read
+- Write
+- Edit
+- Bash
+- Grep
+- Glob
+capabilities:
+- react-native
+- flutter
+- ios
+- android
+- swift
+- kotlin
+- cross-platform
+- mobile-ui
+restricted_actions: []
+allowed_file_patterns:
+- .*
+languages:
+- javascript
+- typescript
+- swift
+- kotlin
+- dart
+frameworks:
+- react-native
+- flutter
+- expo
+- android-sdk
+- ios-sdk
