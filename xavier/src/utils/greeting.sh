@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 
 # Get occasion type (default: welcome)
 OCCASION="${1:-welcome}"
-VERSION="${2:-1.2.2}"
+VERSION="${2:-1.2.3}"
 
 # Function to display Xavier logo
 show_xavier_logo() {

@@ -2,7 +2,7 @@
 
 # Xavier Framework Installation Script
 # Enterprise-Grade SCRUM Development for Claude Code
-# Version 1.2.2 - macOS compatible
+# Version 1.2.3 - macOS compatible
 
 set -e
 
@@ -30,7 +30,7 @@ echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}██╔╝ ██╗██║  █
 echo -e "${LIGHT_CYAN}║${NC}  ${BOLD_CYAN}╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝${NC}                       ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}║${NC}              ${BOLD_WHITE}Enterprise SCRUM Framework${NC}                             ${LIGHT_CYAN}║${NC}"
-echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.2.2${NC}                                     ${LIGHT_CYAN}║${NC}"
+echo -e "${LIGHT_CYAN}║${NC}                    ${LIGHT_WHITE}Version 1.2.3${NC}                                     ${LIGHT_CYAN}║${NC}"
 echo -e "${LIGHT_CYAN}║                                                                       ║${NC}"
 echo -e "${LIGHT_CYAN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
 echo
@@ -189,7 +189,7 @@ print("Initializing Xavier Framework...")
 config = {
     "name": Path.cwd().name,
     "version": "1.0.0",
-    "xavier_version": "1.2.2",
+    "xavier_version": "1.2.3",
     "settings": {
         "strict_mode": True,
         "test_first": True,
@@ -222,7 +222,7 @@ rm .xavier/setup_temp.py
 
 # Create VERSION file for future updates
 echo -e "${BLUE}Creating VERSION file...${NC}"
-echo "1.1.14" > VERSION
+echo "1.2.3" > VERSION
 
 # Create Claude Code integration files
 echo -e "${BLUE}Creating Claude Code integration...${NC}"

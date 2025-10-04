@@ -5,6 +5,41 @@ All notable changes to Xavier Framework will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-10-03
+
+### Added
+- **Strict JSON-Only Data Format Enforcement**
+  - `DataFormatValidator` class ensures all data in `.xavier/data` is JSON
+  - `JSONOutputFormatter` for consistent command outputs
+  - Automatic rejection of Markdown files in data directory
+  - Comprehensive JSON format policy documentation
+  - Test suite for format validation (`test_json_format.py`)
+
+- **Agent Name Transformation to Claude Code Format**
+  - All agents now use hyphen naming (`python-engineer` not `python_engineer`)
+  - Transformation script for bulk agent conversion
+  - Claude Code compatible `.md` files in `.claude/agents/`
+  - Added 8 new specialized agents (Java, Ruby, Rust, Swift, Kotlin, Elixir, R, Orchestrator)
+  - Automatic agent registration with proper naming conventions
+
+- **Git Worktree Integration Testing & Documentation**
+  - Comprehensive test suite for worktree functionality
+  - Sprint-worktree integration tests
+  - Complete workflow documentation in `GIT_WORKTREE_WORKFLOW.md`
+  - Automated worktree creation verification
+
+### Changed
+- All Xavier agents now use hyphen naming convention for Claude Code compatibility
+- Data storage strictly enforces JSON format, no exceptions
+- Command handlers updated to return JSON-only outputs
+- Agent files regenerated with full TDD/Clean Code instructions
+
+### Fixed
+- Agent naming inconsistencies between Xavier and Claude Code
+- Data format ambiguity (was allowing both MD and JSON)
+- Sprint worktree creation validation
+- Version references across all documentation and website files
+
 ## [1.2.2] - 2025-10-03
 
 ### Added
