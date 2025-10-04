@@ -31,7 +31,25 @@ class AgentMetadataManager:
     """Manages loading and caching of agent metadata"""
 
     def __init__(self, metadata_dir: str = ".xavier/agents"):
-        self.metadata_dir = metadata_dir
+        # Try multiple possible locations for agent metadata
+        possible_dirs = [
+            metadata_dir,
+            os.path.join(os.getcwd(), metadata_dir),
+            os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), metadata_dir),
+            os.path.join(os.path.expanduser("~"), metadata_dir)
+        ]
+
+        # Find the first existing directory
+        self.metadata_dir = None
+        for dir_path in possible_dirs:
+            if os.path.exists(dir_path):
+                self.metadata_dir = dir_path
+                break
+
+        # Fallback to first option if none exist
+        if self.metadata_dir is None:
+            self.metadata_dir = metadata_dir
+
         self.logger = logging.getLogger("Xavier.AgentMetadata")
         self._metadata_cache: Dict[str, AgentMetadata] = {}
         self._load_all_metadata()

@@ -1,0 +1,92 @@
+{
+  "ruby-engineer": {
+    "color": "red",
+    "emoji": "💎",
+    "label": "RB",
+    "display_name": "Ruby Engineer"
+  },
+  "java-engineer": {
+    "color": "red",
+    "emoji": "☕",
+    "label": "JAVA",
+    "display_name": "Java Engineer"
+  },
+  "swift-engineer": {
+    "color": "yellow",
+    "emoji": "🦉",
+    "label": "SW",
+    "display_name": "Swift Engineer"
+  },
+  "kotlin-engineer": {
+    "color": "magenta",
+    "emoji": "🎯",
+    "label": "KT",
+    "display_name": "Kotlin Engineer"
+  },
+  "rust-engineer": {
+    "color": "yellow",
+    "emoji": "🦀",
+    "label": "RS",
+    "display_name": "Rust Engineer"
+  },
+  "elixir-engineer": {
+    "color": "magenta",
+    "emoji": "💧",
+    "label": "EX",
+    "display_name": "Elixir Engineer"
+  },
+  "frontend-engineer": {
+    "color": "yellow",
+    "emoji": "🎨",
+    "label": "FE",
+    "display_name": "Frontend Engineer"
+  },
+  "context-manager": {
+    "color": "blue",
+    "emoji": "🔍",
+    "label": "CTX",
+    "display_name": "Context Manager"
+  },
+  "orchestrator": {
+    "color": "white",
+    "emoji": "🎯",
+    "label": "ORCH",
+    "display_name": "Orchestrator"
+  },
+  "r-engineer": {
+    "color": "blue",
+    "emoji": "📊",
+    "label": "R",
+    "display_name": "R Statistician"
+  },
+  "project-manager": {
+    "color": "magenta",
+    "emoji": "📊",
+    "label": "PM",
+    "display_name": "Project Manager"
+  },
+  "golang-engineer": {
+    "color": "cyan",
+    "emoji": "🔷",
+    "label": "GO",
+    "display_name": "Golang Engineer"
+  },
+  "haskell-engineer": {
+    "color": "cyan",
+    "emoji": "λ",
+    "label": "HS",
+    "display_name": "Haskell Engineer"
+  },
+  "test-runner": {
+    "color": "red",
+    "emoji": "🧪",
+    "label": "TEST",
+    "display_name": "Test Runner"
+  },
+  "python-engineer": {
+    "color": "green",
+    "emoji": "🐍",
+    "label": "PY",
+    "display_name": "Python Engineer"
+  }
+}

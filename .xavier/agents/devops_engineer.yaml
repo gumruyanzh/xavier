@@ -1,0 +1,51 @@
+name: devops-engineer
+display_name: DevOps Engineer
+color: magenta
+emoji: 🚀
+label: DO
+description: Specialized in DevOps, Docker, Kubernetes, CI/CD, and infrastructure
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+capabilities:
+  - docker_configuration
+  - kubernetes_deployment
+  - cicd_pipeline
+  - infrastructure_as_code
+  - monitoring_setup
+  - container_orchestration
+  - terraform
+  - ansible
+restricted_actions:
+  - delete_production
+  - modify_billing
+allowed_file_patterns:
+  - "Dockerfile$"
+  - ".*\\.yaml$"
+  - ".*\\.yml$"
+  - ".*\\.tf$"
+  - ".*\\.tfvars$"
+  - "Jenkinsfile$"
+  - ".*\\.sh$"
+  - "docker-compose.*"
+  - "k8s/.*"
+  - ".github/workflows/.*"
+languages:
+  - yaml
+  - dockerfile
+  - bash
+  - terraform
+frameworks:
+  - docker
+  - kubernetes
+  - terraform
+  - ansible
+  - jenkins
+  - github-actions
+  - gitlab-ci
+  - circleci
+  - helm
