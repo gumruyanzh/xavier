@@ -1,30 +1,227 @@
 {
-  "US-7FFF5AE0": {
-    "id": "US-7FFF5AE0",
-    "title": "Multi-technology Feature",
-    "description": "As a user, I want a full-stack feature, so that I can use the application",
-    "as_a": "user",
-    "i_want": "a full-stack feature",
-    "so_that": "I can use the application",
+  "US-DC00C5F8": {
+    "id": "US-DC00C5F8",
+    "title": "Jira API Authentication and Connection",
+    "description": "As a developer, I want to authenticate and establish a secure connection with Jira, so that Xavier can communicate with Jira API",
+    "as_a": "developer",
+    "i_want": "to authenticate and establish a secure connection with Jira",
+    "so_that": "Xavier can communicate with Jira API",
     "acceptance_criteria": [
-      "Backend API in Python",
-      "Frontend in React",
-      "Database with PostgreSQL",
-      "Tests with pytest"
+      "OAuth 2.0 support",
+      "API token support",
+      "Secure storage",
+      "Connection validation"
     ],
     "story_points": 0,
     "priority": "High",
     "epic_id": null,
     "tasks": [
-      "T-48533077",
-      "T-75C61D3B",
-      "T-4F18C1BA",
-      "T-15189B05",
-      "T-75249BA0"
+      "T-1BB55776",
+      "T-7FAA3489",
+      "T-BED33CFE",
+      "T-CF108D6C"
     ],
     "bugs": [],
     "status": "Backlog",
-    "created_at": "2025-10-03T18:27:10.597851",
-    "updated_at": "2025-10-03T18:27:10.597855"
+    "created_at": "2025-10-04T11:52:47.188858",
+    "updated_at": "2025-10-04T11:52:47.188860"
+  },
+  "US-E0F687B6": {
+    "id": "US-E0F687B6",
+    "title": "Jira Webhook Integration for Real-time Story Sync",
+    "description": "As a product manager, I want Xavier to automatically receive Jira webhook notifications, so that new Jira stories are instantly synchronized",
+    "as_a": "product manager",
+    "i_want": "Xavier to automatically receive Jira webhook notifications",
+    "so_that": "new Jira stories are instantly synchronized",
+    "acceptance_criteria": [
+      "Webhook endpoint",
+      "Signature validation",
+      "Event handling",
+      "Activity logging"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:53:52.130490",
+    "updated_at": "2025-10-04T11:53:54.447971"
+  },
+  "US-2DDB3C5C": {
+    "id": "US-2DDB3C5C",
+    "title": "Bi-directional Story Synchronization",
+    "description": "As a project manager, I want stories from Jira to automatically appear in Xavier, so that I can manage from either system seamlessly",
+    "as_a": "project manager",
+    "i_want": "stories from Jira to automatically appear in Xavier",
+    "so_that": "I can manage from either system seamlessly",
+    "acceptance_criteria": [
+      "Field mapping",
+      "Metadata sync",
+      "ID preservation",
+      "Conflict handling"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:53:54.467680",
+    "updated_at": "2025-10-04T11:53:56.526886"
+  },
+  "US-07CE3895": {
+    "id": "US-07CE3895",
+    "title": "Automatic Task Creation from Jira Stories",
+    "description": "As a developer, I want Xavier to auto-create tasks from Jira stories, so that I have ready work breakdown",
+    "as_a": "developer",
+    "i_want": "Xavier to auto-create tasks from Jira stories",
+    "so_that": "I have ready work breakdown",
+    "acceptance_criteria": [
+      "Story analysis",
+      "Task generation",
+      "Task linking",
+      "Agent assignment"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:53:56.540251",
+    "updated_at": "2025-10-04T11:53:58.718289"
+  },
+  "US-577F88A9": {
+    "id": "US-577F88A9",
+    "title": "Task Synchronization to Jira",
+    "description": "As a developer, I want Xavier tasks synced to Jira as sub-tasks, so that stakeholders see detailed breakdown",
+    "as_a": "developer",
+    "i_want": "Xavier tasks synced to Jira as sub-tasks",
+    "so_that": "stakeholders see detailed breakdown",
+    "acceptance_criteria": [
+      "Sub-task creation",
+      "Field mapping",
+      "Relationship maintenance",
+      "Error handling"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:53:58.729811",
+    "updated_at": "2025-10-04T11:54:00.801916"
+  },
+  "US-E6366874": {
+    "id": "US-E6366874",
+    "title": "Git Worktree Branch Naming Convention",
+    "description": "As a developer, I want worktree branches to follow Jira naming, so that branches link to Jira stories automatically",
+    "as_a": "developer",
+    "i_want": "worktree branches to follow Jira naming",
+    "so_that": "branches link to Jira stories automatically",
+    "acceptance_criteria": [
+      "ID extraction",
+      "Branch naming",
+      "Worktree creation",
+      "Format validation"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:54:00.847200",
+    "updated_at": "2025-10-04T11:54:03.085150"
+  },
+  "US-B31AA17C": {
+    "id": "US-B31AA17C",
+    "title": "Bi-directional Status Synchronization",
+    "description": "As a project manager, I want status changes to sync both ways, so that everyone has real-time visibility",
+    "as_a": "project manager",
+    "i_want": "status changes to sync both ways",
+    "so_that": "everyone has real-time visibility",
+    "acceptance_criteria": [
+      "Xavier\u2192Jira sync",
+      "Jira\u2192Xavier sync",
+      "Webhook handling",
+      "Loop prevention"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:54:03.099048",
+    "updated_at": "2025-10-04T11:54:05.178858"
+  },
+  "US-7C529F14": {
+    "id": "US-7C529F14",
+    "title": "Jira Workflow State Mapping",
+    "description": "As a developer, I want Xavier statuses to map to Jira workflows, so that transitions respect both systems",
+    "as_a": "developer",
+    "i_want": "Xavier statuses to map to Jira workflows",
+    "so_that": "transitions respect both systems",
+    "acceptance_criteria": [
+      "Mapping config",
+      "State transitions",
+      "Custom workflows",
+      "Validation"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:54:05.199214",
+    "updated_at": "2025-10-04T11:54:08.277200"
+  },
+  "US-9CE7E70D": {
+    "id": "US-9CE7E70D",
+    "title": "Jira Configuration Management",
+    "description": "As a team lead, I want configuration interface for Jira integration, so that I can customize to match team workflows",
+    "as_a": "team lead",
+    "i_want": "configuration interface for Jira integration",
+    "so_that": "I can customize to match team workflows",
+    "acceptance_criteria": [
+      "Config structure",
+      "Project mapping",
+      "Sync preferences",
+      "Validation"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:54:08.292418",
+    "updated_at": "2025-10-04T11:54:10.448714"
+  },
+  "US-C98A6D35": {
+    "id": "US-C98A6D35",
+    "title": "Error Handling and Sync Conflict Resolution",
+    "description": "As a developer, I want clear errors and conflict resolution, so that I can quickly fix sync issues",
+    "as_a": "developer",
+    "i_want": "clear errors and conflict resolution",
+    "so_that": "I can quickly fix sync issues",
+    "acceptance_criteria": [
+      "Conflict detection",
+      "Error messages",
+      "Retry logic",
+      "Manual resolution"
+    ],
+    "story_points": 5,
+    "priority": "Medium",
+    "epic_id": null,
+    "tasks": [],
+    "bugs": [],
+    "status": "Backlog",
+    "created_at": "2025-10-04T11:54:10.475859",
+    "updated_at": "2025-10-04T11:54:12.715434"
   }
 }
