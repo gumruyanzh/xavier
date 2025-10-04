@@ -162,7 +162,7 @@ class XavierCommands:
 
     def create_task(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Create a task under a story
+        Create a task under a story with automatic agent assignment
         Args:
             story_id: Parent story ID
             title: Task title
@@ -172,6 +172,8 @@ class XavierCommands:
             test_criteria: List of test criteria
             priority: Priority level
             dependencies: List of dependency task IDs
+            assigned_to: (Optional) Manually specify agent, otherwise auto-assigned
+            auto_assign: (Optional) Set to False to skip auto-assignment
         """
         # Validate story exists
         if "story_id" not in args or args["story_id"] not in self.scrum.stories:
@@ -189,6 +191,46 @@ class XavierCommands:
             dependencies=args.get("dependencies", [])
         )
 
+        # Auto-assign agent if not manually specified
+        agent_assigned = args.get("assigned_to")
+        agent_creation_info = None
+
+        if not agent_assigned and args.get("auto_assign", True):
+            try:
+                from xavier.src.agents.task_agent_matcher import TaskAgentMatcher
+
+                matcher = TaskAgentMatcher(self.project_path)
+                assignment_result = matcher.assign_agent_to_task({
+                    "title": task.title,
+                    "description": task.description,
+                    "technical_details": task.technical_details
+                })
+
+                if assignment_result['success']:
+                    agent_assigned = assignment_result['agent']
+                    task.assigned_to = agent_assigned
+
+                    # Save the assignment
+                    self.scrum._save_data()
+
+                    agent_creation_info = {
+                        "agent": agent_assigned,
+                        "reason": assignment_result['reason'],
+                        "confidence": assignment_result['confidence'],
+                        "created_new": assignment_result.get('created_new_agent', False)
+                    }
+
+                    # Log the assignment
+                    self.logger.info(f"Auto-assigned task {task.id} to {agent_assigned}: {assignment_result['reason']}")
+
+            except Exception as e:
+                self.logger.warning(f"Auto-assignment failed: {e}")
+                # Continue without assignment
+        elif agent_assigned:
+            # Manual assignment
+            task.assigned_to = agent_assigned
+            self.scrum._save_data()
+
         # Create work item in engine for tracking
         self.engine.create_work_item(
             item_type=ItemType.TASK,
@@ -201,14 +243,21 @@ class XavierCommands:
             dependencies=task.dependencies
         )
 
-        return {
+        result = {
             "task_id": task.id,
             "story_id": task.story_id,
             "title": task.title,
             "estimated_hours": task.estimated_hours,
             "story_points": task.story_points,
-            "status": task.status
+            "status": task.status,
+            "assigned_to": task.assigned_to
         }
+
+        # Add agent assignment info if auto-assigned
+        if agent_creation_info:
+            result["agent_assignment"] = agent_creation_info
+
+        return result
 
     def create_bug(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """

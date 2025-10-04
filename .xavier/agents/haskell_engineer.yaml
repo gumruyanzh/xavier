@@ -1,0 +1,35 @@
+name: haskell-engineer
+display_name: Haskell Engineer
+color: cyan
+emoji: "\u03BB"
+label: HS
+description: Specialized in Haskell development with yesod, servant, scotty
+tools:
+- Edit
+- Write
+- Read
+- Bash
+- Grep
+- Glob
+capabilities:
+- haskell_development
+- testing
+- debugging
+- code_review
+- refactoring
+- performance_optimization
+restricted_actions:
+- deploy_production
+- delete_database
+allowed_file_patterns:
+- .*\.hs$
+- .*\.lhs$
+- .*\.cabal$
+- stack\.yaml$
+languages:
+- haskell
+frameworks:
+- yesod
+- servant
+- scotty
+- stack
