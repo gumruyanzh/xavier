@@ -2154,6 +2154,8 @@ Estimated sprints: 0.7
         import subprocess
         import requests
 
+        force_update = args.get("force", False)
+
         # Get current version from multiple sources (priority order)
         current_version = "1.2.3"  # Embedded fallback version
 
@@ -2175,6 +2177,20 @@ Estimated sprints: 0.7
             except:
                 pass
 
+        # Get current git commit hash if available
+        current_commit = None
+        try:
+            result = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=self.project_path,
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                current_commit = result.stdout.strip()[:7]  # Short hash
+        except:
+            pass
+
         # Check for latest version
         try:
             response = requests.get("https://raw.githubusercontent.com/gumruyanzh/xavier/main/VERSION")
@@ -2185,6 +2201,16 @@ Estimated sprints: 0.7
                 "error": "Unable to check for updates. Please check your internet connection.",
                 "current_version": current_version
             }
+
+        # Get latest commit hash
+        latest_commit = None
+        try:
+            response = requests.get("https://api.github.com/repos/gumruyanzh/xavier/commits/main")
+            if response.status_code == 200:
+                data = response.json()
+                latest_commit = data['sha'][:7]  # Short hash
+        except:
+            pass
 
         # Compare versions
         def version_tuple(v):
@@ -2201,6 +2227,11 @@ Estimated sprints: 0.7
                 "current_version": current_version
             }
 
+        # Check if commits differ (even with same version)
+        has_new_commits = False
+        if current_commit and latest_commit and current_commit != latest_commit:
+            has_new_commits = True
+
         if latest_tuple < current_tuple:
             return {
                 "success": False,
@@ -2215,27 +2246,43 @@ Estimated sprints: 0.7
                           "No action needed - you're already on a newer version!"
             }
 
-        if latest_tuple > current_tuple:
-            # New version available
+        if latest_tuple > current_tuple or has_new_commits or force_update:
+            # New version or new commits available
             changelog = self._get_update_changelog(current_version, latest_version)
+
+            update_reason = []
+            if latest_tuple > current_tuple:
+                update_reason.append(f"Version: {current_version} → {latest_version}")
+            if has_new_commits:
+                update_reason.append(f"Commits: {current_commit} → {latest_commit}")
+            if force_update:
+                update_reason.append("Force update requested")
+
+            reason_str = " | ".join(update_reason)
 
             return {
                 "success": True,
                 "update_available": True,
                 "current_version": current_version,
                 "latest_version": latest_version,
+                "current_commit": current_commit,
+                "latest_commit": latest_commit,
+                "has_new_commits": has_new_commits,
                 "changelog": changelog,
                 "update_command": "curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash",
-                "message": f"Xavier Framework update available: {current_version} → {latest_version}\n\n" +
+                "message": f"Xavier Framework update available!\n\n" +
+                          f"Update reason: {reason_str}\n\n" +
                           f"What's new:\n{changelog}\n\n" +
-                          f"To update, run:\n  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash"
+                          f"To update, run:\n  curl -sSL https://raw.githubusercontent.com/gumruyanzh/xavier/main/update.sh | bash\n" +
+                          f"\nOr force update:\n  /xavier-update --force"
             }
         else:
             return {
                 "success": True,
                 "update_available": False,
                 "current_version": current_version,
-                "message": f"✅ Xavier Framework is up to date (version {current_version})"
+                "current_commit": current_commit,
+                "message": f"✅ Xavier Framework is up to date (version {current_version}, commit {current_commit or 'unknown'})"
             }
 
     def _get_update_changelog(self, current_version: str, latest_version: str) -> str:
