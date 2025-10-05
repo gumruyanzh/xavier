@@ -334,18 +334,15 @@ class GitWorktreeManager:
         except Exception as e:
             print(f"Error saving metadata: {e}")
 
-    def create_pr_for_worktree(self, task_id: str, pr_title: str = None,
-                              pr_body: str = None) -> Tuple[bool, str]:
+    def push_worktree_branch(self, task_id: str) -> Tuple[bool, str]:
         """
-        Push worktree branch and create a pull request
+        Push worktree branch to remote
 
         Args:
             task_id: Task ID of the worktree
-            pr_title: Title for the PR (auto-generated if not provided)
-            pr_body: Body for the PR (auto-generated if not provided)
 
         Returns:
-            Tuple[bool, str]: Success status and PR URL or error message
+            Tuple[bool, str]: Success status and message
         """
         try:
             metadata = self._load_metadata()
@@ -365,13 +362,54 @@ class GitWorktreeManager:
             if result.returncode != 0:
                 return False, f"Failed to push branch: {result.stderr}"
 
+            return True, f"Pushed branch {branch_name} to origin"
+
+        except Exception as e:
+            return False, f"Error pushing branch: {str(e)}"
+
+    def create_pr_for_worktree(self, task_id: str, pr_title: str = None,
+                              pr_body: str = None, auto_push: bool = True) -> Tuple[bool, str]:
+        """
+        Push worktree branch and create a pull request
+
+        Args:
+            task_id: Task ID of the worktree
+            pr_title: Title for the PR (auto-generated if not provided)
+            pr_body: Body for the PR (auto-generated if not provided)
+            auto_push: Automatically push branch if True
+
+        Returns:
+            Tuple[bool, str]: Success status and PR URL or error message
+        """
+        try:
+            metadata = self._load_metadata()
+
+            if task_id not in metadata:
+                return False, f"No worktree found for task {task_id}"
+
+            worktree_info = metadata[task_id]
+            worktree_path = self.repo_path / worktree_info['path']
+            branch_name = worktree_info['branch']
+
+            # Push the branch if auto_push is True
+            if auto_push:
+                success, msg = self.push_worktree_branch(task_id)
+                if not success:
+                    return False, msg
+
             # Create PR using gh CLI if available
             if shutil.which("gh"):
                 if not pr_title:
                     pr_title = f"[{task_id}] Complete task for {worktree_info['agent']}"
 
                 if not pr_body:
-                    pr_body = f"Task: {task_id}\\nAgent: {worktree_info['agent']}\\nBranch: {branch_name}"
+                    pr_body = f"""Task: {task_id}
+Agent: {worktree_info['agent']}
+Branch: {branch_name}
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code) using Xavier Framework
+
+Co-Authored-By: Claude <noreply@anthropic.com>"""
 
                 cmd = ["gh", "pr", "create",
                        "--title", pr_title,
@@ -384,11 +422,15 @@ class GitWorktreeManager:
 
                 if result.returncode == 0:
                     pr_url = result.stdout.strip()
+                    # Mark worktree as completed
+                    worktree_info['status'] = 'pr_created'
+                    worktree_info['pr_url'] = pr_url
+                    self._save_metadata(metadata)
                     return True, f"Created PR: {pr_url}"
                 else:
                     return True, f"Branch pushed. Create PR manually: {result.stderr}"
             else:
-                return True, f"Branch pushed to origin/{branch_name}. Please create PR manually."
+                return True, f"Branch pushed to origin/{branch_name}. Install 'gh' CLI to auto-create PRs."
 
         except Exception as e:
             return False, f"Error creating PR: {str(e)}"

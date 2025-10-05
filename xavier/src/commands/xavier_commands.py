@@ -1235,10 +1235,21 @@ This project follows Xavier Framework standards:
         self.scrum.start_sprint(sprint_id)
         sprint = self.scrum.sprints[sprint_id]
 
-        # Create .trees folder for git worktrees
-        trees_path = os.path.join(self.project_path, ".trees")
+        # Create trees folder for git worktrees
+        trees_path = os.path.join(self.project_path, "trees")
         os.makedirs(trees_path, exist_ok=True)
-        self.logger.info(f"Created .trees folder at {trees_path}")
+
+        print(f"\n{'='*70}")
+        print(f"🌳 Git Worktree Setup")
+        print(f"{'='*70}")
+        print(f"✓ Worktree directory: {trees_path}")
+        print(f"✓ Branch naming: <type>/{project_abbrev}-<number>")
+        print(f"  - feature/: New functionality")
+        print(f"  - fix/: Bug fixes")
+        print(f"  - refactor/: Code improvements")
+        print(f"{'='*70}\n")
+
+        self.logger.info(f"Created trees folder at {trees_path}")
 
         # Get project abbreviation from config
         project_abbrev = "PROJ"
@@ -1281,9 +1292,12 @@ This project follows Xavier Framework standards:
                 elif any(word in title_lower for word in ['refactor', 'improve']):
                     branch_type = "refactor"
 
-            # Create branch name like feature/CAN-1 or fix/CAN-2
+            # Create branch name like feature/PROJ-1 or fix/PROJ-2
             branch_name = f"{branch_type}/{project_abbrev}-{idx}"
             worktree_path = os.path.join(trees_path, f"{project_abbrev.lower()}-{idx}")
+
+            # Sanitize title for display
+            display_title = item_title[:50] + ('...' if len(item_title) > 50 else '')
 
             try:
                 # Create git worktree
@@ -1300,13 +1314,29 @@ This project follows Xavier Framework standards:
                         "item_type": item_type,
                         "item_id": item_id,
                         "branch": branch_name,
-                        "path": worktree_path
+                        "path": worktree_path,
+                        "title": item_title
                     })
+                    print(f"✓ Created: {branch_name:30} → {display_title}")
                     self.logger.info(f"Created worktree for {item_id}: {branch_name}")
                 else:
+                    print(f"✗ Failed: {branch_name:30} → {result.stderr[:50]}")
                     self.logger.warning(f"Failed to create worktree for {item_id}: {result.stderr}")
             except Exception as e:
                 self.logger.error(f"Error creating worktree for {item_id}: {e}")
+
+        # Display worktree summary
+        if worktrees_created:
+            print(f"\n{'='*70}")
+            print(f"📊 Worktree Summary")
+            print(f"{'='*70}")
+            print(f"Total worktrees created: {len(worktrees_created)}")
+            print(f"\nNext steps for each task:")
+            print(f"  1. Agent implements feature in isolated worktree")
+            print(f"  2. Tests are written and run (TDD)")
+            print(f"  3. Branch is pushed: git push -u origin <branch-name>")
+            print(f"  4. PR is created: gh pr create --base main")
+            print(f"{'='*70}\n")
 
         # Display sprint start banner
         greeting_script = os.path.join(os.path.dirname(__file__), "..", "utils", "greeting.sh")

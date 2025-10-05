@@ -70,3 +70,6 @@ vendor/
 .env.local
 # Xavier worktrees
 /trees/
+*.json
+trees/
+# Ignore data files in root
