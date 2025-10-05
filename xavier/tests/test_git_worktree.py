@@ -278,7 +278,7 @@ class TestGitWorktreeManager(unittest.TestCase):
 class TestWorktreeIntegration(unittest.TestCase):
     """Test worktree integration with agents and sprints"""
 
-    @patch('xavier.src.git_worktree.GitWorktreeManager')
+    @patch('xavier.src.agents.base_agent.GitWorktreeManager')
     def test_agent_worktree_creation(self, mock_manager_class):
         """Test agent creates worktree when starting task"""
         from xavier.src.agents.base_agent import BaseAgent, AgentTask, AgentCapability
