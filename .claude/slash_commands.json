@@ -216,7 +216,9 @@
     {
       "name": "xavier-update",
       "description": "Check for and install Xavier Framework updates",
-      "parameters": {}
+      "parameters": {
+        "force": "Force update even if version is same (default: false)"
+      }
     },
     {
       "name": "xavier-init-self",
