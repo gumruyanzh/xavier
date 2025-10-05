@@ -372,18 +372,139 @@ footer {
     opacity: 0.7;
 }
 
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+}
+
+.mobile-menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--black);
+    margin: 5px 0;
+    transition: all 0.3s;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.nav-links.mobile-active {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    gap: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+
     .nav-links {
         display: none;
     }
 
+    .nav-container {
+        padding: 0 16px;
+    }
+
+    .hero {
+        min-height: auto;
+        padding-top: 60px;
+    }
+
+    .hero-container {
+        padding: 40px 16px;
+    }
+
     .hero h1 {
-        font-size: 40px;
+        font-size: 36px;
+        line-height: 1.1;
+        margin-bottom: 16px;
     }
 
     .hero-subtitle {
-        font-size: 21px;
+        font-size: 19px;
+        margin-bottom: 12px;
+    }
+
+    .hero-description {
+        font-size: 17px;
+        margin: 0 auto 32px;
+    }
+
+    .install-box {
+        margin: 32px auto;
+        padding: 20px;
+    }
+
+    .code-block {
+        padding: 16px;
+    }
+
+    .code-block code {
+        font-size: 12px;
+        word-break: break-all;
+    }
+
+    .copy-button {
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+
+    .features, .commands {
+        padding: 60px 16px;
+    }
+
+    .section-header {
+        margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .section-header p {
+        font-size: 17px;
     }
 
     .features-grid {
@@ -393,22 +514,106 @@ footer {
 
     .command-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .command-card {
+        padding: 20px;
     }
 
     .footer-content {
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         text-align: center;
     }
 
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
+    .footer-links {
+        gap: 20px;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 28px;
     }
 
-    .btn {
-        width: 100%;
-        max-width: 300px;
+    .hero-subtitle {
+        font-size: 17px;
+    }
+
+    .hero-description {
+        font-size: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 28px;
+    }
+
+    .feature-card h3 {
+        font-size: 19px;
+    }
+
+    .command-name {
+        font-size: 15px;
+    }
+
+    .install-box {
+        padding: 16px;
+    }
+}
+
+/* Tablet Landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .nav-container {
+        max-width: 100%;
+        padding: 0 40px;
+    }
+
+    .hero-container, .container {
+        max-width: 100%;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .command-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase tap targets for touch devices */
+    .nav-links a,
+    .btn,
+    .command-card,
+    .copy-button {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Remove hover effects on touch devices */
+    .nav-links a:hover,
+    .btn:hover,
+    .command-card:hover {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Add active states instead */
+    .nav-links a:active,
+    .btn:active {
+        opacity: 0.7;
+    }
+
+    .command-card:active {
+        transform: scale(0.98);
     }
 }
 

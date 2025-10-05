@@ -903,16 +903,16 @@ class XavierCommands:
             if "go" in backend_lang:
                 agents.append("golang-engineer")
             if "node" in backend_lang or "javascript" in backend_lang:
-                agents.append("nodejs_engineer")
+                agents.append("nodejs-engineer")
 
         if "frontend" in tech_stack:
             agents.append("frontend-engineer")
 
         if "database" in tech_stack:
-            agents.append("database_engineer")
+            agents.append("database-engineer")
 
         if "devops" in tech_stack:
-            agents.append("devops_engineer")
+            agents.append("devops-engineer")
 
         # Configure agents in Xavier config
         agent_config = {}
