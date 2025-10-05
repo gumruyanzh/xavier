@@ -379,9 +379,118 @@ cleaned = manager.cleanup_worktrees(remove_completed=True)
 print(f"Cleaned {len(cleaned)} worktrees")
 ```
 
+## 🔍 Troubleshooting
+
+### Verifying Worktree Functionality
+
+Run the verification script to check if worktrees are working:
+
+```bash
+python3 verify_worktree.py
+```
+
+**Expected output:**
+- ✓ Shows worktree directory location (`trees/`)
+- ✓ Lists all active worktrees with task IDs, agents, branches, and paths
+- ✓ Confirms worktree functionality is working
+
+### Common Issues
+
+#### "Worktrees not being created"
+
+**Symptoms:** No worktrees appear when tasks start
+
+**Diagnosis:**
+```bash
+# Check if worktree directory exists
+ls -la trees/
+
+# List all worktrees
+python3 -c "from xavier.src.git_worktree import GitWorktreeManager; print(GitWorktreeManager().list_worktrees())"
+```
+
+**Solutions:**
+1. Worktrees are created automatically when agents start tasks
+2. Check that `task.working_dir` is `None` when starting a task
+3. Ensure the git repository is initialized
+4. Verify `trees/` is in `.gitignore`
+
+#### "Can't see worktree activity"
+
+**Symptoms:** Unsure if worktrees are working
+
+**Solution:** Worktrees ARE working if:
+- The `trees/` directory exists
+- Running `verify_worktree.py` shows active worktrees
+- Agents start tasks successfully
+- Each task has its own branch visible in `git branch --all`
+
+**Check branches:**
+```bash
+git branch --all | grep "python-engineer\|frontend-engineer\|test-runner"
+```
+
+#### "Too many worktrees"
+
+**Symptoms:** Many old worktrees from completed tasks
+
+**Solution:** Clean up completed worktrees:
+```python
+from xavier.src.git_worktree import GitWorktreeManager
+
+manager = GitWorktreeManager()
+cleaned = manager.cleanup_worktrees()
+print(f"Cleaned {len(cleaned)} worktrees")
+```
+
+Or manually remove specific worktrees:
+```bash
+# Using Python
+python3 -c "from xavier.src.git_worktree import GitWorktreeManager; GitWorktreeManager().remove_worktree('TASK-001', force=True)"
+
+# Or using git command
+git worktree remove trees/agent-name-TASK-001
+```
+
+### How to Verify Worktrees Are Working
+
+1. **Run verification script:**
+   ```bash
+   python3 verify_worktree.py
+   ```
+
+2. **Check directory structure:**
+   ```bash
+   ls -la trees/
+   # Should show: agent-name-TASK-ID directories
+   ```
+
+3. **List git worktrees:**
+   ```bash
+   git worktree list
+   ```
+
+4. **Check branches:**
+   ```bash
+   git branch --all
+   # Should show: agent-name/TASK-ID branches
+   ```
+
+5. **Monitor during task execution:**
+   - Start a task with an agent
+   - Watch for "Created worktree" in console output
+   - Verify `trees/agent-name-TASK-ID` directory appears
+
 ## 📝 Summary
 
 The Xavier Git Worktree workflow provides a robust, scalable solution for parallel development with multiple agents. It ensures code isolation, automatic PR creation, and clean sprint management, making it ideal for team-based agile development with AI agents.
+
+**Key Points:**
+- ✅ Worktrees are created automatically when agents start tasks
+- ✅ Each worktree is isolated in the `trees/` directory
+- ✅ Each task gets its own branch: `agent-name/task-id`
+- ✅ Use `verify_worktree.py` to check functionality
+- ✅ Clean up old worktrees with `cleanup_worktrees()`
 
 ---
 
